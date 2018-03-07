@@ -1,5 +1,6 @@
 package com.tdt4240.jankenlabyrinth;
 
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -9,11 +10,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class JankenLabyrinth extends ApplicationAdapter {
 	SpriteBatch batch;
 	Texture img;
+	EntityManager entityManager;
 	
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
+		//img = new Texture("badlogic.jpg");
+		Engine engine = new Engine();
+		entityManager = new EntityManager(engine, batch);
 	}
 
 	@Override
@@ -21,7 +25,8 @@ public class JankenLabyrinth extends ApplicationAdapter {
 		Gdx.gl.glClearColor(1, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
-		batch.draw(img, 0, 0);
+		entityManager.update();
+		//batch.draw(img, 0, 0);
 		batch.end();
 	}
 	
