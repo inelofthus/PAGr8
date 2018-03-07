@@ -14,6 +14,22 @@ import com.tdt4240.jankenlabyrinth.Systems.RenderSystem;
 
 /**
  * Created by jonas on 07/03/2018.
+ * Implements the Entity Manager to use in gameplay.
+ * Super-quick how-to-ECS:
+ * 1: Have ONE Engine, preferably made in PlayState or something. Just one per ECS.
+ * 2: Implement Systems (see Systems-package) and docstring in ControlledMovementSystem
+ * -- Systems add logic to all entities with given components.
+ * -- Systems MUST be added to engine (such that update() etc can be called by it
+ * -- RenderSystem currently draws everything.
+ * 3: Add entities as shown below. You can string as many .add(EntitySystem) as you like.
+ *
+ * -- In the playState, where we call draw now, we should have a call to the EnitityManager  like
+ *    currently shown in the JankenLabyrinth-class. That is spriteBatch.begin(); entityManger.update();
+ *    spriteBatch.end();
+ *
+ *    Note that entityManger.update() calls the engine.update().
+ *
+ * -- See also the PositionComponent on how-to-Component if you need to.
  */
 
 public class EntityManager {

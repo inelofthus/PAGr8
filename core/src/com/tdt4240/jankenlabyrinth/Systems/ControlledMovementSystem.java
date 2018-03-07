@@ -12,6 +12,16 @@ import com.tdt4240.jankenlabyrinth.Components.VelocityComponent;
 
 /**
  * Created by jonas on 07/03/2018.
+ *
+ * Super-quick How-to-System:
+ * 1: Implement the appropiate logic (i.e. move the entities who're supposed to be moved by device input or draw drawable stuff)
+ * 2: Make an Array of relevant entites in addedToEnginge
+ * -- Important: Here the array of entities is null until addedToEngine is called.
+ * -- Note that addedToEngine will be called automatically by the engine.
+ * -- Note also that it's in addedToEngine the entity-selection takes place. (Family.all(...))
+ * 3: In update(float dt), apply logic to the entities (like movement).
+ * 4: The ComponentMappers makes it easier to select the right entity-components (and gives good performance)
+ * -- See line 30 and 42 for example.
  */
 
 public class ControlledMovementSystem extends EntitySystem {
