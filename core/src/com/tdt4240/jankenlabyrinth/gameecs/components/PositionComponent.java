@@ -1,4 +1,4 @@
-package com.tdt4240.jankenlabyrinth.Components;
+package com.tdt4240.jankenlabyrinth.gameecs.components;
 
 import com.badlogic.ashley.core.Component;
 /**

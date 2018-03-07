@@ -1,4 +1,4 @@
-package com.tdt4240.jankenlabyrinth.Systems;
+package com.tdt4240.jankenlabyrinth.gameecs.systems;
 
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Engine;
@@ -6,9 +6,8 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
-import com.badlogic.gdx.Gdx;
-import com.tdt4240.jankenlabyrinth.Components.PositionComponent;
-import com.tdt4240.jankenlabyrinth.Components.VelocityComponent;
+import com.tdt4240.jankenlabyrinth.gameecs.components.PositionComponent;
+import com.tdt4240.jankenlabyrinth.gameecs.components.VelocityComponent;
 
 /**
  * Created by jonas on 07/03/2018.
@@ -42,9 +41,7 @@ public class ControlledMovementSystem extends EntitySystem {
                 PositionComponent pos = pm.get(entity);
                 VelocityComponent vel = vm.get(entity);
 
-                int screenTouched = Gdx.input.isTouched() ? 1 : 0;
                 pos.x += vel.x * dt;
-                //System.out.println("Updated");
             }
         }
 

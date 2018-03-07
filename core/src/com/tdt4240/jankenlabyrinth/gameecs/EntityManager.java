@@ -1,16 +1,16 @@
-package com.tdt4240.jankenlabyrinth;
+package com.tdt4240.jankenlabyrinth.gameecs;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.tdt4240.jankenlabyrinth.Components.PositionComponent;
-import com.tdt4240.jankenlabyrinth.Components.RenderableComponent;
-import com.tdt4240.jankenlabyrinth.Components.SpriteComponent;
-import com.tdt4240.jankenlabyrinth.Components.VelocityComponent;
-import com.tdt4240.jankenlabyrinth.Systems.ControlledMovementSystem;
-import com.tdt4240.jankenlabyrinth.Systems.RenderSystem;
+import com.tdt4240.jankenlabyrinth.gameecs.components.PositionComponent;
+import com.tdt4240.jankenlabyrinth.gameecs.components.RenderableComponent;
+import com.tdt4240.jankenlabyrinth.gameecs.components.SpriteComponent;
+import com.tdt4240.jankenlabyrinth.gameecs.components.VelocityComponent;
+import com.tdt4240.jankenlabyrinth.gameecs.systems.ControlledMovementSystem;
+import com.tdt4240.jankenlabyrinth.gameecs.systems.RenderSystem;
 
 /**
  * Created by jonas on 07/03/2018.
@@ -44,7 +44,6 @@ public class EntityManager {
         engine.addSystem(cms);
         RenderSystem rs = new RenderSystem(batch);
         engine.addSystem(rs);
-
         Entity testImageEntity = new Entity();
         testImageEntity.add(new PositionComponent(0,0))
                 .add(new VelocityComponent(300,300))
@@ -60,5 +59,12 @@ public class EntityManager {
 
     public void draw(SpriteBatch batch){
 
+    }
+    public void setBatch(SpriteBatch batch){
+
+    }
+
+    public boolean hasNoSpriteBatch(){
+        return (this.batch == null);
     }
 }
