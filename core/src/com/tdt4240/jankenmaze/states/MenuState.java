@@ -1,4 +1,4 @@
-package com.tdt4240.jankenlabyrinth.states;
+package com.tdt4240.jankenmaze.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -41,7 +41,7 @@ public class MenuState extends State {
     @Override
     protected void handleInput() {
         if(Gdx.input.justTouched()) {
-            gsm.push(new PlayState(batch));
+            gsm.push(new com.tdt4240.jankenmaze.states.PlayState(batch));
         }
     }
 

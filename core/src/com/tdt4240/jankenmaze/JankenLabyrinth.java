@@ -1,12 +1,13 @@
-package com.tdt4240.jankenlabyrinth;
+package com.tdt4240.jankenmaze;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.tdt4240.jankenlabyrinth.states.GameStateManager;
-import com.tdt4240.jankenlabyrinth.states.MenuState;
+import com.tdt4240.jankenmaze.states.GameStateManager;
+import com.tdt4240.jankenmaze.states.MenuState;
+import com.tdt4240.jankenmaze.gameecs.EntityManager;
 
 /*
 * Overall game-class, does very little on it's own.
@@ -14,7 +15,7 @@ import com.tdt4240.jankenlabyrinth.states.MenuState;
 public class JankenLabyrinth extends ApplicationAdapter {
 	SpriteBatch batch;
 	Texture img;
-	com.tdt4240.jankenlabyrinth.gameecs.EntityManager entityManager;
+	EntityManager entityManager;
 	GameStateManager gsm;
 	
 	@Override

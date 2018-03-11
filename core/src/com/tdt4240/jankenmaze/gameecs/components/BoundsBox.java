@@ -1,4 +1,4 @@
-package com.tdt4240.jankenlabyrinth.gameecs.components;
+package com.tdt4240.jankenmaze.gameecs.components;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.math.Rectangle;

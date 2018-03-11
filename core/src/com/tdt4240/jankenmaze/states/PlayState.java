@@ -1,8 +1,7 @@
-package com.tdt4240.jankenlabyrinth.states;
+package com.tdt4240.jankenmaze.states;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.tdt4240.jankenlabyrinth.gameecs.EntityManager;
 
 /**
  * Created by jonas on 07/03/2018.
@@ -14,12 +13,12 @@ import com.tdt4240.jankenlabyrinth.gameecs.EntityManager;
 
 public class PlayState extends State {
     Engine engine;
-    EntityManager entityManager;
+    com.tdt4240.jankenmaze.gameecs.EntityManager entityManager;
 
     public PlayState(SpriteBatch batch){
         super();
         engine = new Engine();
-        entityManager = new EntityManager(engine, batch);
+        entityManager = new com.tdt4240.jankenmaze.gameecs.EntityManager(engine, batch);
     }
     @Override
     protected void handleInput() {

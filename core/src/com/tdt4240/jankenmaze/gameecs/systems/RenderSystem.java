@@ -1,4 +1,4 @@
-package com.tdt4240.jankenlabyrinth.gameecs.systems;
+package com.tdt4240.jankenmaze.gameecs.systems;
 
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Engine;
@@ -7,9 +7,9 @@ import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.tdt4240.jankenlabyrinth.gameecs.components.PositionComponent;
-import com.tdt4240.jankenlabyrinth.gameecs.components.RenderableComponent;
-import com.tdt4240.jankenlabyrinth.gameecs.components.SpriteComponent;
+import com.tdt4240.jankenmaze.gameecs.components.PositionComponent;
+import com.tdt4240.jankenmaze.gameecs.components.RenderableComponent;
+import com.tdt4240.jankenmaze.gameecs.components.SpriteComponent;
 
 /**
  * Created by jonas on 07/03/2018.

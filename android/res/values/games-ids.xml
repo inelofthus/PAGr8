@@ -1,2 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<!--
+Google Play game services IDs.
+Save this file as res/values/games-ids.xml in your project.
+-->
+<resources>
+    <!-- app_id -->
+    <string name="app_id" translatable="false">68018892132</string>
+    <!-- package_name -->
+    <string name="package_name" translatable="false">com.tdt4240.jankenmaze</string>
+    <!-- leaderboard score -->
+    <string name="leaderboard_score" translatable="false">CgkI5Nr3sf0BEAIQAg</string>
+</resources>

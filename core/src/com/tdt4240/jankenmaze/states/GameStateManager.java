@@ -1,4 +1,4 @@
-package com.tdt4240.jankenlabyrinth.states;
+package com.tdt4240.jankenmaze.states;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 

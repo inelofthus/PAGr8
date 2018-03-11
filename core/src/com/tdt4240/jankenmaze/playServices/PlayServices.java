@@ -1,4 +1,4 @@
-package com.tdt4240.jankenlabyrinth.playServices;
+package com.tdt4240.jankenmaze.playServices;
 
 /**
  * Created by karim on 11/03/2018.

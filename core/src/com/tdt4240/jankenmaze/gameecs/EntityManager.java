@@ -1,16 +1,15 @@
-package com.tdt4240.jankenlabyrinth.gameecs;
+package com.tdt4240.jankenmaze.gameecs;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.tdt4240.jankenlabyrinth.gameecs.components.PositionComponent;
-import com.tdt4240.jankenlabyrinth.gameecs.components.RenderableComponent;
-import com.tdt4240.jankenlabyrinth.gameecs.components.SpriteComponent;
-import com.tdt4240.jankenlabyrinth.gameecs.components.VelocityComponent;
-import com.tdt4240.jankenlabyrinth.gameecs.systems.ControlledMovementSystem;
-import com.tdt4240.jankenlabyrinth.gameecs.systems.RenderSystem;
+import com.tdt4240.jankenmaze.gameecs.components.PositionComponent;
+import com.tdt4240.jankenmaze.gameecs.components.RenderableComponent;
+import com.tdt4240.jankenmaze.gameecs.components.SpriteComponent;
+import com.tdt4240.jankenmaze.gameecs.components.VelocityComponent;
+import com.tdt4240.jankenmaze.gameecs.systems.ControlledMovementSystem;
 
 /**
  * Created by jonas on 07/03/2018.
@@ -42,7 +41,7 @@ public class EntityManager {
 
         ControlledMovementSystem cms = new ControlledMovementSystem();
         engine.addSystem(cms);
-        RenderSystem rs = new RenderSystem(batch);
+        com.tdt4240.jankenmaze.gameecs.systems.RenderSystem rs = new com.tdt4240.jankenmaze.gameecs.systems.RenderSystem(batch);
         engine.addSystem(rs);
         Entity testImageEntity = new Entity();
         testImageEntity.add(new PositionComponent(0,0))

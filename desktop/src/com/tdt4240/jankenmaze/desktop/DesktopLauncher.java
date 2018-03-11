@@ -1,8 +1,8 @@
-package com.tdt4240.jankenlabyrinth.desktop;
+package com.tdt4240.jankenmaze.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.tdt4240.jankenlabyrinth.JankenLabyrinth;
+import com.tdt4240.jankenmaze.JankenLabyrinth;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {
