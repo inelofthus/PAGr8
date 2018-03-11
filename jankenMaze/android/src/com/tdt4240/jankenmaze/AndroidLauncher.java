@@ -1,5 +1,7 @@
 package com.tdt4240.jankenmaze;
 
+import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
@@ -12,6 +14,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.tdt4240.jankenmaze.playServices.PlayServices;
@@ -33,7 +36,6 @@ public class AndroidLauncher extends AndroidApplication implements PlayServices 
         signIn();
         System.out.println("HIII");
         System.out.println(isSignedIn());
-        System.out.println("email" + signedInAccount.getEmail());
 	}
 
 	private boolean isSignedIn() {
@@ -46,6 +48,7 @@ public class AndroidLauncher extends AndroidApplication implements PlayServices 
 			signInSilently();
 		}
 		else{
+			System.out.println("Start signin intent");
 			startSignInIntent();
 
 		}
@@ -62,9 +65,14 @@ public class AndroidLauncher extends AndroidApplication implements PlayServices 
 						if (task.isSuccessful()) {
 							// The signed in account is stored in the task's result.
 							GoogleSignInAccount signedInAccount = task.getResult();
+							System.out.println("semail " + signedInAccount.getEmail());
+							System.out.println("sdisplayname " + signedInAccount.getDisplayName());
+							System.out.println("stostring " + signedInAccount.toString());
+							System.out.println("sauthcode " + signedInAccount.getServerAuthCode());
 
 						} else {
 							// Player will need to sign-in explicitly using via UI
+							System.out.println("Player will need to sign-in explicitly using via UI");
 						}
 					}
 				});
@@ -81,4 +89,33 @@ public class AndroidLauncher extends AndroidApplication implements PlayServices 
 		startActivityForResult(mGoogleSignInClient.getSignInIntent(), RC_SIGN_IN);
         System.out.println("I have the intension of signing in ");
     }
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+		System.out.println("abcdefgh");
+		if (requestCode == RC_SIGN_IN) {
+
+			Task<GoogleSignInAccount> task =
+					GoogleSignIn.getSignedInAccountFromIntent(intent);
+
+			try {
+				GoogleSignInAccount account = task.getResult(ApiException.class);
+				System.out.println("Accountz " + account.getEmail());
+				//onConnected(account);
+			} catch (ApiException apiException) {
+				String message = apiException.getMessage();
+				if (message == null || message.isEmpty()) {
+					//message = getString(R.string.signin_other_error);
+				}
+
+				//onDisconnected();
+
+				new AlertDialog.Builder(this)
+						.setMessage(message)
+						.setNeutralButton(android.R.string.ok, null)
+						.show();
+			}
+		}
+		super.onActivityResult(requestCode, resultCode, intent);
+	}
 }
