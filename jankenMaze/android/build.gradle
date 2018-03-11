@@ -1,12 +1,11 @@
 android {
 
 
-
     signingConfigs {
         config {
-            keyAlias 'jankenRelease'
+            keyAlias 'jankenMazeRelease'
             keyPassword 'Bolle1234'
-            storeFile file('C:/Users/karim/key_store/android.jks')
+            storeFile file('../../key_store/android.jks')
             storePassword 'Bolle1234'
         }
     }
@@ -29,7 +28,7 @@ android {
         exclude 'META-INF/robovm/ios/robovm.xml'
     }
     defaultConfig {
-        applicationId "com.tdt4240.jankenlabyrinth"
+        applicationId "com.tdt4240.jankenmaze"
         minSdkVersion 14
         targetSdkVersion 27
         versionCode 1

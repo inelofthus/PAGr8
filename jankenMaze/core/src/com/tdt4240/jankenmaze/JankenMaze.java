@@ -12,7 +12,7 @@ import com.tdt4240.jankenmaze.gameecs.EntityManager;
 /*
 * Overall game-class, does very little on it's own.
 * */
-public class JankenLabyrinth extends ApplicationAdapter {
+public class JankenMaze extends ApplicationAdapter {
 	SpriteBatch batch;
 	Texture img;
 	EntityManager entityManager;
