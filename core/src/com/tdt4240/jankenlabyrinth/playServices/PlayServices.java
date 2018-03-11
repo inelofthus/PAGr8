@@ -5,4 +5,5 @@ package com.tdt4240.jankenlabyrinth.playServices;
  */
 
 public interface PlayServices {
+    public void signIn();
 }
