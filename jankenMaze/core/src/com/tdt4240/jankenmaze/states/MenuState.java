@@ -3,45 +3,40 @@ package com.tdt4240.jankenmaze.states;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.tdt4240.jankenmaze.view.MainMenuView;
 
-/**
- * Created by jonas on 25/01/2018.
- * Main menu state. Should eventually use MVC-architecture, but not quite there yet (it's very skeletal)
- * Currently just sends us right to playState when screen is touched/clicked
- */
 
 public class MenuState extends State {
-    Texture playBtn;
-    /* int playBtnX;
-    int playBtnY;
-    int playBtnHeight;
-    int playBtnWidth;
-    Rectangle playBtnRect; */
+    MainMenuView mainMenuView;
     private GameStateManager gsm;
     private SpriteBatch batch;
+    private ClickListener listenerBtn_joinGame, listenerBtn_createGame;
 
     public MenuState() {
         super();
         gsm = GameStateManager.getGsm();
+        this.mainMenuView = new MainMenuView();
+
+        listenerBtn_createGame = new ClickListener();
+        mainMenuView.btn_createGame.addListener(listenerBtn_createGame);
+
+        listenerBtn_joinGame = new ClickListener();
+        mainMenuView.btn_joinGame.addListener(listenerBtn_joinGame);
+
 
         cam.setToOrtho(false);
-        playBtn = new Texture("menuBtn.png");
 
-        System.out.println("Starting");
-
-        //playBtnX = Gdx.graphics.getWidth()/2 - playBtn.getWidth()/2;
-        //playBtnY = Gdx.graphics.getHeight()/2 - playBtn.getHeight()/2;
-        //playBtnHeight = Gdx.graphics.getHeight();
-        //playBtnWidth = (playBtnHeight/480)*360;
-
-
-        //playBtnRect = new Rectangle(playBtnX, playBtnY, playBtn.getWidth(), playBtn.getHeight());
     }
 
     @Override
     protected void handleInput() {
-        if(Gdx.input.justTouched()) {
+        if (mainMenuView.btn_joinGame.isPressed()){
             gsm.push(new com.tdt4240.jankenmaze.states.PlayState(batch));
+        }
+        if (mainMenuView.btn_createGame.isPressed()){
+            //TODO: Push correct state
+            //gsm.push(new com.tdt4240.jankenmaze.states.PlayState(batch));
         }
     }
 
@@ -57,12 +52,12 @@ public class MenuState extends State {
         this.batch = sb;
         sb.setProjectionMatrix(cam.combined);
         sb.begin();
-        sb.draw(playBtn, 0, 100, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        mainMenuView.render(batch);
         sb.end();
     }
 
     @Override
     public void dispose() {
-        playBtn.dispose();
+        mainMenuView.dispose();
     }
 }
