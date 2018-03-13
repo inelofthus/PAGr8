@@ -11,7 +11,7 @@ public class MenuState extends State {
     MainMenuView mainMenuView;
     private GameStateManager gsm;
     private SpriteBatch batch;
-    private ClickListener listenerBtn_joinGame, listenerBtn_createGame;
+    private ClickListener listenerBtn_joinGame, listenerBtn_createGame, listenerBtn_quickGame;
 
     public MenuState() {
         super();
@@ -23,6 +23,9 @@ public class MenuState extends State {
 
         listenerBtn_joinGame = new ClickListener();
         mainMenuView.btn_joinGame.addListener(listenerBtn_joinGame);
+
+        listenerBtn_quickGame = new ClickListener();
+        mainMenuView.btn_quickGame.addListener(listenerBtn_quickGame);
 
 
         cam.setToOrtho(false);
@@ -38,6 +41,11 @@ public class MenuState extends State {
             //TODO: Push correct state
             //gsm.push(new com.tdt4240.jankenmaze.states.PlayState(batch));
         }
+        if (mainMenuView.btn_quickGame.isPressed()){
+            //TODO: Push correct state
+            //gsm.push(new com.tdt4240.jankenmaze.states.PlayState(batch));
+        }
+
     }
 
     @Override
