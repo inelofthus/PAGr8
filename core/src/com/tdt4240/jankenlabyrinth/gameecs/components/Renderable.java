@@ -6,9 +6,6 @@ import com.badlogic.ashley.core.Component;
  * Created by jonas on 07/03/2018.
  */
 
-public class HealthComponent implements Component {
-    public int health;
-    public HealthComponent(int hp){
-        this.health = hp;
-    }
+public class Renderable implements Component {
+    //This is supposed to be blank. Like my brain at times.
 }

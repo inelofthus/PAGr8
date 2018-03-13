@@ -36,6 +36,6 @@ public class JankenLabyrinth extends ApplicationAdapter {
 	@Override
 	public void dispose () {
 		batch.dispose();
-		img.dispose();
+		//img.dispose();
 	}
 }
