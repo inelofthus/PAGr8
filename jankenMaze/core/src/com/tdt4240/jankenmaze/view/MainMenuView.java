@@ -22,7 +22,7 @@ public class MainMenuView extends View {
     private TextureAtlas atlas;
     private Skin skin;
     private Table table;
-    public TextButton btn_joinGame, btn_createGame;
+    public TextButton btn_joinGame, btn_createGame, btn_quickGame;
     private Label heading1;
     private BitmapFont font;
 
@@ -51,14 +51,19 @@ public class MainMenuView extends View {
         btn_createGame = new TextButton("Create Game", textButtonStyle);
         btn_createGame.pad(20);
 
+        btn_quickGame = new TextButton("Quick Game", textButtonStyle);
+        btn_quickGame.pad(20);
+
         //creating heading
         Label.LabelStyle headingStyle = new Label.LabelStyle(font, Color.WHITE);
-        heading1 = new Label("    TDT4240 \n Janken Maze \n", headingStyle);
+        heading1 = new Label("      Janken Maze \n", headingStyle);
         heading1.setFontScale(2);
 
 
         // putting stuff together
         table.add(heading1);
+        table.row();
+        table.add(btn_quickGame);
         table.row();
         table.add(btn_joinGame);
         table.row();
