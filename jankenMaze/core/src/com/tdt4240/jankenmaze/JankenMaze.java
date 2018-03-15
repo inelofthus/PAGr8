@@ -24,7 +24,7 @@ public class JankenMaze extends ApplicationAdapter {
 	public void create () {
 		batch = new SpriteBatch();
 
-		socket.connectSocket();
+		socket.connectSocket(1234);
 		socket.configSocketEvents();
 
 		gsm = GameStateManager.getGsm();

@@ -10,7 +10,13 @@ server.listen(8080, function(){
 io.on('connection', function(socket){
     console.log('player connected');
     socket.emit('socketID', { id: socket.id }); //Gives new client a unique id
-    socket.broadcast.emit('newPlayer', { id: socket.id });
+    
+    socket.on('gamePin', function(gamePin){
+        socket.join(gamePin);
+        io.sockets.in(gamePin).emit('newPlayer', { id: socket.id });
+    })
+
+    //socket.broadcast.emit('newPlayer', { id: socket.id });
     socket.emit('getPlayers', players);
     
     socket.on('playerMoved', function(data){

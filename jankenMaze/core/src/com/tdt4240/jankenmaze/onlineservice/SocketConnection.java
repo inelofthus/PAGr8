@@ -26,10 +26,11 @@ public final class SocketConnection {
         return socketconn;
     }
 
-    public void connectSocket(){
+    public void connectSocket(int gamePin){
         try {
             socket = IO.socket("http://localhost:8080");
             socket.connect();
+            socket.emit("gamePin", gamePin);
         } catch(Exception e){
             System.out.println(e);
         }
