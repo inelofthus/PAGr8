@@ -15,6 +15,7 @@ import com.tdt4240.jankenmaze.gameecs.components.Renderable;
 import com.tdt4240.jankenmaze.gameecs.components.SpriteComponent;
 import com.tdt4240.jankenmaze.gameecs.components.Remote;
 import com.tdt4240.jankenmaze.gameecs.components.Occupied;
+import com.tdt4240.jankenmaze.gameecs.components.HUDItemInfo;
 
 /**
  * Created by Oyvind Sabo on 14.03.2018.
@@ -82,4 +83,12 @@ public class EntityFactory {
         return spawnPosition;
     }
 
+    public Entity createHUDItem(int xPosition, int yPosition, Texture texture, String itemType) {
+        Entity HUDItem = new Entity();
+        Entity spawnPosition = new Entity();
+        HUDItem.add(new Renderable());
+        HUDItem.add(new SpriteComponent(texture));
+        HUDItem.add(new HUDItemInfo(itemType));
+        return HUDItem;
+    }
 }
