@@ -4,10 +4,10 @@ android {
 
     signingConfigs {
         config {
-            keyAlias "@keystoreInfo/keyAlias"
-            keyPassword "@keystoreInfo/keyPassword"
+            keyAlias 'jankenRelease'
+            keyPassword 'Bolle1234'
             storeFile file('../../key_store/android.jks')
-            storePassword "@keystoreInfo/storePassword"
+            storePassword 'Bolle1234'
         }
     }
     buildToolsVersion "27.0.3"
