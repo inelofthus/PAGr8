@@ -64,6 +64,14 @@ public class EntityFactory {
         return powerUp;
     }
 
-
+    public Entity createWall(int xPosition, int yPosition, Texture texture) {
+        Entity wall = new Entity();
+        wall.add(new Position(0,0)); //TODO: Consider if the startposition should be given by some function which finds an unoccupied spot instead of being taken as an input argument.
+        wall.add(new BoundsBox(0,0,0,0)); //TODO: Gjør x og y identiske med Position.x og Position.y
+        wall.add(new Spawnable());
+        wall.add(new Renderable());
+        wall.add(new SpriteComponent(texture));
+        return wall;
+    }
 
 }
