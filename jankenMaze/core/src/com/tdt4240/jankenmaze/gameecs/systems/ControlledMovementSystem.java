@@ -6,6 +6,8 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
+import com.tdt4240.jankenmaze.gameecs.components.Position;
+import com.tdt4240.jankenmaze.gameecs.components.Velocity;
 
 /**
  * Created by jonas on 07/03/2018.
@@ -24,20 +26,20 @@ import com.badlogic.ashley.utils.ImmutableArray;
 public class ControlledMovementSystem extends EntitySystem {
     private ImmutableArray<Entity> entities;
 
-    private ComponentMapper<com.tdt4240.jankenmaze.gameecs.components.PositionComponent> pm = ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.PositionComponent.class);
-    private ComponentMapper<com.tdt4240.jankenmaze.gameecs.components.VelocityComponent> vm = ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.VelocityComponent.class);
+    private ComponentMapper<Position> pm = ComponentMapper.getFor(Position.class);
+    private ComponentMapper<Velocity> vm = ComponentMapper.getFor(Velocity.class);
     public ControlledMovementSystem () {}
 
     public void addedToEngine(Engine engine){
-        entities = engine.getEntitiesFor(Family.all(com.tdt4240.jankenmaze.gameecs.components.PositionComponent.class, com.tdt4240.jankenmaze.gameecs.components.VelocityComponent.class).get());
+        entities = engine.getEntitiesFor(Family.all(Position.class, Velocity.class).get());
     }
 
     public void update(float dt){
         if(entities != null){
             for (int i = 0; i < entities.size(); i++){
                 Entity entity = entities.get(i);
-                com.tdt4240.jankenmaze.gameecs.components.PositionComponent pos = pm.get(entity);
-                com.tdt4240.jankenmaze.gameecs.components.VelocityComponent vel = vm.get(entity);
+                Position pos = pm.get(entity);
+                Velocity vel = vm.get(entity);
 
                 pos.x += vel.x * dt;
             }

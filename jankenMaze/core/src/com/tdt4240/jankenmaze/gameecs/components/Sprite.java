@@ -8,10 +8,10 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
  * Created by jonas on 07/03/2018.
  */
 
-public class SpriteComponent implements Component {
-    public Sprite sprite;
+public class Sprite implements Component {
+    public com.badlogic.gdx.graphics.g2d.Sprite sprite;
 
-    public SpriteComponent(Texture texture){
-        this.sprite = new Sprite(texture);
+    public Sprite(Texture texture){
+        this.sprite = new com.badlogic.gdx.graphics.g2d.Sprite(texture);
     }
 }
