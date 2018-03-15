@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.tdt4240.jankenmaze.gameecs.components.Position;
 import com.tdt4240.jankenmaze.gameecs.components.Renderable;
-import com.tdt4240.jankenmaze.gameecs.components.Sprite;
+import com.tdt4240.jankenmaze.gameecs.components.SpriteComponent;
 import com.tdt4240.jankenmaze.gameecs.components.Velocity;
 import com.tdt4240.jankenmaze.gameecs.systems.ControlledMovementSystem;
 
@@ -46,7 +46,7 @@ public class EntityManager {
         Entity testImageEntity = new Entity();
         testImageEntity.add(new Position(0,0))
                 .add(new Velocity(300,300))
-                .add(new Sprite((new Texture("badlogic.jpg"))))
+                .add(new SpriteComponent((new Texture("badlogic.jpg"))))
                 .add(new Renderable());
 
         engine.addEntity(testImageEntity);

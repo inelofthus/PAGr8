@@ -12,7 +12,7 @@ import com.tdt4240.jankenmaze.gameecs.components.PlayerInfo;
 import com.tdt4240.jankenmaze.gameecs.components.Spawnable;
 import com.tdt4240.jankenmaze.gameecs.components.LocalPlayer;
 import com.tdt4240.jankenmaze.gameecs.components.Renderable;
-import com.tdt4240.jankenmaze.gameecs.components.Sprite;
+import com.tdt4240.jankenmaze.gameecs.components.SpriteComponent;
 import com.tdt4240.jankenmaze.gameecs.components.Remote;
 
 /**
@@ -49,7 +49,7 @@ public class EntityFactory {
         player.add(new Spawnable());
         player.add(new LocalPlayer());
         player.add(new Renderable());
-        player.add(new Sprite(texture));
+        player.add(new SpriteComponent(texture));
         player.add(new Remote());
         return player;
     }
@@ -60,9 +60,10 @@ public class EntityFactory {
         powerUp.add(new BoundsBox(0,0,0,0)); //TODO: Gjør x og y identiske med Position.x og Position.y
         powerUp.add(new Spawnable());
         powerUp.add(new Renderable());
-        powerUp.add(new Sprite(texture));
+        powerUp.add(new SpriteComponent(texture));
         return powerUp;
     }
+
 
 
 }
