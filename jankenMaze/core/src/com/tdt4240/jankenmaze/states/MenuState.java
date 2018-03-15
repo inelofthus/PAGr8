@@ -39,7 +39,6 @@ public class MenuState extends State {
         if (mainMenuView.btn_createGame.isPressed()){
             //TODO: Push correct state
             //gsm.push(new com.tdt4240.jankenmaze.states.PlayState(batch));
-            gsm.playServices.signIn();
         }
         if (mainMenuView.btn_quickGame.isPressed()){
             //TODO: Push correct state
