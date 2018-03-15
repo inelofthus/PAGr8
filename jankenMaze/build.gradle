@@ -21,12 +21,18 @@ allprojects {
 
     version = '1.0'
     ext {
-        appName = "JankenLabyrinth"
+        appName = "JankenMaze"
         gdxVersion = '1.9.8'
         roboVMVersion = '2.3.1'
         box2DLightsVersion = '1.4'
         ashleyVersion = '1.7.0'
         aiVersion = '1.8.0'
+        gms_library_version = '10.2.1'
+        appcompat_library_version = '25.3.1'
+        support_library_version = '25.3.1'
+        build_tools_version = '27.0.3'
+        android_compile_version = 27
+        android_min_version = 14
     }
 
     repositories {

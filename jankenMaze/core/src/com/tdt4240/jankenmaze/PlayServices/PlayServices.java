@@ -5,4 +5,8 @@ package com.tdt4240.jankenmaze.PlayServices;
  */
 
 public interface PlayServices {
+    public void signIn();
+    public void signOut();
+    public boolean isSignedIn();
+
 }

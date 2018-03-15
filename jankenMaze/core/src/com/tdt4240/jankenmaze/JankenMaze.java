@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.tdt4240.jankenmaze.PlayServices.PlayServices;
 import com.tdt4240.jankenmaze.onlineservice.SocketConnection;
 import com.tdt4240.jankenmaze.states.GameStateManager;
 import com.tdt4240.jankenmaze.states.MenuState;
@@ -19,7 +20,13 @@ public class JankenMaze extends ApplicationAdapter {
 	EntityManager entityManager;
 	GameStateManager gsm;
 	SocketConnection socket = SocketConnection.getSocketConnection();
-	
+	PlayServices playServices;
+
+	public JankenMaze(PlayServices playServices) {
+		this.playServices = playServices;
+	}
+
+
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
@@ -28,6 +35,7 @@ public class JankenMaze extends ApplicationAdapter {
 		socket.configSocketEvents();
 
 		gsm = GameStateManager.getGsm();
+		gsm.setPlayServices(playServices);
 		gsm.push(new MenuState());
 	}
 
