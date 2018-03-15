@@ -14,6 +14,7 @@ import com.tdt4240.jankenmaze.gameecs.components.LocalPlayer;
 import com.tdt4240.jankenmaze.gameecs.components.Renderable;
 import com.tdt4240.jankenmaze.gameecs.components.SpriteComponent;
 import com.tdt4240.jankenmaze.gameecs.components.Remote;
+import com.tdt4240.jankenmaze.gameecs.components.Occupied;
 
 /**
  * Created by Oyvind Sabo on 14.03.2018.
@@ -66,12 +67,19 @@ public class EntityFactory {
 
     public Entity createWall(int xPosition, int yPosition, Texture texture) {
         Entity wall = new Entity();
-        wall.add(new Position(0,0)); //TODO: Consider if the startposition should be given by some function which finds an unoccupied spot instead of being taken as an input argument.
+        wall.add(new Position(0,0));
         wall.add(new BoundsBox(0,0,0,0)); //TODO: Gjør x og y identiske med Position.x og Position.y
         wall.add(new Spawnable());
         wall.add(new Renderable());
         wall.add(new SpriteComponent(texture));
         return wall;
+    }
+
+    public Entity createSpawnPosition(int xPosition, int yPosition, Texture texture) {
+        Entity spawnPosition = new Entity();
+        spawnPosition.add(new Position(0,0));
+        spawnPosition.add(new Occupied());
+        return spawnPosition;
     }
 
 }
