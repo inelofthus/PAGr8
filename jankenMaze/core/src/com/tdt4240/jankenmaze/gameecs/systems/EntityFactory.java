@@ -85,10 +85,18 @@ public class EntityFactory {
 
     public Entity createHUDItem(int xPosition, int yPosition, Texture texture, String itemType) {
         Entity HUDItem = new Entity();
-        Entity spawnPosition = new Entity();
+        HUDItem.add(new Position(xPosition, yPosition));
         HUDItem.add(new Renderable());
         HUDItem.add(new SpriteComponent(texture));
         HUDItem.add(new HUDItemInfo(itemType));
         return HUDItem;
+    }
+
+    public Entity createBackground(int xPosition, int yPosition, Texture texture) {
+        Entity background = new Entity();
+        background.add(new Position(xPosition, yPosition));
+        background.add(new Renderable());
+        background.add(new SpriteComponent(texture));
+        return background;
     }
 }
