@@ -11,7 +11,7 @@ import com.badlogic.ashley.utils.ImmutableArray;
 
 public class InputSystem extends EntitySystem{
     private ImmutableArray<Entity> entities;
-    private ComponentMapper<VelocityComponent> velocityComponents = ComponentMapper.getFor(VelocityComponent.class);
+    private ComponentMapper<Velocity> velocityComponents = ComponentMapper.getFor(Velocity.class);
 
     //Note: Min X and Y are 0
     private float maxX;
@@ -63,7 +63,7 @@ public class InputSystem extends EntitySystem{
 
 
         for(Entity e: entities){
-            VelocityComponent velocityComponent = velocityComponents.get(e);
+            Velocity velocityComponent = velocityComponents.get(e);
             velocityComponent.x = velX;
             velocityComponent.y = velY;
         }
