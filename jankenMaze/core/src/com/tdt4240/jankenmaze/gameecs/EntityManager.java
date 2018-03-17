@@ -3,20 +3,23 @@ package com.tdt4240.jankenmaze.gameecs;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.tdt4240.jankenmaze.gameecs.components.LocalPlayer;
 import com.tdt4240.jankenmaze.gameecs.components.PositionComponent;
 import com.tdt4240.jankenmaze.gameecs.components.RenderableComponent;
 import com.tdt4240.jankenmaze.gameecs.components.SpriteComponent;
 import com.tdt4240.jankenmaze.gameecs.components.VelocityComponent;
-import com.tdt4240.jankenmaze.gameecs.systems.ControlledMovementSystem;
+import com.tdt4240.jankenmaze.gameecs.systems.InputSystem;
+import com.tdt4240.jankenmaze.gameecs.systems.MovementSystem;
 
 /**
  * Created by jonas on 07/03/2018.
  * Implements the Entity Manager to use in gameplay.
  * Super-quick how-to-ECS:
  * 1: Have ONE Engine, preferably made in PlayState or something. Just one per ECS.
- * 2: Implement Systems (see Systems-package) and docstring in ControlledMovementSystem
+ * 2: Implement Systems (see Systems-package) and docstring in MovementSystem
  * -- Systems add logic to all entities with given components.
  * -- Systems MUST be added to engine (such that update() etc can be called by it
  * -- RenderSystem currently draws everything.
@@ -34,20 +37,25 @@ import com.tdt4240.jankenmaze.gameecs.systems.ControlledMovementSystem;
 public class EntityManager {
     private Engine engine;
     SpriteBatch batch;
+    OrthographicCamera cam;
+    InputSystem inputSystem;
 
     public EntityManager(Engine e, SpriteBatch sb){
         this.engine = e;
         this.batch = sb;
 
-        ControlledMovementSystem cms = new ControlledMovementSystem();
+        MovementSystem cms = new MovementSystem();
         engine.addSystem(cms);
         com.tdt4240.jankenmaze.gameecs.systems.RenderSystem rs = new com.tdt4240.jankenmaze.gameecs.systems.RenderSystem(batch);
         engine.addSystem(rs);
+        this.inputSystem = new InputSystem();
+        engine.addSystem(inputSystem);
         Entity testImageEntity = new Entity();
         testImageEntity.add(new PositionComponent(0,0))
                 .add(new VelocityComponent(300,300))
                 .add(new SpriteComponent((new Texture("badlogic.jpg"))))
-                .add(new RenderableComponent());
+                .add(new RenderableComponent())
+                .add(new LocalPlayer());
 
         engine.addEntity(testImageEntity);
     }

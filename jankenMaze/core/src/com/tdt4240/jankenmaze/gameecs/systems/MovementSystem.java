@@ -1,5 +1,6 @@
 package com.tdt4240.jankenmaze.gameecs.systems;
 
+import com.tdt4240.jankenmaze.gameecs.components.*;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
@@ -21,25 +22,26 @@ import com.badlogic.ashley.utils.ImmutableArray;
  * -- See line 30 and 42 for example.
  */
 
-public class ControlledMovementSystem extends EntitySystem {
+public class MovementSystem extends EntitySystem {
     private ImmutableArray<Entity> entities;
 
-    private ComponentMapper<com.tdt4240.jankenmaze.gameecs.components.PositionComponent> pm = ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.PositionComponent.class);
-    private ComponentMapper<com.tdt4240.jankenmaze.gameecs.components.VelocityComponent> vm = ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.VelocityComponent.class);
-    public ControlledMovementSystem () {}
+    private ComponentMapper<PositionComponent> pm = ComponentMapper.getFor(PositionComponent.class);
+    private ComponentMapper<VelocityComponent> vm = ComponentMapper.getFor(VelocityComponent.class);
+    public MovementSystem() {}
 
     public void addedToEngine(Engine engine){
-        entities = engine.getEntitiesFor(Family.all(com.tdt4240.jankenmaze.gameecs.components.PositionComponent.class, com.tdt4240.jankenmaze.gameecs.components.VelocityComponent.class).get());
+        entities = engine.getEntitiesFor(Family.all(PositionComponent.class, VelocityComponent.class).get());
     }
 
     public void update(float dt){
         if(entities != null){
             for (int i = 0; i < entities.size(); i++){
                 Entity entity = entities.get(i);
-                com.tdt4240.jankenmaze.gameecs.components.PositionComponent pos = pm.get(entity);
-                com.tdt4240.jankenmaze.gameecs.components.VelocityComponent vel = vm.get(entity);
+                PositionComponent pos = pm.get(entity);
+                VelocityComponent vel = vm.get(entity);
 
                 pos.x += vel.x * dt;
+                pos.y += vel.y * dt;
             }
         }
 
