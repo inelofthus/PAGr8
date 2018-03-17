@@ -7,10 +7,10 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.tdt4240.jankenmaze.gameecs.components.LocalPlayer;
-import com.tdt4240.jankenmaze.gameecs.components.PositionComponent;
-import com.tdt4240.jankenmaze.gameecs.components.RenderableComponent;
+import com.tdt4240.jankenmaze.gameecs.components.Position;
+import com.tdt4240.jankenmaze.gameecs.components.Renderable;
 import com.tdt4240.jankenmaze.gameecs.components.SpriteComponent;
-import com.tdt4240.jankenmaze.gameecs.components.VelocityComponent;
+import com.tdt4240.jankenmaze.gameecs.components.Velocity;
 import com.tdt4240.jankenmaze.gameecs.systems.InputSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.MovementSystem;
 
@@ -31,7 +31,7 @@ import com.tdt4240.jankenmaze.gameecs.systems.MovementSystem;
  *
  *    Note that entityManger.update() calls the engine.update().
  *
- * -- See also the PositionComponent on how-to-Component if you need to.
+ * -- See also the Position on how-to-Component if you need to.
  */
 
 public class EntityManager {
@@ -51,11 +51,11 @@ public class EntityManager {
         this.inputSystem = new InputSystem();
         engine.addSystem(inputSystem);
         Entity testImageEntity = new Entity();
-        testImageEntity.add(new PositionComponent(0,0))
-                .add(new VelocityComponent(300,300))
+        testImageEntity.add(new Position(0,0))
+                .add(new Velocity(300,300))
                 .add(new SpriteComponent((new Texture("badlogic.jpg"))))
-                .add(new RenderableComponent())
-                .add(new LocalPlayer());
+                .add(new LocalPlayer())
+                .add(new Renderable());
 
         engine.addEntity(testImageEntity);
     }
