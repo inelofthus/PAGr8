@@ -57,8 +57,8 @@ public class InputSystem extends EntitySystem{
             }
         }
         else{
-            velX = 0;
-            velY = 0;
+            //velX = 0;
+            //velY = 0;
         }
 
 

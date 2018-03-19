@@ -60,15 +60,14 @@ public class EntityManager {
 
         //TODO: Should entityfactory add entities directly?
         engine.addEntity(
-                entityFactory.createBackground(0, 0, new Texture("whiteBackground.png"))
-        );
-        engine.addEntity(
             entityFactory.createPlayer("rock", 0, 0, 3, new Texture("badlogic.jpg"))
         );
         engine.addEntity(
                 entityFactory.createHUDItem(0, 0, new Texture("button.png"), "playerHealth")
         );
-
+        engine.addEntity(
+                entityFactory.createWall(200, 200, new Texture("testWall.png")
+        ));
         /*
         Entity testImageEntity = new Entity();
         testImageEntity.add(new Position(0,0))
