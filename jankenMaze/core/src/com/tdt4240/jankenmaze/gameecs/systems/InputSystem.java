@@ -84,6 +84,5 @@ public class InputSystem extends EntitySystem{
 
 
         return (s>0 && t>0 && 1-s-t>0);
-
     }
 }
