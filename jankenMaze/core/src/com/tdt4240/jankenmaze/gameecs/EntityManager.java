@@ -13,6 +13,7 @@ import com.tdt4240.jankenmaze.gameecs.components.SpriteComponent;
 import com.tdt4240.jankenmaze.gameecs.components.Velocity;
 import com.tdt4240.jankenmaze.gameecs.systems.InputSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.MovementSystem;
+import com.tdt4240.jankenmaze.gameecs.systems.EntityFactory;
 
 /**
  * Created by jonas on 07/03/2018.
@@ -39,10 +40,12 @@ public class EntityManager {
     SpriteBatch batch;
     OrthographicCamera cam;
     InputSystem inputSystem;
+    public EntityFactory entityFactory;
 
     public EntityManager(Engine e, SpriteBatch sb){
         this.engine = e;
         this.batch = sb;
+        entityFactory = new EntityFactory(engine, batch);
 
         MovementSystem cms = new MovementSystem();
         engine.addSystem(cms);

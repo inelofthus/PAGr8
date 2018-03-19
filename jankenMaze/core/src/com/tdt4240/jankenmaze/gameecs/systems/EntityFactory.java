@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.tdt4240.jankenmaze.gameecs.EntityManager;
 import com.tdt4240.jankenmaze.gameecs.components.Position;
 import com.tdt4240.jankenmaze.gameecs.components.Velocity;
 import com.tdt4240.jankenmaze.gameecs.components.Health;
@@ -16,13 +17,14 @@ import com.tdt4240.jankenmaze.gameecs.components.SpriteComponent;
 import com.tdt4240.jankenmaze.gameecs.components.Remote;
 import com.tdt4240.jankenmaze.gameecs.components.Occupied;
 import com.tdt4240.jankenmaze.gameecs.components.HUDItemInfo;
+import com.tdt4240.jankenmaze.gameecs.components.PowerUpInfo;
 
 /**
  * Created by Oyvind Sabo on 14.03.2018.
  */
 
 public class EntityFactory {
-    private Engine engine;
+    Engine engine;
     SpriteBatch spriteBatch;
 
     public EntityFactory(Engine engine, SpriteBatch spriteBatch) {
@@ -56,13 +58,14 @@ public class EntityFactory {
         return player;
     }
 
-    public Entity createPowerUp(int xPosition, int yPosition, Texture texture) {
+    public Entity createPowerUp(int xPosition, int yPosition, Texture texture, String powerUpType, int duration) {
         Entity powerUp = new Entity();
         powerUp.add(new Position(0,0)); //TODO: Consider if the startposition should be given by some function which finds an unoccupied spot instead of being taken as an input argument.
         powerUp.add(new BoundsBox(0,0,0,0)); //TODO: Gjør x og y identiske med Position.x og Position.y
         powerUp.add(new Spawnable());
         powerUp.add(new Renderable());
         powerUp.add(new SpriteComponent(texture));
+        powerUp.add(new PowerUpInfo(powerUpType, duration));
         return powerUp;
     }
 

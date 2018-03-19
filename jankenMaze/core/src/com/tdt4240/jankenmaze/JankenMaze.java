@@ -9,6 +9,8 @@ import com.tdt4240.jankenmaze.onlineservice.SocketConnection;
 import com.tdt4240.jankenmaze.states.GameStateManager;
 import com.tdt4240.jankenmaze.states.MenuState;
 import com.tdt4240.jankenmaze.gameecs.EntityManager;
+import com.badlogic.ashley.core.Entity;
+import java.util.ArrayList;
 
 /*
 * Overall game-class, does very little on it's own.
@@ -16,9 +18,11 @@ import com.tdt4240.jankenmaze.gameecs.EntityManager;
 public class JankenMaze extends ApplicationAdapter {
 	SpriteBatch batch;
 	Texture img;
+	Texture powerUpTexture;
 	EntityManager entityManager;
 	GameStateManager gsm;
 	SocketConnection socket = SocketConnection.getSocketConnection();
+	ArrayList<Entity> powerUps = new ArrayList<Entity>();
 	
 	@Override
 	public void create () {
@@ -29,6 +33,7 @@ public class JankenMaze extends ApplicationAdapter {
 
 		gsm = GameStateManager.getGsm();
 		gsm.push(new MenuState());
+		powerUpTexture = (new Texture("powerUps.png"));
 	}
 
 	@Override
