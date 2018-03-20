@@ -40,3 +40,4 @@ public class RenderSystem extends EntitySystem {
         batch.end();
     }
 }
+

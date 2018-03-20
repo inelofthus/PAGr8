@@ -15,6 +15,7 @@ import com.tdt4240.jankenmaze.gameecs.systems.EntityFactory;
 import com.tdt4240.jankenmaze.gameecs.systems.HUDSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.InputSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.MovementSystem;
+import com.tdt4240.jankenmaze.gameecs.systems.EntityFactory;
 
 /**
  * Created by jonas on 07/03/2018.
@@ -41,13 +42,13 @@ public class EntityManager {
     private EntityFactory entityFactory; //TODO: Determine if this should belong to playstate or entitymanager
     SpriteBatch batch;
     OrthographicCamera cam;
-    private InputSystem inputSystem;
+    InputSystem inputSystem;
+    public EntityFactory entityFactory;
 
     public EntityManager(Engine e, SpriteBatch sb){
         this.engine = e;
         this.batch = sb;
-        this.entityFactory = new EntityFactory(engine, batch);
-
+        entityFactory = new EntityFactory(engine, batch);
 
         MovementSystem cms = new MovementSystem();
         engine.addSystem(cms);
