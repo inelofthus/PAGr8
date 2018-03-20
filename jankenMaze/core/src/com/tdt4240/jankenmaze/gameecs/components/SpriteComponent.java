@@ -14,4 +14,7 @@ public class SpriteComponent implements Component {
     public SpriteComponent(Texture texture){
         this.sprite = new com.badlogic.gdx.graphics.g2d.Sprite(texture);
     }
+    public SpriteComponent(Sprite sprite){
+        this.sprite = sprite;
+    }
 }

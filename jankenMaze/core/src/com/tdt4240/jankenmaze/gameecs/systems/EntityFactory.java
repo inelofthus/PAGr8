@@ -3,6 +3,7 @@ package com.tdt4240.jankenmaze.gameecs.systems;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.tdt4240.jankenmaze.gameecs.EntityManager;
 import com.tdt4240.jankenmaze.gameecs.components.Position;
@@ -71,11 +72,12 @@ public class EntityFactory {
 
     public Entity createWall(int xPosition, int yPosition, Texture texture) {
         Entity wall = new Entity();
-        wall.add(new Position(0,0));
-        wall.add(new BoundsBox(0,0,0,0)); //TODO: Gjør x og y identiske med Position.x og Position.y
+        Sprite wallSprite = new Sprite(texture);
+        wall.add(new Position(xPosition,yPosition));
+        wall.add(new BoundsBox(xPosition,yPosition,wallSprite.getWidth(),wallSprite.getHeight())); //TODO: Gjør x og y identiske med Position.x og Position.y
         wall.add(new Spawnable());
         wall.add(new Renderable());
-        wall.add(new SpriteComponent(texture));
+        wall.add(new SpriteComponent(wallSprite));
         return wall;
     }
 

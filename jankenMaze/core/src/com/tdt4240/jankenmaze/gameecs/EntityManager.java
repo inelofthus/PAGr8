@@ -11,6 +11,8 @@ import com.tdt4240.jankenmaze.gameecs.components.Position;
 import com.tdt4240.jankenmaze.gameecs.components.Renderable;
 import com.tdt4240.jankenmaze.gameecs.components.SpriteComponent;
 import com.tdt4240.jankenmaze.gameecs.components.Velocity;
+import com.tdt4240.jankenmaze.gameecs.systems.EntityFactory;
+import com.tdt4240.jankenmaze.gameecs.systems.HUDSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.InputSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.MovementSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.EntityFactory;
@@ -37,6 +39,7 @@ import com.tdt4240.jankenmaze.gameecs.systems.EntityFactory;
 
 public class EntityManager {
     private Engine engine;
+    private EntityFactory entityFactory; //TODO: Determine if this should belong to playstate or entitymanager
     SpriteBatch batch;
     OrthographicCamera cam;
     InputSystem inputSystem;
@@ -53,6 +56,20 @@ public class EntityManager {
         engine.addSystem(rs);
         this.inputSystem = new InputSystem();
         engine.addSystem(inputSystem);
+        HUDSystem hudSystem = new HUDSystem();
+        engine.addSystem(hudSystem);
+
+        //TODO: Should entityfactory add entities directly?
+        engine.addEntity(
+            entityFactory.createPlayer("rock", 0, 0, 3, new Texture("badlogic.jpg"))
+        );
+        engine.addEntity(
+                entityFactory.createHUDItem(0, 0, new Texture("button.png"), "playerHealth")
+        );
+        engine.addEntity(
+                entityFactory.createWall(800, 800, new Texture("testWall.png")
+        ));
+        /*
         Entity testImageEntity = new Entity();
         testImageEntity.add(new Position(0,0))
                 .add(new Velocity(300,300))
@@ -60,7 +77,7 @@ public class EntityManager {
                 .add(new LocalPlayer())
                 .add(new Renderable());
 
-        engine.addEntity(testImageEntity);
+        engine.addEntity(testImageEntity);*/
     }
 
     public void update(){
