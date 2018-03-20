@@ -39,7 +39,6 @@ import com.tdt4240.jankenmaze.gameecs.systems.EntityFactory;
 
 public class EntityManager {
     private Engine engine;
-    private EntityFactory entityFactory; //TODO: Determine if this should belong to playstate or entitymanager
     SpriteBatch batch;
     OrthographicCamera cam;
     InputSystem inputSystem;
