@@ -30,6 +30,7 @@ public class MovementSystem extends EntitySystem {
 
     private ComponentMapper<Position> pm = ComponentMapper.getFor(Position.class);
     private ComponentMapper<Velocity> vm = ComponentMapper.getFor(Velocity.class);
+    private ComponentMapper<BoundsBox> bb =ComponentMapper.getFor(BoundsBox.class);
     public MovementSystem () {}
 
     public void addedToEngine(Engine engine){
@@ -44,9 +45,12 @@ public class MovementSystem extends EntitySystem {
                 //TODO: Move boundingbox as well
                 Position pos = pm.get(entity);
                 Velocity vel = vm.get(entity);
-
+                BoundsBox bounds = bb.get(entity);
                 pos.x += vel.x * dt;
                 pos.y += vel.y * dt;
+                bounds.boundsBox.setX(pos.x);
+                bounds.boundsBox.setX(pos.y);
+                
             }
         }
 
