@@ -41,6 +41,7 @@ public class MovementSystem extends EntitySystem {
             for (int i = 0; i < entities.size(); i++){
                 Entity entity = entities.get(i);
 
+                //TODO: Move boundingbox as well
                 Position pos = pm.get(entity);
                 Velocity vel = vm.get(entity);
 
