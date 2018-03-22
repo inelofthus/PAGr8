@@ -14,6 +14,8 @@ public class InputSystem extends EntitySystem{
     private ComponentMapper<Velocity> velocityComponents = ComponentMapper.getFor(Velocity.class);
 
     //Note: Min X and Y are 0
+    float velX = 0;
+    float velY = 0;
     private float maxX;
     private float maxY;
     private float centerX;
@@ -34,32 +36,35 @@ public class InputSystem extends EntitySystem{
 
     public void update(float dt){
         //TODO: Fix hardcoded value
-        float velX = 250;
-        float velY = 250;
+
 
         float touchX = Gdx.input.getX();
         float touchY = Gdx.input.getY();
 
         if(Gdx.input.isTouched()){
+
             if(pointInTriangle(touchX, touchY, maxX, 0, centerX, centerY, 0, 0)){
+
                 velX = 0;
+                velY=250;
             }
             else if(pointInTriangle(touchX, touchY, maxX, maxY, centerX, centerY, maxX, 0)){
+
                 velY = 0;
+                velX=250;
             }
             else if(pointInTriangle(touchX, touchY, 0, maxY, centerX, centerY, maxX, maxY)){
-                velY = velY*-1;
+
+                velY = -250;
                 velX = 0;
             }
             else if(pointInTriangle(touchX, touchY, 0, 0, centerX, centerY, 0, maxY)){
-                velX = velX*-1;
+
+                velX = -250;
                 velY = 0;
             }
         }
-        else{
-            velX = 0;
-            velY = 0;
-        }
+
 
 
         for(Entity e: entities){
