@@ -75,16 +75,20 @@ public class CollisionSystem extends EntitySystem {
     //updates the system
     public void update(float dt){
         //checks it there is anything that can collide
+
         /**
          * This is unnecessarily time consuming as you will be ok with checking just 50% of the entities.
          * Or maybe not as it has to collide with powerUp && wall
          */
         if(walls!=null && players!=null){
                 //check if there is any collision
-            for(Entity player1 : players){
+            for(int i=0;i<players.size();i++){
                 //checks if player collide
-                for(Entity player2:players){
+                Entity player1 =players.get(i);
+                for(int k=0;k<players.size();k++){
                     //checks if looking at the same entity
+
+                    Entity player2=players.get(k);
                     if(!player1.equals(player2)){
                         //checks if player1 collides with player2
                         if(bb.get(player1).boundsBox.contains(bb.get(player2).boundsBox)){
@@ -101,15 +105,16 @@ public class CollisionSystem extends EntitySystem {
                     }
                 }
                 if(powerUps!=null){
-                    for(Entity powerUp:powerUps){
+                    for(int k=0;k<powerUps.size();k++){
+                        Entity powerUp=powerUps.get(k);
                         //checks if player1 collides with powerUp
                         if(bb.get(player1).boundsBox.contains(bb.get(powerUp).boundsBox)){
                             //call powerUp system
                         }
                     }
                 }
-                for(Entity wall:walls){
-                    Rectangle wallBox=bb.get(wall).boundsBox;
+                for(int k=0;k<walls.size();k++){
+                    Rectangle wallBox=bb.get(walls.get(k)).boundsBox;
                     if(bb.get(player1).boundsBox.contains(wallBox)){
                         //we want player to be outside wall
                         collisionWithWall(player1,wallBox);
