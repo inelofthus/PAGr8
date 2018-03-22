@@ -4,8 +4,11 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.signals.Signal;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.math.Rectangle;
+import com.tdt4240.jankenmaze.gameecs.events.EventQueue;
+import com.tdt4240.jankenmaze.gameecs.events.GameEvent;
 
 /**
  * Created by bartosz on 3/15/18.
@@ -36,6 +39,7 @@ public class CollisionSystem extends EntitySystem {
     private ImmutableArray<Entity> walls;
     private ComponentMapper<com.tdt4240.jankenmaze.gameecs.components.BoundsBox> bb= ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.BoundsBox.class);
     private ComponentMapper<com.tdt4240.jankenmaze.gameecs.components.PlayerInfo> pi = ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.PlayerInfo.class);
+
     public CollisionSystem(){}
 
 
