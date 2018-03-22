@@ -1,5 +1,6 @@
 package com.tdt4240.jankenmaze.gameecs.systems;
 
+import com.badlogic.ashley.signals.Signal;
 import com.badlogic.gdx.Gdx;
 import com.tdt4240.jankenmaze.gameecs.components.*;
 import com.badlogic.ashley.core.ComponentMapper;
@@ -8,6 +9,8 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
+import com.tdt4240.jankenmaze.gameecs.events.EventQueue;
+import com.tdt4240.jankenmaze.gameecs.events.GameEvent;
 
 public class InputSystem extends EntitySystem{
     private ImmutableArray<Entity> entities;
@@ -19,13 +22,14 @@ public class InputSystem extends EntitySystem{
     private float centerX;
     private float centerY;
 
-    public InputSystem(){
+    public InputSystem(Signal<GameEvent> gameEventSignal){
         this.maxX = Gdx.graphics.getWidth();
         this.maxY = Gdx.graphics.getHeight();
         this.centerX = Gdx.graphics.getWidth() /2;
         this.centerY = Gdx.graphics.getHeight() /2;
 
         System.out.print("InputSystem created");
+
     }
 
     public void addedToEngine(Engine engine){
