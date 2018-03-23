@@ -11,11 +11,13 @@ import com.badlogic.ashley.utils.ImmutableArray;
 
 public class InputSystem extends EntitySystem{
     private ImmutableArray<Entity> entities;
+    private Entity player;
     private ComponentMapper<Velocity> velocityComponents = ComponentMapper.getFor(Velocity.class);
 
     //Note: Min X and Y are 0
     float velX = 0;
     float velY = 0;
+    float vel=250;
     private float maxX;
     private float maxY;
     private float centerX;
@@ -41,36 +43,37 @@ public class InputSystem extends EntitySystem{
         float touchX = Gdx.input.getX();
         float touchY = Gdx.input.getY();
 
-        if(Gdx.input.isTouched()){
+        if(Gdx.input.isTouched()) {
 
-            if(pointInTriangle(touchX, touchY, maxX, 0, centerX, centerY, 0, 0)){
+            if (pointInTriangle(touchX, touchY, maxX, 0, centerX, centerY, 0, 0)) {
+                System.out.println("a");
 
                 velX = 0;
-                velY=250;
-            }
-            else if(pointInTriangle(touchX, touchY, maxX, maxY, centerX, centerY, maxX, 0)){
-
+                velY = vel;
+            } else if (pointInTriangle(touchX, touchY, maxX, maxY, centerX, centerY, maxX, 0)) {
+                System.out.println("b");
                 velY = 0;
-                velX=250;
-            }
-            else if(pointInTriangle(touchX, touchY, 0, maxY, centerX, centerY, maxX, maxY)){
-
-                velY = -250;
+                velX = vel;
+            } else if (pointInTriangle(touchX, touchY, 0, maxY, centerX, centerY, maxX, maxY)) {
+                System.out.println("c");
+                velY = -vel;
                 velX = 0;
-            }
-            else if(pointInTriangle(touchX, touchY, 0, 0, centerX, centerY, 0, maxY)){
-
-                velX = -250;
+            } else if (pointInTriangle(touchX, touchY, 0, 0, centerX, centerY, 0, maxY)) {
+                System.out.println("d");
+                velX = -vel;
                 velY = 0;
             }
-        }
 
 
+            for (Entity e : entities) {
+                Velocity velocityComponent = velocityComponents.get(e);
+                velocityComponent.x = velX;
+                velocityComponent.y = velY;
 
-        for(Entity e: entities){
-            Velocity velocityComponent = velocityComponents.get(e);
-            velocityComponent.x = velX;
-            velocityComponent.y = velY;
+                System.out.println(velocityComponent.y);
+
+            }
+
         }
     }
 

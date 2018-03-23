@@ -56,16 +56,20 @@ public class CollisionSystem extends EntitySystem {
         if (vc.x!=0){
             if(vc.x>0){
                 // gets the difference between the position of wal and position of player and moves player outside the wall.
-                pc.x=pc.x+(wall.getX()-pc.x)-bb.get(player).boundsBox.getWidth();
+                pc.x=pc.x+(wall.getX()-pc.x)-bb.get(player).boundsBox.getWidth()-0;
+                vc.x=0;
             }else{
-                pc.x=pc.x+(wall.getX()-pc.x)+wall.getWidth();
+                pc.x=pc.x+(wall.getX()-pc.x)+wall.getWidth()+0;
+                vc.x=0;
 
             }
-        }else{
+        }else {
             if(vc.y>0){
-                pc.y=pc.y+(wall.getX()-pc.y)-bb.get(player).boundsBox.getHeight();
+                pc.y=pc.y+(wall.getX()-pc.y)-bb.get(player).boundsBox.getHeight()-0;
+                vc.y=0;
             }else{
-                pc.y=pc.y+(wall.getX()-pc.y)+wall.getHeight();
+                pc.y=pc.y+(wall.getX()-pc.y)+wall.getHeight()+0;
+                vc.y=0;
             }
 
         }
@@ -114,8 +118,18 @@ public class CollisionSystem extends EntitySystem {
                     }
                 }
                 for(int k=0;k<walls.size();k++){
+
                     Rectangle wallBox=bb.get(walls.get(k)).boundsBox;
-                    if(bb.get(player1).boundsBox.contains(wallBox)){
+                    /*System.out.println(bb.get(player1).boundsBox.x);
+                    System.out.println(bb.get(player1).boundsBox.y);
+                    System.out.println(bb.get(player1).boundsBox.width);
+                    System.out.println(bb.get(player1).boundsBox.height);
+                   /* System.out.println("W: "+wallBox.x);
+                    System.out.println("W: "+wallBox.y);
+                    System.out.println("W: "+wallBox.width);
+                    System.out.println("W: "+wallBox.height);*/
+                    if(bb.get(player1).boundsBox.overlaps(wallBox)){
+                        //System.out.println("boo");
                         //we want player to be outside wall
                         collisionWithWall(player1,wallBox);
                     }
