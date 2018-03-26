@@ -29,7 +29,7 @@ public class InputSystem extends EntitySystem{
         this.centerX = Gdx.graphics.getWidth() /2;
         this.centerY = Gdx.graphics.getHeight() /2;
 
-        System.out.print("InputSystem created");
+        //System.out.print("InputSystem created");
     }
 
     public void addedToEngine(Engine engine){
@@ -46,20 +46,19 @@ public class InputSystem extends EntitySystem{
         if(Gdx.input.isTouched()) {
 
             if (pointInTriangle(touchX, touchY, maxX, 0, centerX, centerY, 0, 0)) {
-                System.out.println("a");
-
+                //player moves up
                 velX = 0;
                 velY = vel;
             } else if (pointInTriangle(touchX, touchY, maxX, maxY, centerX, centerY, maxX, 0)) {
-                System.out.println("b");
+                //player moves right
                 velY = 0;
                 velX = vel;
             } else if (pointInTriangle(touchX, touchY, 0, maxY, centerX, centerY, maxX, maxY)) {
-                System.out.println("c");
+            //player moves down
                 velY = -vel;
                 velX = 0;
             } else if (pointInTriangle(touchX, touchY, 0, 0, centerX, centerY, 0, maxY)) {
-                System.out.println("d");
+                //player moves to the left
                 velX = -vel;
                 velY = 0;
             }
