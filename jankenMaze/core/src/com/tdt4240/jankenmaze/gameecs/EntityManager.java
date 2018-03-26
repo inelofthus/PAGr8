@@ -39,13 +39,12 @@ import com.tdt4240.jankenmaze.gameecs.systems.EntityFactory;
 
 public class EntityManager {
     private Engine engine;
-    private EntityFactory entityFactory; //TODO: Determine if this should belong to playstate or entitymanager
     SpriteBatch batch;
     OrthographicCamera cam;
     InputSystem inputSystem;
     public EntityFactory entityFactory;
 
-    public EntityManager(Engine e, SpriteBatch sb){
+    public EntityManager(Engine e, SpriteBatch sb) {
         this.engine = e;
         this.batch = sb;
         entityFactory = new EntityFactory(engine, batch);
@@ -59,16 +58,25 @@ public class EntityManager {
         HUDSystem hudSystem = new HUDSystem();
         engine.addSystem(hudSystem);
 
-        //TODO: Should entityfactory add entities directly?
-        engine.addEntity(
-            entityFactory.createPlayer("rock", 0, 0, 3, new Texture("badlogic.jpg"))
-        );
-        engine.addEntity(
-                entityFactory.createHUDItem(0, 0, new Texture("button.png"), "playerHealth")
-        );
-        engine.addEntity(
-                entityFactory.createWall(800, 800, new Texture("testWall.png")
-        ));
+        //TODO: Should entityfactory add entities directly?)
+        engine.addEntity(entityFactory.createHUDItem(0, 0, new Texture("button.png"), "playerHealth"));
+    }
+
+
+
+        //engine.addEntity(
+        //        entityFactory.createWall(800, 800, new Texture("testWall.png"))
+        //);
+
+    public void createMap(int[][] binaryMap, Texture texture) {
+        for (int i = 0; i < binaryMap.length; i++) { //Iterates over rows
+            for (int j = 0; j < binaryMap[i].length; j++) { //Iterates over columns
+                if (binaryMap[i][j] == 1) {
+                    engine.addEntity(entityFactory.createWall(i * 32, j * 32, new Texture("greyWall.png"))); //200 here represents the width of a block
+                }
+            }
+        }
+    }
         /*
         Entity testImageEntity = new Entity();
         testImageEntity.add(new Position(0,0))
@@ -78,7 +86,6 @@ public class EntityManager {
                 .add(new Renderable());
 
         engine.addEntity(testImageEntity);*/
-    }
 
     public void update(){
         engine.update(Gdx.graphics.getDeltaTime());

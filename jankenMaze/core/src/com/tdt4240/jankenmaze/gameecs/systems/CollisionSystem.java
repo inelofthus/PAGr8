@@ -55,7 +55,7 @@ public class CollisionSystem extends EntitySystem {
         com.tdt4240.jankenmaze.gameecs.components.Position pc = ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.Position.class).get(player);
         if (vc.x!=0){
             if(vc.x>0){
-                // gets the difference between the position of wal and position of player and moves player outside the wall.
+                // gets the difference between the position of wall and position of player and moves player outside the wall.
                 pc.x=pc.x+(wall.getX()-pc.x)-bb.get(player).boundsBox.getWidth();
             }else{
                 pc.x=pc.x+(wall.getX()-pc.x)+wall.getWidth();
