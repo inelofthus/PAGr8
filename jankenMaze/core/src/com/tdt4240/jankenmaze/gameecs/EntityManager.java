@@ -2,6 +2,7 @@ package com.tdt4240.jankenmaze.gameecs;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.signals.Signal;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -11,11 +12,14 @@ import com.tdt4240.jankenmaze.gameecs.components.Position;
 import com.tdt4240.jankenmaze.gameecs.components.Renderable;
 import com.tdt4240.jankenmaze.gameecs.components.SpriteComponent;
 import com.tdt4240.jankenmaze.gameecs.components.Velocity;
+import com.tdt4240.jankenmaze.gameecs.events.GameEvent;
 import com.tdt4240.jankenmaze.gameecs.systems.EntityFactory;
 import com.tdt4240.jankenmaze.gameecs.systems.HUDSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.InputSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.MovementSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.EntityFactory;
+import com.tdt4240.jankenmaze.gameecs.systems.ReceiveSignalSystemExample;
+import com.tdt4240.jankenmaze.gameecs.systems.SendSignalSystemExample;
 
 /**
  * Created by jonas on 07/03/2018.
@@ -43,21 +47,24 @@ public class EntityManager {
     OrthographicCamera cam;
     InputSystem inputSystem;
     public EntityFactory entityFactory;
+    private Signal<GameEvent> gameEventSignal;
 
     public EntityManager(Engine e, SpriteBatch sb) {
         this.engine = e;
         this.batch = sb;
         entityFactory = new EntityFactory(engine, batch);
+        gameEventSignal = new Signal<GameEvent>();
 
-        MovementSystem cms = new MovementSystem();
+        MovementSystem cms = new MovementSystem(gameEventSignal);
         engine.addSystem(cms);
         com.tdt4240.jankenmaze.gameecs.systems.RenderSystem rs = new com.tdt4240.jankenmaze.gameecs.systems.RenderSystem(batch);
         engine.addSystem(rs);
-        this.inputSystem = new InputSystem();
+        this.inputSystem = new InputSystem(gameEventSignal);
         engine.addSystem(inputSystem);
         HUDSystem hudSystem = new HUDSystem();
         engine.addSystem(hudSystem);
 
+<<<<<<< HEAD
         //TODO: Should entityfactory add entities directly?)
         engine.addEntity(entityFactory.createHUDItem(0, 0, new Texture("button.png"), "playerHealth"));
     }
@@ -77,6 +84,23 @@ public class EntityManager {
             }
         }
     }
+=======
+        SendSignalSystemExample sendEx = new SendSignalSystemExample(gameEventSignal);
+        engine.addSystem(sendEx);
+        ReceiveSignalSystemExample recEx = new ReceiveSignalSystemExample(gameEventSignal);
+        engine.addSystem(recEx);
+
+        //TODO: Should entityfactory add entities directly?
+        engine.addEntity(
+            entityFactory.createPlayer("rock", 0, 0, 3, new Texture("badlogic.jpg"))
+        );
+        engine.addEntity(
+                entityFactory.createHUDItem(0, 0, new Texture("button.png"), "playerHealth")
+        );
+        engine.addEntity(
+                entityFactory.createWall(800, 800, new Texture("testWall.png")
+        ));
+>>>>>>> b794e9c6249ca1b0471529b5d4f06ef539ff0d0f
         /*
         Entity testImageEntity = new Entity();
         testImageEntity.add(new Position(0,0))
