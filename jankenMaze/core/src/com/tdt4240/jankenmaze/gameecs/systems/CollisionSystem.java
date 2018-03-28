@@ -57,19 +57,27 @@ public class CollisionSystem extends EntitySystem {
     public void collisionWithWall(Entity player, Rectangle wall){
         com.tdt4240.jankenmaze.gameecs.components.Velocity vc = ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.Velocity.class).get(player);
         com.tdt4240.jankenmaze.gameecs.components.Position pc = ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.Position.class).get(player);
+        //checks if player is moving horizontally
         if (vc.x!=0){
             if(vc.x>0){
                 // gets the difference between the position of wal and position of player and moves player outside the wall.
-                pc.x=pc.x+(wall.getX()-pc.x)-bb.get(player).boundsBox.getWidth();
+                pc.x=pc.x+(wall.getX()-pc.x)-bb.get(player).boundsBox.getWidth()-0;
+                vc.x=0;
             }else{
-                pc.x=pc.x+(wall.getX()-pc.x)+wall.getWidth();
+                // gets the difference between the position of wal and position of player and moves player outside the wall.
+                pc.x=pc.x+(wall.getX()-pc.x)+wall.getWidth()+0;
+                vc.x=0;
 
             }
-        }else{
+        }else {
             if(vc.y>0){
-                pc.y=pc.y+(wall.getX()-pc.y)-bb.get(player).boundsBox.getHeight();
+                // gets the difference between the position of wal and position of player and moves player outside the wall.
+                pc.y=pc.y+(wall.getX()-pc.y)-bb.get(player).boundsBox.getHeight()-0;
+                vc.y=0;
             }else{
-                pc.y=pc.y+(wall.getX()-pc.y)+wall.getHeight();
+                // gets the difference between the position of wal and position of player and moves player outside the wall.
+                pc.y=pc.y+(wall.getX()-pc.y)+wall.getHeight()+0;
+                vc.y=0;
             }
 
         }
@@ -79,16 +87,20 @@ public class CollisionSystem extends EntitySystem {
     //updates the system
     public void update(float dt){
         //checks it there is anything that can collide
+
         /**
          * This is unnecessarily time consuming as you will be ok with checking just 50% of the entities.
          * Or maybe not as it has to collide with powerUp && wall
          */
         if(walls!=null && players!=null){
                 //check if there is any collision
-            for(Entity player1 : players){
+            for(int i=0;i<players.size();i++){
                 //checks if player collide
-                for(Entity player2:players){
+                Entity player1 =players.get(i);
+                for(int k=0;k<players.size();k++){
                     //checks if looking at the same entity
+
+                    Entity player2=players.get(k);
                     if(!player1.equals(player2)){
                         //checks if player1 collides with player2
                         if(bb.get(player1).boundsBox.contains(bb.get(player2).boundsBox)){
@@ -105,16 +117,20 @@ public class CollisionSystem extends EntitySystem {
                     }
                 }
                 if(powerUps!=null){
-                    for(Entity powerUp:powerUps){
+                    for(int k=0;k<powerUps.size();k++){
+                        Entity powerUp=powerUps.get(k);
                         //checks if player1 collides with powerUp
                         if(bb.get(player1).boundsBox.contains(bb.get(powerUp).boundsBox)){
                             //call powerUp system
                         }
                     }
                 }
-                for(Entity wall:walls){
-                    Rectangle wallBox=bb.get(wall).boundsBox;
-                    if(bb.get(player1).boundsBox.contains(wallBox)){
+                for(int k=0;k<walls.size();k++){
+
+                    Rectangle wallBox=bb.get(walls.get(k)).boundsBox;
+
+                    if(bb.get(player1).boundsBox.overlaps(wallBox)){
+
                         //we want player to be outside wall
                         collisionWithWall(player1,wallBox);
                     }

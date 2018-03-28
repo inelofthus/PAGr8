@@ -56,11 +56,14 @@ public class MovementSystem extends EntitySystem {
                 Position pos = pm.get(entity);
                 Velocity vel = vm.get(entity);
                 BoundsBox bounds = bb.get(entity);
+               /* System.out.println("posX: "+pos.x);
+                System.out.println("posy: "+pos.y);*/
+                /*System.out.println("velX: "+vel.x);
+                System.out.println("velY: "+vel.y);*/
                 pos.x += vel.x * dt;
                 pos.y += vel.y * dt;
                 bounds.boundsBox.setX(pos.x);
-                bounds.boundsBox.setX(pos.y);
-
+                bounds.boundsBox.setY(pos.y);
             }
         }
 

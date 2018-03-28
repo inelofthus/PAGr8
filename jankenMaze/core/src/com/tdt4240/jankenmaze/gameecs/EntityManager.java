@@ -12,6 +12,7 @@ import com.tdt4240.jankenmaze.gameecs.components.Position;
 import com.tdt4240.jankenmaze.gameecs.components.Renderable;
 import com.tdt4240.jankenmaze.gameecs.components.SpriteComponent;
 import com.tdt4240.jankenmaze.gameecs.components.Velocity;
+import com.tdt4240.jankenmaze.gameecs.systems.CollisionSystem;
 import com.tdt4240.jankenmaze.gameecs.events.GameEvent;
 import com.tdt4240.jankenmaze.gameecs.systems.EntityFactory;
 import com.tdt4240.jankenmaze.gameecs.systems.HUDSystem;
@@ -63,6 +64,8 @@ public class EntityManager {
         engine.addSystem(inputSystem);
         HUDSystem hudSystem = new HUDSystem();
         engine.addSystem(hudSystem);
+        CollisionSystem cs = new CollisionSystem();
+        engine.addSystem(cs);
 
         SendSignalSystemExample sendEx = new SendSignalSystemExample(gameEventSignal);
         engine.addSystem(sendEx);
@@ -77,7 +80,7 @@ public class EntityManager {
                 entityFactory.createHUDItem(0, 0, new Texture("button.png"), "playerHealth")
         );
         engine.addEntity(
-                entityFactory.createWall(800, 800, new Texture("testWall.png")
+                entityFactory.createWall(200, 200, new Texture("testWall.png")
         ));
         /*
         Entity testImageEntity = new Entity();
