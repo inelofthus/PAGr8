@@ -63,8 +63,22 @@ public class EntityManager {
         engine.addSystem(inputSystem);
         HUDSystem hudSystem = new HUDSystem();
         engine.addSystem(hudSystem);
+        SendSignalSystemExample sendEx = new SendSignalSystemExample(gameEventSignal);
+        engine.addSystem(sendEx);
+        ReceiveSignalSystemExample recEx = new ReceiveSignalSystemExample(gameEventSignal);
+        engine.addSystem(recEx);
 
-<<<<<<< HEAD
+        //TODO: Should entityfactory add entities directly?
+        engine.addEntity(
+                entityFactory.createPlayer("rock", 0, 0, 3, new Texture("badlogic.jpg"))
+        );
+        engine.addEntity(
+                entityFactory.createHUDItem(0, 0, new Texture("button.png"), "playerHealth")
+        );
+        engine.addEntity(
+                entityFactory.createWall(800, 800, new Texture("testWall.png")
+                ));
+
         //TODO: Should entityfactory add entities directly?)
         engine.addEntity(entityFactory.createHUDItem(0, 0, new Texture("button.png"), "playerHealth"));
     }
@@ -84,23 +98,7 @@ public class EntityManager {
             }
         }
     }
-=======
-        SendSignalSystemExample sendEx = new SendSignalSystemExample(gameEventSignal);
-        engine.addSystem(sendEx);
-        ReceiveSignalSystemExample recEx = new ReceiveSignalSystemExample(gameEventSignal);
-        engine.addSystem(recEx);
-
-        //TODO: Should entityfactory add entities directly?
-        engine.addEntity(
-            entityFactory.createPlayer("rock", 0, 0, 3, new Texture("badlogic.jpg"))
-        );
-        engine.addEntity(
-                entityFactory.createHUDItem(0, 0, new Texture("button.png"), "playerHealth")
-        );
-        engine.addEntity(
-                entityFactory.createWall(800, 800, new Texture("testWall.png")
-        ));
->>>>>>> b794e9c6249ca1b0471529b5d4f06ef539ff0d0f
+//>>>>>>> b794e9c6249ca1b0471529b5d4f06ef539ff0d0f
         /*
         Entity testImageEntity = new Entity();
         testImageEntity.add(new Position(0,0))
