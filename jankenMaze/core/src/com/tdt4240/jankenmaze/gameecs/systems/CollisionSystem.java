@@ -50,34 +50,37 @@ public class CollisionSystem extends EntitySystem {
         //get all players in GameState
         players = engine.getEntitiesFor(Family.all(com.tdt4240.jankenmaze.gameecs.components.PlayerInfo.class).get());
         //get all walls
-        walls=engine.getEntitiesFor(Family.all(com.tdt4240.jankenmaze.gameecs.components.BoundsBox.class).exclude(com.tdt4240.jankenmaze.gameecs.components.PlayerInfo.class, com.tdt4240.jankenmaze.gameecs.components.PowerUpInfo.class).get());
+        walls = engine.getEntitiesFor(Family.all(com.tdt4240.jankenmaze.gameecs.components.BoundsBox.class).exclude(com.tdt4240.jankenmaze.gameecs.components.PlayerInfo.class, com.tdt4240.jankenmaze.gameecs.components.PowerUpInfo.class).get());
 
     }
+
     //call PowerUpSystem on powerups.
     public void collisionWithWall(Entity player, Rectangle wall){
-        com.tdt4240.jankenmaze.gameecs.components.Velocity vc = ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.Velocity.class).get(player);
-        com.tdt4240.jankenmaze.gameecs.components.Position pc = ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.Position.class).get(player);
+        com.tdt4240.jankenmaze.gameecs.components.Velocity playerVelocity
+                = ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.Velocity.class).get(player);
+        com.tdt4240.jankenmaze.gameecs.components.Position playerPosition
+                = ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.Position.class).get(player);
         //checks if player is moving horizontally
-        if (vc.x!=0){
-            if(vc.x>0){
+        if (playerVelocity.x != 0){
+            if(playerVelocity.x > 0){
                 // gets the difference between the position of wal and position of player and moves player outside the wall.
-                pc.x=pc.x+(wall.getX()-pc.x)-bb.get(player).boundsBox.getWidth()-0;
-                vc.x=0;
+                playerPosition.x = playerPosition.x + (wall.getX() - playerPosition.x) - bb.get(player).boundsBox.getWidth();
+                playerVelocity.x = 0;
             }else{
                 // gets the difference between the position of wal and position of player and moves player outside the wall.
-                pc.x=pc.x+(wall.getX()-pc.x)+wall.getWidth()+0;
-                vc.x=0;
+                playerPosition.x = playerPosition.x +(wall.getX() - playerPosition.x) + wall.getWidth();
+                playerVelocity.x = 0;
 
             }
         }else {
-            if(vc.y>0){
+            if(playerVelocity.y > 0){
                 // gets the difference between the position of wal and position of player and moves player outside the wall.
-                pc.y=pc.y+(wall.getX()-pc.y)-bb.get(player).boundsBox.getHeight()-0;
-                vc.y=0;
+                playerPosition.y = playerPosition.y + (wall.getX()- playerPosition.y) - bb.get(player).boundsBox.getHeight();
+                playerVelocity.y = 0;
             }else{
                 // gets the difference between the position of wal and position of player and moves player outside the wall.
-                pc.y=pc.y+(wall.getX()-pc.y)+wall.getHeight()+0;
-                vc.y=0;
+                playerPosition.y = playerPosition.y + (wall.getX() - playerPosition.y) + wall.getHeight();
+                playerVelocity.y = 0;
             }
 
         }
@@ -92,15 +95,14 @@ public class CollisionSystem extends EntitySystem {
          * This is unnecessarily time consuming as you will be ok with checking just 50% of the entities.
          * Or maybe not as it has to collide with powerUp && wall
          */
-        if(walls!=null && players!=null){
+        if (walls != null && players != null){
                 //check if there is any collision
-            for(int i=0;i<players.size();i++){
+            for (int i=0; i < players.size(); i++){
                 //checks if player collide
-                Entity player1 =players.get(i);
-                for(int k=0;k<players.size();k++){
+                Entity player1 = players.get(i);
+                for (int k=0; k < players.size(); k++){
                     //checks if looking at the same entity
-
-                    Entity player2=players.get(k);
+                    Entity player2 = players.get(k);
                     if(!player1.equals(player2)){
                         //checks if player1 collides with player2
                         if(bb.get(player1).boundsBox.contains(bb.get(player2).boundsBox)){
@@ -116,18 +118,18 @@ public class CollisionSystem extends EntitySystem {
                         }
                     }
                 }
-                if(powerUps!=null){
-                    for(int k=0;k<powerUps.size();k++){
-                        Entity powerUp=powerUps.get(k);
+                if (powerUps != null){
+                    for (int k=0; k < powerUps.size(); k++){
+                        Entity powerUp = powerUps.get(k);
                         //checks if player1 collides with powerUp
                         if(bb.get(player1).boundsBox.contains(bb.get(powerUp).boundsBox)){
                             //call powerUp system
                         }
                     }
                 }
-                for(int k=0;k<walls.size();k++){
+                for(int k=0; k < walls.size(); k++){
 
-                    Rectangle wallBox=bb.get(walls.get(k)).boundsBox;
+                    Rectangle wallBox = bb.get(walls.get(k)).boundsBox;
 
                     if(bb.get(player1).boundsBox.overlaps(wallBox)){
 

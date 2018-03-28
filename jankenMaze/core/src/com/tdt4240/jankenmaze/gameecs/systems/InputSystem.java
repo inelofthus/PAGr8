@@ -20,7 +20,7 @@ public class InputSystem extends EntitySystem{
     //Note: Min X and Y are 0
     float velX = 0;
     float velY = 0;
-    float vel=250;
+    float vel = 250;
     private float maxX;
     private float maxY;
     private float centerX;
@@ -71,8 +71,6 @@ public class InputSystem extends EntitySystem{
                 Velocity velocityComponent = velocityComponents.get(e);
                 velocityComponent.x = velX;
                 velocityComponent.y = velY;
-
-                System.out.println(velocityComponent.y);
 
             }
 

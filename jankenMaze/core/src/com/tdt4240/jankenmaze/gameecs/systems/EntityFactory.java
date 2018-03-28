@@ -40,9 +40,8 @@ public class EntityFactory {
         player.add(new Position(0,0)); //TODO: Consider whether the startposition should be given by some function which finds an unoccupied spot or just be taken as an input to the factory.
         player.add(new Velocity(0,0));
         player.add(new BoundsBox(0,0,playerSprite.getWidth(),playerSprite.getHeight())); //TODO: Gjør x og y identiske med Position.x og Position.y
-        String[] typeList = {"Rock", "Paper", "Scissors"};
-        String target;
-        String targetBy;
+
+        //TODO: Should we use a hashmap to generate player info?
         if (type.equals("Rock")) {
             player.add(new PlayerInfo("Scissors", "Paper", "Rock"));
         }
