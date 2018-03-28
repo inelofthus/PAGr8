@@ -1,5 +1,6 @@
 package com.tdt4240.jankenmaze.gameecs.systems;
 
+import com.badlogic.ashley.signals.Signal;
 import com.tdt4240.jankenmaze.gameecs.components.*;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Engine;
@@ -9,6 +10,8 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.tdt4240.jankenmaze.gameecs.components.Position;
 import com.tdt4240.jankenmaze.gameecs.components.Velocity;
+import com.tdt4240.jankenmaze.gameecs.events.EventQueue;
+import com.tdt4240.jankenmaze.gameecs.events.GameEvent;
 
 /**
  * Created by jonas on 07/03/2018.
@@ -31,7 +34,14 @@ public class MovementSystem extends EntitySystem {
     private ComponentMapper<Position> pm = ComponentMapper.getFor(Position.class);
     private ComponentMapper<Velocity> vm = ComponentMapper.getFor(Velocity.class);
     private ComponentMapper<BoundsBox> bb =ComponentMapper.getFor(BoundsBox.class);
-    public MovementSystem () {}
+
+    private Signal<GameEvent> gameEventSignal;
+    private EventQueue eventQueue;
+
+    public MovementSystem (Signal<GameEvent> gameEventSignal){
+        this.gameEventSignal = gameEventSignal;
+        eventQueue = new EventQueue();
+        gameEventSignal.add(eventQueue);}
 
     public void addedToEngine(Engine engine){
         entities = engine.getEntitiesFor(Family.all(Position.class, Velocity.class).get());
@@ -54,7 +64,6 @@ public class MovementSystem extends EntitySystem {
                 pos.y += vel.y * dt;
                 bounds.boundsBox.setX(pos.x);
                 bounds.boundsBox.setY(pos.y);
-                
             }
         }
 
