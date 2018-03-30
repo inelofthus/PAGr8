@@ -72,16 +72,16 @@ public class EntityManager {
         ReceiveSignalSystemExample recEx = new ReceiveSignalSystemExample(gameEventSignal);
         engine.addSystem(recEx);
 
-        //TODO: Should entityfactory add entities directly?
+        //TODO: Should entityfactory add entities directly? It's currently done in playstate
         engine.addEntity(
-                entityFactory.createPlayer("rock", 0, 0, 3, new Texture("singleRock.png"))
+                entityFactory.createPlayer("rock", 64, 64, 3, new Texture("singleRock.png"))
         );
         engine.addEntity(
-                entityFactory.createHUDItem(0, 0, new Texture("button.png"), "playerHealth")
+                entityFactory.createHUDItem(100, 100, new Texture("button.png"), "playerHealth")
         );
-        engine.addEntity(
-                entityFactory.createWall(200, 200, new Texture("testWall.png")
-                ));
+        //engine.addEntity(
+        //        entityFactory.createWall(200, 200, new Texture("testWall.png")
+        //        ));
 
         /*
         Entity testImageEntity = new Entity();
@@ -109,9 +109,7 @@ public class EntityManager {
     }
 
     public void createMap(int[][] binaryMap, Texture texture) {
-        System.out.println("binaryMap.length = " + binaryMap.length);
         for (int i = 0; i < binaryMap.length; i++) { //Iterates over rows
-            System.out.println("binaryMap[" + i + "].length = " + binaryMap[i].length);
             for (int j = 0; j < binaryMap[i].length; j++) { //Iterates over columns
                 if (binaryMap[i][j] == 1) {
                     engine.addEntity(entityFactory.createWall(i * 32, j * 32, texture)); //200 here represents the width of a block

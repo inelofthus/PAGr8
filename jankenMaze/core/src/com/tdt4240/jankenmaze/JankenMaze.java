@@ -36,7 +36,6 @@ public class JankenMaze extends ApplicationAdapter {
 		gsm.push(new MenuState());
 		powerUpTexture = (new Texture("powerUps.png"));
 		//Creates wall entities from binaryMap
-		//entityManager.createMap(binaryMap, new Texture("greyWall.png"));
 	}
 
 	@Override
