@@ -12,6 +12,7 @@ import com.tdt4240.jankenmaze.gameecs.components.Position;
 import com.tdt4240.jankenmaze.gameecs.components.Renderable;
 import com.tdt4240.jankenmaze.gameecs.components.SpriteComponent;
 import com.tdt4240.jankenmaze.gameecs.components.Velocity;
+import com.tdt4240.jankenmaze.gameecs.systems.CollisionSystem;
 import com.tdt4240.jankenmaze.gameecs.events.GameEvent;
 import com.tdt4240.jankenmaze.gameecs.systems.EntityFactory;
 import com.tdt4240.jankenmaze.gameecs.systems.HUDSystem;
@@ -49,7 +50,7 @@ public class EntityManager {
     public EntityFactory entityFactory;
     private Signal<GameEvent> gameEventSignal;
 
-    public EntityManager(Engine e, SpriteBatch sb) {
+    public EntityManager(Engine e, SpriteBatch sb){
         this.engine = e;
         this.batch = sb;
         entityFactory = new EntityFactory(engine, batch);
@@ -63,6 +64,9 @@ public class EntityManager {
         engine.addSystem(inputSystem);
         HUDSystem hudSystem = new HUDSystem();
         engine.addSystem(hudSystem);
+        CollisionSystem cs = new CollisionSystem();
+        engine.addSystem(cs);
+
         SendSignalSystemExample sendEx = new SendSignalSystemExample(gameEventSignal);
         engine.addSystem(sendEx);
         ReceiveSignalSystemExample recEx = new ReceiveSignalSystemExample(gameEventSignal);
@@ -70,35 +74,15 @@ public class EntityManager {
 
         //TODO: Should entityfactory add entities directly?
         engine.addEntity(
-                entityFactory.createPlayer("rock", 0, 0, 3, new Texture("badlogic.jpg"))
+                entityFactory.createPlayer("rock", 0, 0, 3, new Texture("singleRock.png"))
         );
         engine.addEntity(
                 entityFactory.createHUDItem(0, 0, new Texture("button.png"), "playerHealth")
         );
         engine.addEntity(
-                entityFactory.createWall(800, 800, new Texture("testWall.png")
+                entityFactory.createWall(200, 200, new Texture("testWall.png")
                 ));
 
-        //TODO: Should entityfactory add entities directly?)
-        engine.addEntity(entityFactory.createHUDItem(0, 0, new Texture("button.png"), "playerHealth"));
-    }
-
-
-
-        //engine.addEntity(
-        //        entityFactory.createWall(800, 800, new Texture("testWall.png"))
-        //);
-
-    public void createMap(int[][] binaryMap, Texture texture) {
-        for (int i = 0; i < binaryMap.length; i++) { //Iterates over rows
-            for (int j = 0; j < binaryMap[i].length; j++) { //Iterates over columns
-                if (binaryMap[i][j] == 1) {
-                    engine.addEntity(entityFactory.createWall(i * 32, j * 32, new Texture("greyWall.png"))); //200 here represents the width of a block
-                }
-            }
-        }
-    }
-//>>>>>>> b794e9c6249ca1b0471529b5d4f06ef539ff0d0f
         /*
         Entity testImageEntity = new Entity();
         testImageEntity.add(new Position(0,0))
@@ -106,8 +90,8 @@ public class EntityManager {
                 .add(new SpriteComponent((new Texture("badlogic.jpg"))))
                 .add(new LocalPlayer())
                 .add(new Renderable());
-
         engine.addEntity(testImageEntity);*/
+    }
 
     public void update(){
         engine.update(Gdx.graphics.getDeltaTime());
@@ -122,5 +106,17 @@ public class EntityManager {
 
     public boolean hasNoSpriteBatch(){
         return (this.batch == null);
+    }
+
+    public void createMap(int[][] binaryMap, Texture texture) {
+        System.out.println("binaryMap.length = " + binaryMap.length);
+        for (int i = 0; i < binaryMap.length; i++) { //Iterates over rows
+            System.out.println("binaryMap[" + i + "].length = " + binaryMap[i].length);
+            for (int j = 0; j < binaryMap[i].length; j++) { //Iterates over columns
+                if (binaryMap[i][j] == 1) {
+                    engine.addEntity(entityFactory.createWall(i * 32, j * 32, texture)); //200 here represents the width of a block
+                }
+            }
+        }
     }
 }

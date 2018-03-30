@@ -51,16 +51,13 @@ public class MovementSystem extends EntitySystem {
         if(entities != null){
             for (int i = 0; i < entities.size(); i++){
                 Entity entity = entities.get(i);
-
-                //TODO: Move boundingbox as well
                 Position pos = pm.get(entity);
                 Velocity vel = vm.get(entity);
                 BoundsBox bounds = bb.get(entity);
                 pos.x += vel.x * dt;
                 pos.y += vel.y * dt;
                 bounds.boundsBox.setX(pos.x);
-                bounds.boundsBox.setX(pos.y);
-
+                bounds.boundsBox.setY(pos.y);
             }
         }
 

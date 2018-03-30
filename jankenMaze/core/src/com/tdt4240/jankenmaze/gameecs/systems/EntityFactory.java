@@ -35,13 +35,13 @@ public class EntityFactory {
 
     public Entity createPlayer(String type, int xPosition, int yPosition, int health, Texture texture) {
         Entity player = new Entity();
+        Sprite playerSprite=new Sprite(texture);
         player.add(new Health(health));
         player.add(new Position(0,0)); //TODO: Consider whether the startposition should be given by some function which finds an unoccupied spot or just be taken as an input to the factory.
         player.add(new Velocity(0,0));
-        player.add(new BoundsBox(0,0,0,0)); //TODO: Gjør x og y identiske med Position.x og Position.y
-        String[] typeList = {"Rock", "Paper", "Scissors"};
-        String target;
-        String targetBy;
+        player.add(new BoundsBox(0,0,playerSprite.getWidth(),playerSprite.getHeight())); //TODO: Gjør x og y identiske med Position.x og Position.y
+
+        //TODO: Should we use a hashmap to generate player info?
         if (type.equals("Rock")) {
             player.add(new PlayerInfo("Scissors", "Paper", "Rock"));
         }
@@ -54,7 +54,7 @@ public class EntityFactory {
         player.add(new Spawnable());
         player.add(new LocalPlayer());
         player.add(new Renderable());
-        player.add(new SpriteComponent(texture));
+        player.add(new SpriteComponent(playerSprite));
         player.add(new Remote());
         return player;
     }
@@ -75,6 +75,7 @@ public class EntityFactory {
         Sprite wallSprite = new Sprite(texture);
         wall.add(new Position(xPosition,yPosition));
         wall.add(new BoundsBox(xPosition,yPosition,wallSprite.getWidth(),wallSprite.getHeight())); //TODO: Gjør x og y identiske med Position.x og Position.y
+
         wall.add(new Spawnable());
         wall.add(new Renderable());
         wall.add(new SpriteComponent(wallSprite));

@@ -26,7 +26,7 @@ public class SendSignalSystemExample extends EntitySystem{
     }
 
     public void update(float dt){
-        gameEventSignal.dispatch(GameEvent.WALL_COLLISION);
+        //gameEventSignal.dispatch(GameEvent.WALL_COLLISION);
     }
 }
 

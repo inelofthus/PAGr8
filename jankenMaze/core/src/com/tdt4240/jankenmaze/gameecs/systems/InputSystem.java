@@ -14,9 +14,13 @@ import com.tdt4240.jankenmaze.gameecs.events.GameEvent;
 
 public class InputSystem extends EntitySystem{
     private ImmutableArray<Entity> entities;
+    private Entity player;
     private ComponentMapper<Velocity> velocityComponents = ComponentMapper.getFor(Velocity.class);
 
     //Note: Min X and Y are 0
+    float velX = 0;
+    float velY = 0;
+    float vel = 250;
     private float maxX;
     private float maxY;
     private float centerX;
@@ -28,8 +32,7 @@ public class InputSystem extends EntitySystem{
         this.centerX = Gdx.graphics.getWidth() /2;
         this.centerY = Gdx.graphics.getHeight() /2;
 
-        System.out.print("InputSystem created");
-
+        //System.out.print("InputSystem created");
     }
 
     public void addedToEngine(Engine engine){
@@ -38,38 +41,39 @@ public class InputSystem extends EntitySystem{
 
     public void update(float dt){
         //TODO: Fix hardcoded value
-        float velX = 250;
-        float velY = 250;
+
 
         float touchX = Gdx.input.getX();
         float touchY = Gdx.input.getY();
 
-        if(Gdx.input.isTouched()){
-            if(pointInTriangle(touchX, touchY, maxX, 0, centerX, centerY, 0, 0)){
+        if(Gdx.input.isTouched()) {
+
+            if (pointInTriangle(touchX, touchY, maxX, 0, centerX, centerY, 0, 0)) {
+                //player moves up
                 velX = 0;
-            }
-            else if(pointInTriangle(touchX, touchY, maxX, maxY, centerX, centerY, maxX, 0)){
+                velY = vel;
+            } else if (pointInTriangle(touchX, touchY, maxX, maxY, centerX, centerY, maxX, 0)) {
+                //player moves right
+                velY = 0;
+                velX = vel;
+            } else if (pointInTriangle(touchX, touchY, 0, maxY, centerX, centerY, maxX, maxY)) {
+            //player moves down
+                velY = -vel;
+                velX = 0;
+            } else if (pointInTriangle(touchX, touchY, 0, 0, centerX, centerY, 0, maxY)) {
+                //player moves to the left
+                velX = -vel;
                 velY = 0;
             }
-            else if(pointInTriangle(touchX, touchY, 0, maxY, centerX, centerY, maxX, maxY)){
-                velY = velY*-1;
-                velX = 0;
-            }
-            else if(pointInTriangle(touchX, touchY, 0, 0, centerX, centerY, 0, maxY)){
-                velX = velX*-1;
-                velY = 0;
-            }
-        }
-        else{
-            velX = 0;
-            velY = 0;
-        }
 
 
-        for(Entity e: entities){
-            Velocity velocityComponent = velocityComponents.get(e);
-            velocityComponent.x = velX;
-            velocityComponent.y = velY;
+            for (Entity e : entities) {
+                Velocity velocityComponent = velocityComponents.get(e);
+                velocityComponent.x = velX;
+                velocityComponent.y = velY;
+
+            }
+
         }
     }
 
