@@ -10,11 +10,11 @@ import com.badlogic.ashley.core.Component;
  * 3: Just store data (as implied by #2), and make a simple constructor.
  */
 
-public class PositionComponent implements Component {
+public class Position implements Component {
     public float x;
     public float y;
 
-    public PositionComponent(float inX, float inY){
+    public Position(float inX, float inY){
         this.x = inX;
         this.y = inY;
     }
