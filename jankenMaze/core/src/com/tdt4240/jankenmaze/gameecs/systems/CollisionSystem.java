@@ -75,16 +75,15 @@ public class CollisionSystem extends EntitySystem {
         }else {
             if(playerVelocity.y > 0){
                 // gets the difference between the position of wal and position of player and moves player outside the wall.
-                playerPosition.y = playerPosition.y + (wall.getX()- playerPosition.y) - bb.get(player).boundsBox.getHeight();
+                playerPosition.y = playerPosition.y + (wall.getY()- playerPosition.y) - bb.get(player).boundsBox.getHeight();
                 playerVelocity.y = 0;
             }else{
                 // gets the difference between the position of wal and position of player and moves player outside the wall.
-                playerPosition.y = playerPosition.y + (wall.getX() - playerPosition.y) + wall.getHeight();
+                playerPosition.y = playerPosition.y + (wall.getY() - playerPosition.y) + wall.getHeight();
                 playerVelocity.y = 0;
             }
 
         }
-
     }
 
     //updates the system
