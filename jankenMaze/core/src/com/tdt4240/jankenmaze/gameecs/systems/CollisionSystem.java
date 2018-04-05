@@ -103,13 +103,16 @@ public class CollisionSystem extends EntitySystem {
                     //checks if looking at the same entity
                     Entity player2 = players.get(k);
                     if(!player1.equals(player2)){
+
                         //checks if player1 collides with player2
                         if(bb.get(player1).boundsBox.contains(bb.get(player2).boundsBox)){
                             if(pi.get(player1).target.equals(pi.get(player2).type)){
+                                System.out.println("player 1 eats player 2");
                                 //player1 kills player2
                                 //call healthsystem with some argument
                                 //  decreaseHealth(player2,1);
                             }else if(pi.get(player2).target.equals(pi.get(player1).type)){
+                                System.out.println("player 1 eats player 2");
                                 //player2 kills player1
                                 //call healthsystem with some argument
                                 // decreaseHealth(player1,1);

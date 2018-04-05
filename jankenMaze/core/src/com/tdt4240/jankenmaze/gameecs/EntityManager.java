@@ -74,11 +74,14 @@ public class EntityManager {
 
         //TODO: Should entityfactory add entities directly? It's currently done in playstate
         engine.addEntity(
-                entityFactory.createPlayer("rock", 64, 64, 3, new Texture("singleRock.png"))
+                entityFactory.createLocalPlayer("Rock", 64, 64, 3, new Texture("singleRock.png"))
         );
         engine.addEntity(
-                entityFactory.createHUDItem(100, 100, new Texture("button.png"), "playerHealth")
+                entityFactory.createPlayer("Paper", 120, 64, 3, new Texture("badlogic.jpg"))
         );
+    /*    engine.addEntity(
+                entityFactory.createHUDItem(100, 100, new Texture("button.png"), "playerHealth")
+        );*/
         //engine.addEntity(
         //        entityFactory.createWall(200, 200, new Texture("testWall.png")
         //        ));
