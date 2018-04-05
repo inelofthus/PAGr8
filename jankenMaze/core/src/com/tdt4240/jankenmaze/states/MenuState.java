@@ -24,6 +24,7 @@ public class MenuState extends State {
         mainMenuView.btn_joinGame.addListener(listenerBtn_joinGame);
 
         listenerBtn_quickGame = new ClickListener();
+        mainMenuView.btn_quickGame.setText("Invite");
         mainMenuView.btn_quickGame.addListener(listenerBtn_quickGame);
 
 
@@ -40,7 +41,9 @@ public class MenuState extends State {
             //TODO: Push correct state
             //gsm.push(new com.tdt4240.jankenmaze.states.PlayState(batch));
         }
+        //INVITE
         if (mainMenuView.btn_quickGame.isPressed()){
+            gsm.playServices.startSelectOpponents(false);
             //TODO: Push correct state
             //gsm.push(new com.tdt4240.jankenmaze.states.PlayState(batch));
         }

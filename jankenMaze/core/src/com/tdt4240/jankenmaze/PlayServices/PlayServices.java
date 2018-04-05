@@ -8,5 +8,6 @@ public interface PlayServices {
     public void signIn();
     public void signOut();
     public boolean isSignedIn();
+    void startSelectOpponents(boolean autoMatch);
 
 }
