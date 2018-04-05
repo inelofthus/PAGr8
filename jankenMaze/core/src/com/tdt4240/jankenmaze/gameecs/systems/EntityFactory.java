@@ -40,7 +40,7 @@ public class EntityFactory {
         player.add(new Health(health));
         player.add(new Position(xPosition,yPosition)); //TODO: Consider whether the startposition should be given by some function which finds an unoccupied spot or just be taken as an input to the factory.
         player.add(new Velocity(0,0));
-        player.add(new BoundsBox(32,32,playerSprite.getWidth(),playerSprite.getHeight())); //TODO: Gjør x og y identiske med Position.x og Position.y
+        player.add(new BoundsBox(xPosition,yPosition,playerSprite.getWidth(),playerSprite.getHeight())); //TODO: Gjør x og y identiske med Position.x og Position.y
 
         //TODO: Should we use a hashmap to generate player info?
         if (type.equals("Rock")) {
@@ -68,7 +68,7 @@ public class EntityFactory {
         player.add(new Health(health));
         player.add(new Position(xPosition,yPosition)); //TODO: Consider whether the startposition should be given by some function which finds an unoccupied spot or just be taken as an input to the factory.
         player.add(new Velocity(0,0));
-        player.add(new BoundsBox(32,32,playerSprite.getWidth(),playerSprite.getHeight())); //TODO: Gjør x og y identiske med Position.x og Position.y
+        player.add(new BoundsBox(xPosition,yPosition,playerSprite.getWidth(),playerSprite.getHeight())); //TODO: Gjør x og y identiske med Position.x og Position.y
 
         //TODO: Should we use a hashmap to generate player info?
         if (type.equals("Rock")) {
