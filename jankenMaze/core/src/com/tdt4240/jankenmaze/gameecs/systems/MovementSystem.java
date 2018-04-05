@@ -62,16 +62,9 @@ public class MovementSystem extends EntitySystem {
                 Velocity velocity = velocityMapper.get(entity);
                 BoundsBox bounds = boundsBoxMapper.get(entity);
                 if (entity == localPlayers.get(0)) {
-                    System.out.println("Before checking whether future velocity will be needed");
-                    System.out.println("futureVelocityX = " + velocity.futureX);
-                    System.out.println("futureVelocityY = " + velocity.futureY);
-                    System.out.println("currentVelocityX = " + velocity.currentX);
-                    System.out.println("currentVelocityY = " + velocity.currentY);
-                    System.out.println("if(velocity.futureX != 0 || velocity.futureY != 0) ");
                     if(velocity.futureX != 0 || velocity.futureY != 0) {
                         bounds.boundsBox.setX(position.x+velocity.futureX*dt);
                         bounds.boundsBox.setY(position.y+velocity.futureY*dt);
-                        System.out.println("Updated Position to test position from future velocity"); //DEBUGGING
                         boolean collision = false;
                         for(int k=0; k < walls.size(); k++) {
                             Rectangle wallBox = bb.get(walls.get(k)).boundsBox;
@@ -81,20 +74,14 @@ public class MovementSystem extends EntitySystem {
                             }
                         }
                         if(collision){
-                                System.out.println("Position from future velocity caused a collision, so position was not updated"); //DEBUGGING
                                 bounds.boundsBox.setX(position.x += velocity.currentX * dt);
                                 bounds.boundsBox.setY(position.y += velocity.currentY * dt);
                         }
                         else {
-                            System.out.println("The position from future velocity worked well, so current velocity has inherited the values from future velocity.");
                             velocity.currentX = velocity.futureX;
                             velocity.currentY = velocity.futureY;
                             velocity.futureY = 0;
                             velocity.futureX = 0;
-                            System.out.println("futureVelocityX = " + velocity.futureX);
-                            System.out.println("futureVelocityY = " + velocity.futureY);
-                            System.out.println("currentVelocityX = " + velocity.currentX);
-                            System.out.println("currentVelocityY = " + velocity.currentY);
                         }
                     }
                     else {
