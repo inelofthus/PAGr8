@@ -34,21 +34,33 @@ import com.tdt4240.jankenmaze.gameecs.events.GameEvent;
 public class CollisionSystem extends EntitySystem {
     //not sure it an immutable array is 100% suited for the purpose of this system.
     //TODO check it in later stage of developement.
+    private Signal<GameEvent> playerCollisionSignal;
+    private EventQueue eventQueue;
     private ImmutableArray<Entity> powerUps;
     private ImmutableArray<Entity> players;
+    private ImmutableArray<Entity> localPlayer;
     private ImmutableArray<Entity> walls;
     private ComponentMapper<com.tdt4240.jankenmaze.gameecs.components.BoundsBox> bb= ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.BoundsBox.class);
     private ComponentMapper<com.tdt4240.jankenmaze.gameecs.components.PlayerInfo> pi = ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.PlayerInfo.class);
 
-    public CollisionSystem(){}
+    public CollisionSystem(Signal<GameEvent> playerCollisionSignal){
+        this.playerCollisionSignal = playerCollisionSignal;
+
+        eventQueue = new EventQueue();
+        playerCollisionSignal.add(eventQueue);
+    }
 
 
     //gets all the entities with given component(s).
     public void addedToEngine(Engine engine){
         //get all entities with PowerUpInfo
         powerUps = engine.getEntitiesFor(Family.all(com.tdt4240.jankenmaze.gameecs.components.PowerUpInfo.class).get());
-        //get all players in GameState
-        players = engine.getEntitiesFor(Family.all(com.tdt4240.jankenmaze.gameecs.components.PlayerInfo.class).get());
+        //get remote players in GameState
+        players = engine.getEntitiesFor(Family.all(com.tdt4240.jankenmaze.gameecs.components.Remote.class).get());
+        //get localPLayer
+        localPlayer = engine.getEntitiesFor(Family.all(com.tdt4240.jankenmaze.gameecs.components.LocalPlayer.class).get());
+
+
         //get all walls
         walls = engine.getEntitiesFor(Family.all(com.tdt4240.jankenmaze.gameecs.components.BoundsBox.class).exclude(com.tdt4240.jankenmaze.gameecs.components.PlayerInfo.class, com.tdt4240.jankenmaze.gameecs.components.PowerUpInfo.class).get());
 
@@ -94,32 +106,27 @@ public class CollisionSystem extends EntitySystem {
          * This is unnecessarily time consuming as you will be ok with checking just 50% of the entities.
          * Or maybe not as it has to collide with powerUp && wall
          */
-        if (walls != null && players != null){
+        if (walls != null && players != null && localPlayer!=null){
             //check if there is any collision
-            for (int i=0; i < players.size(); i++){
+            for (int i=0; i < localPlayer.size(); i++){
                 //checks if player collide
-                Entity player1 = players.get(i);
+                Entity player1 = localPlayer.get(i);
                 for (int k=0; k < players.size(); k++){
                     //checks if looking at the same entity
                     Entity player2 = players.get(k);
-                    if(!player1.equals(player2)){
+                    //if(!player1.equals(player2)){
 
                         //checks if player1 collides with player2
                         if(bb.get(player1).boundsBox.contains(bb.get(player2).boundsBox)){
-                            if(pi.get(player1).target.equals(pi.get(player2).type)){
-                                System.out.println("player 1 eats player 2");
-                                //player1 kills player2
-                                //call healthsystem with some argument
-                                //  decreaseHealth(player2,1);
-                            }else if(pi.get(player2).target.equals(pi.get(player1).type)){
-                                System.out.println("player 1 eats player 2");
+                             if(pi.get(player2).target.equals(pi.get(player1).type)){
                                 //player2 kills player1
                                 //call healthsystem with some argument
                                 // decreaseHealth(player1,1);
+                                 playerCollisionSignal.dispatch(GameEvent.PLAYER_COLLISION);
                             }
                         }
                     }
-                }
+
                 if (powerUps != null){
                     for (int k=0; k < powerUps.size(); k++){
                         Entity powerUp = powerUps.get(k);

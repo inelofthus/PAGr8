@@ -49,12 +49,14 @@ public class EntityManager {
     InputSystem inputSystem;
     public EntityFactory entityFactory;
     private Signal<GameEvent> gameEventSignal;
+    private Signal<GameEvent> playerCollisionSignal;
 
     public EntityManager(Engine e, SpriteBatch sb){
         this.engine = e;
         this.batch = sb;
         entityFactory = new EntityFactory(engine, batch);
         gameEventSignal = new Signal<GameEvent>();
+        playerCollisionSignal = new Signal<GameEvent>();
 
         MovementSystem cms = new MovementSystem(gameEventSignal);
         engine.addSystem(cms);
@@ -64,7 +66,7 @@ public class EntityManager {
         engine.addSystem(inputSystem);
         HUDSystem hudSystem = new HUDSystem();
         engine.addSystem(hudSystem);
-        CollisionSystem cs = new CollisionSystem();
+        CollisionSystem cs = new CollisionSystem(playerCollisionSignal);
         engine.addSystem(cs);
 
         SendSignalSystemExample sendEx = new SendSignalSystemExample(gameEventSignal);
