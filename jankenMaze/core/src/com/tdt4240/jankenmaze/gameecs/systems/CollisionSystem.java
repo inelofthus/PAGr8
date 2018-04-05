@@ -61,26 +61,26 @@ public class CollisionSystem extends EntitySystem {
         com.tdt4240.jankenmaze.gameecs.components.Position playerPosition
                 = ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.Position.class).get(player);
         //checks if player is moving horizontally
-        if (playerVelocity.x != 0){
-            if(playerVelocity.x > 0){
+        if (playerVelocity.currentX != 0){
+            if(playerVelocity.currentX > 0){
                 // gets the difference between the position of wal and position of player and moves player outside the wall.
                 playerPosition.x = playerPosition.x + (wall.getX() - playerPosition.x) - bb.get(player).boundsBox.getWidth();
-                playerVelocity.x = 0;
+                playerVelocity.currentX = 0;
             }else{
                 // gets the difference between the position of wal and position of player and moves player outside the wall.
                 playerPosition.x = playerPosition.x +(wall.getX() - playerPosition.x) + wall.getWidth();
-                playerVelocity.x = 0;
+                playerVelocity.currentX = 0;
 
             }
         }else {
-            if(playerVelocity.y > 0){
+            if(playerVelocity.currentY > 0){
                 // gets the difference between the position of wal and position of player and moves player outside the wall.
                 playerPosition.y = playerPosition.y + (wall.getY() - playerPosition.y) - bb.get(player).boundsBox.getHeight();
-                playerVelocity.y = 0;
-            }else if (playerVelocity.y < 0){
+                playerVelocity.currentY = 0;
+            }else if (playerVelocity.currentY < 0){
                 // gets the difference between the position of wal and position of player and moves player outside the wall.
                 playerPosition.y = playerPosition.y + (wall.getY() - playerPosition.y) + wall.getHeight();
-                playerVelocity.y = 0;
+                playerVelocity.currentY = 0;
             }
 
         }
@@ -127,7 +127,6 @@ public class CollisionSystem extends EntitySystem {
                     }
                 }
                 for(int k=0; k < walls.size(); k++){
-
                     Rectangle wallBox = bb.get(walls.get(k)).boundsBox;
 
                     if(bb.get(player1).boundsBox.overlaps(wallBox)){
@@ -137,8 +136,6 @@ public class CollisionSystem extends EntitySystem {
                     }
                 }
             }
-
-
         }
     }
 }
