@@ -118,9 +118,6 @@ public class CollisionSystem extends EntitySystem {
                     if(bb.get(player1).boundsBox.overlaps(bb.get(player2).boundsBox)){
 
                         if(pi.get(player2).target.equals(pi.get(player1).type)){
-                                //player2 kills player1
-                                //call healthsystem with some argument
-                                // decreaseHealth(player1,1);
                             playerCollisionSignal.dispatch(GameEvent.PLAYER_COLLISION);
                         }
                     }
