@@ -94,14 +94,13 @@ public class EntityManager {
         float[] spawnPosition = randomSpawnPosition();
         engine.addEntity(
 
-                entityFactory.createLocalPlayer("Rock", 64, 64, 3, new Texture("singleRock.png"))
+                entityFactory.createLocalPlayer("Rock", 64, 64, 3, new Texture("singleRock.png")));
 
-            entityFactory.createPlayer(type, spawnPosition[0], spawnPosition[1], 3, texture)
-        );
+            //entityFactory.createPlayer(type, spawnPosition[0], spawnPosition[1], 3, texture)
+                engine.addEntity(
+                        entityFactory.createPlayer("Paper", 120, 64, 3, new Texture("badlogic.jpg")));
     }
-   engine.addEntity(
-                entityFactory.createPlayer("Paper", 120, 64, 3, new Texture("badlogic.jpg"))
-        );
+
 
     public void createHUDItem() {
        
@@ -112,7 +111,7 @@ public class EntityManager {
         //        entityFactory.createWall(200, 200, new Texture("testWall.png")
         //        ));
 
-        );
+
     }
 
     public float[] randomSpawnPosition() {
