@@ -19,6 +19,7 @@ import com.tdt4240.jankenmaze.gameecs.systems.CollisionSystem;
 import com.tdt4240.jankenmaze.gameecs.events.GameEvent;
 import com.tdt4240.jankenmaze.gameecs.systems.EntityFactory;
 import com.tdt4240.jankenmaze.gameecs.systems.HUDSystem;
+import com.tdt4240.jankenmaze.gameecs.systems.HealthSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.InputSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.MovementSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.EntityFactory;
@@ -54,14 +55,19 @@ public class EntityManager {
     InputSystem inputSystem;
     public EntityFactory entityFactory;
     private Signal<GameEvent> gameEventSignal;
+
+    private Signal<GameEvent> playerCollisionSignal;
+
     private ArrayList<float[]> spawnPositions = new ArrayList<float[]>();
     Random rand = new Random();
+
 
     public EntityManager(Engine e, SpriteBatch sb) {
         this.engine = e;
         this.batch = sb;
         entityFactory = new EntityFactory(engine, batch);
         gameEventSignal = new Signal<GameEvent>();
+        playerCollisionSignal = new Signal<GameEvent>();
 
         MovementSystem cms = new MovementSystem(gameEventSignal);
         engine.addSystem(cms);
@@ -71,8 +77,12 @@ public class EntityManager {
         engine.addSystem(inputSystem);
         HUDSystem hudSystem = new HUDSystem();
         engine.addSystem(hudSystem);
-        CollisionSystem cs = new CollisionSystem();
+        CollisionSystem cs = new CollisionSystem(playerCollisionSignal);
         engine.addSystem(cs);
+
+        HealthSystem hs=new HealthSystem(playerCollisionSignal);
+        engine.addSystem(hs);
+
         SendSignalSystemExample sendEx = new SendSignalSystemExample(gameEventSignal);
         engine.addSystem(sendEx);
         ReceiveSignalSystemExample recEx = new ReceiveSignalSystemExample(gameEventSignal);
@@ -83,13 +93,25 @@ public class EntityManager {
     public void createPlayer(String type, Texture texture) {
         float[] spawnPosition = randomSpawnPosition();
         engine.addEntity(
+
+                entityFactory.createLocalPlayer("Rock", 64, 64, 3, new Texture("singleRock.png"))
+
             entityFactory.createPlayer(type, spawnPosition[0], spawnPosition[1], 3, texture)
         );
     }
+   engine.addEntity(
+                entityFactory.createPlayer("Paper", 120, 64, 3, new Texture("badlogic.jpg"))
+        );
 
     public void createHUDItem() {
-        engine.addEntity(
-                entityFactory.createHUDItem(1000, 1000, new Texture("button.png"), "playerHealth")
+       
+    /*    engine.addEntity(
+                entityFactory.createHUDItem(100, 100, new Texture("button.png"), "playerHealth")
+        );*/
+        //engine.addEntity(
+        //        entityFactory.createWall(200, 200, new Texture("testWall.png")
+        //        ));
+
         );
     }
 
