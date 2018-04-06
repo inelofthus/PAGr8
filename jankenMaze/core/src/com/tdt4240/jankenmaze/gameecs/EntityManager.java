@@ -19,6 +19,7 @@ import com.tdt4240.jankenmaze.gameecs.systems.CollisionSystem;
 import com.tdt4240.jankenmaze.gameecs.events.GameEvent;
 import com.tdt4240.jankenmaze.gameecs.systems.EntityFactory;
 import com.tdt4240.jankenmaze.gameecs.systems.HUDSystem;
+import com.tdt4240.jankenmaze.gameecs.systems.HealthSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.InputSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.MovementSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.EntityFactory;
@@ -55,15 +56,18 @@ public class EntityManager {
     InputSystem inputSystem;
     public EntityFactory entityFactory;
     private Signal<GameEvent> gameEventSignal;
-    //private ArrayList<float[]> spawnPositions = new ArrayList<float[]>();
+
+    private Signal<GameEvent> playerCollisionSignal;
     Random rand = new Random();
     private ImmutableArray<Entity> spawnPositions;
+
 
     public EntityManager(Engine e, SpriteBatch sb) {
         this.engine = e;
         this.batch = sb;
         entityFactory = new EntityFactory(engine, batch);
         gameEventSignal = new Signal<GameEvent>();
+        playerCollisionSignal = new Signal<GameEvent>();
 
         MovementSystem cms = new MovementSystem(gameEventSignal);
         engine.addSystem(cms);
@@ -73,8 +77,12 @@ public class EntityManager {
         engine.addSystem(inputSystem);
         HUDSystem hudSystem = new HUDSystem();
         engine.addSystem(hudSystem);
-        CollisionSystem cs = new CollisionSystem();
+        CollisionSystem cs = new CollisionSystem(playerCollisionSignal);
         engine.addSystem(cs);
+
+        HealthSystem hs=new HealthSystem(playerCollisionSignal);
+        engine.addSystem(hs);
+
         SendSignalSystemExample sendEx = new SendSignalSystemExample(gameEventSignal);
         engine.addSystem(sendEx);
         ReceiveSignalSystemExample recEx = new ReceiveSignalSystemExample(gameEventSignal);
@@ -100,8 +108,13 @@ public class EntityManager {
 
     public void createHUDItem() {
         engine.addEntity(
-                entityFactory.createHUDItem(1000, 1000, new Texture("button.png"), "playerHealth")
+                entityFactory.createHUDItem(100, 100, new Texture("button.png"), "playerHealth")
         );
+        //engine.addEntity(
+        //        entityFactory.createWall(200, 200, new Texture("testWall.png")
+        //        ));
+
+
     }
 
     //Returns a random spawnposition Entity.
