@@ -91,19 +91,20 @@ public class EntityManager {
 
     //TODO: Should entityfactory add entities directly? It's currently done in playstate
     public void createPlayer(String type, Texture texture) {
-        float[] spawnPosition = randomSpawnPosition();
+        com.tdt4240.jankenmaze.gameecs.components.Position playerPosition
+                = ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.Position.class).get(randomSpawnPosition());
         engine.addEntity(
-            entityFactory.createPlayer(type, spawnPosition[0], spawnPosition[1], 3, texture)
+            entityFactory.createPlayer(type, playerPosition.x, playerPosition.y, 3, texture)
         );
     }
 
     public void createLocalPlayer(String type, Texture texture) {
-        float[] spawnPosition = randomSpawnPosition();
+        com.tdt4240.jankenmaze.gameecs.components.Position playerPosition
+                = ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.Position.class).get(randomSpawnPosition());
         engine.addEntity(
-                entityFactory.createLocalPlayer(type, spawnPosition[0], spawnPosition[1], 3, texture)
+                entityFactory.createLocalPlayer(type, playerPosition.x, playerPosition.y, 3, texture)
         );
     }
-
 
     public void createHUDItem() {
         engine.addEntity(
@@ -111,12 +112,11 @@ public class EntityManager {
         );
     }
 
-    public float[] randomSpawnPosition() {
-        System.out.println(spawnPositions.size());
+    //Returns a random spawnposition Entity.
+    public Entity randomSpawnPosition() {
+        spawnPositions = engine.getEntitiesFor(Family.all(Unoccupied.class).get());
         int randomNumber = rand.nextInt(spawnPositions.size());
-        System.out.println("randomNumber = " + randomNumber);
         return spawnPositions.get(randomNumber);
-        //return new float[]{64, 64};
     }
 
     public void update(){
