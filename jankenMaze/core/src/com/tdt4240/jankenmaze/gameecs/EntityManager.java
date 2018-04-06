@@ -25,6 +25,7 @@ import com.tdt4240.jankenmaze.gameecs.systems.MovementSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.EntityFactory;
 import com.tdt4240.jankenmaze.gameecs.systems.ReceiveSignalSystemExample;
 import com.tdt4240.jankenmaze.gameecs.systems.SendSignalSystemExample;
+import com.badlogic.ashley.utils.ImmutableArray;
 import java.util.ArrayList;
 import java.util.Random;
 
