@@ -1,7 +1,10 @@
 package com.tdt4240.jankenmaze.gameecs;
 
+import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.signals.Signal;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -11,11 +14,20 @@ import com.tdt4240.jankenmaze.gameecs.components.Position;
 import com.tdt4240.jankenmaze.gameecs.components.Renderable;
 import com.tdt4240.jankenmaze.gameecs.components.SpriteComponent;
 import com.tdt4240.jankenmaze.gameecs.components.Velocity;
+import com.tdt4240.jankenmaze.gameecs.components.Unoccupied;
+import com.tdt4240.jankenmaze.gameecs.systems.CollisionSystem;
+import com.tdt4240.jankenmaze.gameecs.events.GameEvent;
 import com.tdt4240.jankenmaze.gameecs.systems.EntityFactory;
 import com.tdt4240.jankenmaze.gameecs.systems.HUDSystem;
+import com.tdt4240.jankenmaze.gameecs.systems.HealthSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.InputSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.MovementSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.EntityFactory;
+import com.tdt4240.jankenmaze.gameecs.systems.ReceiveSignalSystemExample;
+import com.tdt4240.jankenmaze.gameecs.systems.SendSignalSystemExample;
+import com.badlogic.ashley.utils.ImmutableArray;
+import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Created by jonas on 07/03/2018.
@@ -43,37 +55,75 @@ public class EntityManager {
     OrthographicCamera cam;
     InputSystem inputSystem;
     public EntityFactory entityFactory;
+    private Signal<GameEvent> gameEventSignal;
 
-    public EntityManager(Engine e, SpriteBatch sb){
+    private Signal<GameEvent> playerCollisionSignal;
+
+    private ImmutableArray<Entity> spawnPositions;
+    Random rand = new Random();
+
+
+    public EntityManager(Engine e, SpriteBatch sb) {
         this.engine = e;
         this.batch = sb;
         entityFactory = new EntityFactory(engine, batch);
+        gameEventSignal = new Signal<GameEvent>();
+        playerCollisionSignal = new Signal<GameEvent>();
 
-        MovementSystem cms = new MovementSystem();
+        MovementSystem cms = new MovementSystem(gameEventSignal);
         engine.addSystem(cms);
         com.tdt4240.jankenmaze.gameecs.systems.RenderSystem rs = new com.tdt4240.jankenmaze.gameecs.systems.RenderSystem(batch);
         engine.addSystem(rs);
-        this.inputSystem = new InputSystem();
+        this.inputSystem = new InputSystem(gameEventSignal);
         engine.addSystem(inputSystem);
         HUDSystem hudSystem = new HUDSystem();
         engine.addSystem(hudSystem);
+        CollisionSystem cs = new CollisionSystem(playerCollisionSignal);
+        engine.addSystem(cs);
 
-        //TODO: Should entityfactory add entities directly?
+        HealthSystem hs=new HealthSystem(playerCollisionSignal);
+        engine.addSystem(hs);
+
+        SendSignalSystemExample sendEx = new SendSignalSystemExample(gameEventSignal);
+        engine.addSystem(sendEx);
+        ReceiveSignalSystemExample recEx = new ReceiveSignalSystemExample(gameEventSignal);
+        engine.addSystem(recEx);
+    }
+
+    //TODO: Should entityfactory add entities directly? It's currently done in playstate
+    public void createPlayer(String type, Texture texture) {
+        com.tdt4240.jankenmaze.gameecs.components.Position playerPosition
+                = ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.Position.class).get(randomSpawnPosition());
         engine.addEntity(
-            entityFactory.createPlayer("rock", 0, 0, 3, new Texture("badlogic.jpg"))
+
+
+                entityFactory.createLocalPlayer("Rock", 64, 64, 3, new Texture("singleRock.png"))
+
+                // entityFactory.createPlayer(type, spawnPosition[0], spawnPosition[1], 3, texture)
         );
-        engine.addEntity(
-                entityFactory.createWall(800, 800, new Texture("testWall.png")
-        ));
-        /*
-        Entity testImageEntity = new Entity();
-        testImageEntity.add(new Position(0,0))
-                .add(new Velocity(300,300))
-                .add(new SpriteComponent((new Texture("badlogic.jpg"))))
-                .add(new LocalPlayer())
-                .add(new Renderable());
 
-        engine.addEntity(testImageEntity);*/
+        engine.addEntity(
+                entityFactory.createPlayer("Paper", 120, 64, 3, new Texture("badlogic.jpg"))
+        );
+    }
+
+    public void createHUDItem() {
+       
+    /*    engine.addEntity(
+                entityFactory.createHUDItem(100, 100, new Texture("button.png"), "playerHealth")
+        );*/
+        //engine.addEntity(
+        //        entityFactory.createWall(200, 200, new Texture("testWall.png")
+        //        ));
+
+
+    }
+
+    //Returns a random spawnposition Entity.
+    public Entity randomSpawnPosition() {
+        spawnPositions = engine.getEntitiesFor(Family.all(Unoccupied.class).get());
+        int randomNumber = rand.nextInt(spawnPositions.size());
+        return spawnPositions.get(randomNumber);
     }
 
     public void update(){
@@ -89,5 +139,18 @@ public class EntityManager {
 
     public boolean hasNoSpriteBatch(){
         return (this.batch == null);
+    }
+
+    public void createMap(int[][] binaryMap, Texture texture) {
+        for (int i = 0; i < binaryMap.length; i++) { //Iterates over rows
+            for (int j = 0; j < binaryMap[i].length; j++) { //Iterates over columns
+                if (binaryMap[i][j] == 1) {
+                    engine.addEntity(entityFactory.createWall(i * 32, j * 32, texture)); //200 here represents the width of a block
+                }
+                else {
+                    engine.addEntity(entityFactory.createSpawnPosition(i*32, j*32));
+                }
+            }
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.tdt4240.jankenmaze.gameecs.systems;
 
+import com.badlogic.ashley.signals.Signal;
 import com.badlogic.gdx.Gdx;
 import com.tdt4240.jankenmaze.gameecs.components.*;
 import com.badlogic.ashley.core.ComponentMapper;
@@ -8,64 +9,102 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
+import com.tdt4240.jankenmaze.gameecs.events.EventQueue;
+import com.tdt4240.jankenmaze.gameecs.events.GameEvent;
 
 public class InputSystem extends EntitySystem{
     private ImmutableArray<Entity> entities;
-    private ComponentMapper<Velocity> velocityComponents = ComponentMapper.getFor(Velocity.class);
+    private Entity player;
+    private ComponentMapper<Velocity> velocityMapper = ComponentMapper.getFor(Velocity.class);
 
     //Note: Min X and Y are 0
+
+
+    float velX = 0;
+    float velY = 0;
+    float vel = 150;
     private float maxX;
     private float maxY;
     private float centerX;
     private float centerY;
 
-    public InputSystem(){
+    public InputSystem(Signal<GameEvent> gameEventSignal){
         this.maxX = Gdx.graphics.getWidth();
         this.maxY = Gdx.graphics.getHeight();
         this.centerX = Gdx.graphics.getWidth() /2;
         this.centerY = Gdx.graphics.getHeight() /2;
 
-        System.out.print("InputSystem created");
+        //System.out.print("InputSystem created");
     }
 
     public void addedToEngine(Engine engine){
         entities = engine.getEntitiesFor(Family.all(LocalPlayer.class).get());
     }
 
+    public boolean canPerformMove(Entity player, int xMove, int yMove) {
+
+        return true; //TODO Check whether a collision occures with a given move.
+    }
+
     public void update(float dt){
         //TODO: Fix hardcoded value
-        float velX = 250;
-        float velY = 250;
+
 
         float touchX = Gdx.input.getX();
         float touchY = Gdx.input.getY();
 
-        if(Gdx.input.isTouched()){
-            if(pointInTriangle(touchX, touchY, maxX, 0, centerX, centerY, 0, 0)){
-                velX = 0;
-            }
-            else if(pointInTriangle(touchX, touchY, maxX, maxY, centerX, centerY, maxX, 0)){
-                velY = 0;
-            }
-            else if(pointInTriangle(touchX, touchY, 0, maxY, centerX, centerY, maxX, maxY)){
-                velY = velY*-1;
-                velX = 0;
-            }
-            else if(pointInTriangle(touchX, touchY, 0, 0, centerX, centerY, 0, maxY)){
-                velX = velX*-1;
-                velY = 0;
-            }
-        }
-        else{
-            velX = 0;
-            velY = 0;
-        }
+        if(Gdx.input.isTouched()) {
 
-
-        for(Entity e: entities){
-            Velocity velocityComponent = velocityComponents.get(e);
-            velocityComponent.x = velX;
-            velocityComponent.y = velY;
+            if (pointInTriangle(touchX, touchY, maxX, 0, centerX, centerY, 0, 0)) {
+                //player moves up,
+                System.out.println("Player decided to move up");
+                System.out.println("Before input sytem has done its thing:");
+                Velocity velocity = velocityMapper.get(entities.get(0));
+                System.out.println("velocity.currentX = " + velocity.currentX);
+                System.out.println("velocity.currentY = " + velocity.currentY);
+                System.out.println("velocity.futureX = " + velocity.futureX);
+                System.out.println("velocity.futureY = " + velocity.futureY);
+                velocity.futureX = 0;
+                velocity.futureY = vel;
+                System.out.println("After input sytem has done its thing:");
+                System.out.println("velocity.currentX = " + velocity.currentX);
+                System.out.println("velocity.currentY = " + velocity.currentY);
+                System.out.println("velocity.futureX = " + velocity.futureX);
+                System.out.println("velocity.futureY = " + velocity.futureY);
+                //for (Entity e : entities) {
+                //    Velocity velocity = velocityMapper.get(e);
+                //    velocity.futureX = 0;
+                //    velocity.futureY = vel;
+                //    System.out.println("velocity.currentX = " + velocity.currentX);
+                //    System.out.println("velocity.currentY = " + velocity.currentY);
+                //    System.out.println("velocity.futureX = " + velocity.futureX);
+                //    System.out.println("velocity.futureY = " + velocity.futureY);
+                //}
+            } else if (pointInTriangle(touchX, touchY, maxX, maxY, centerX, centerY, maxX, 0)) {
+                //player moves right
+                System.out.println("Player decided to move right");
+                for (Entity e : entities) {
+                    Velocity velocity = velocityMapper.get(e);
+                    velocity.futureX = vel;
+                    velocity.futureY = 0;
+                }
+            } else if (pointInTriangle(touchX, touchY, 0, maxY, centerX, centerY, maxX, maxY)) {
+                //player moves down
+                System.out.println("Player decided to move down");
+                for (Entity e : entities) {
+                    Velocity velocity = velocityMapper.get(e);
+                    velocity.futureX = 0;
+                    velocity.futureY = -vel;
+                }
+            } else if (pointInTriangle(touchX, touchY, 0, 0, centerX, centerY, 0, maxY)) {
+                //player moves to the left
+                System.out.println("Player decided to move left");
+                for (Entity e : entities) {
+                    Velocity velocity = velocityMapper.get(e);
+                    velocity.futureX = -vel;
+                    velocity.futureY = 0;
+                }
+            }
         }
     }
 

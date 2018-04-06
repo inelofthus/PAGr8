@@ -107,7 +107,7 @@ public class HUDSystem extends EntitySystem {
         //Type display:
         if(typeSpritesNotMade){
             Sprite localPlayerSprite = spriteComponentMapper.get(localPlayerEntities.get(0)).sprite;
-            
+
         }
     }
 }

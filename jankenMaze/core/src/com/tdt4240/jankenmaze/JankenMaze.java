@@ -23,6 +23,7 @@ public class JankenMaze extends ApplicationAdapter {
 	GameStateManager gsm;
 	SocketConnection socket = SocketConnection.getSocketConnection();
 	ArrayList<Entity> powerUps = new ArrayList<Entity>();
+	int[][] binaryMap = {{1, 0, 0}, {0, 1, 0}, {0, 1, 0}}; //Map is instatiated from a binary matrix
 	
 	@Override
 	public void create () {
@@ -34,6 +35,7 @@ public class JankenMaze extends ApplicationAdapter {
 		gsm = GameStateManager.getGsm();
 		gsm.push(new MenuState());
 		powerUpTexture = (new Texture("powerUps.png"));
+		//Creates wall entities from binaryMap
 	}
 
 	@Override

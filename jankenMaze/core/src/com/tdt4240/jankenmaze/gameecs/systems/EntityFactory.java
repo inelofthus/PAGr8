@@ -16,7 +16,7 @@ import com.tdt4240.jankenmaze.gameecs.components.LocalPlayer;
 import com.tdt4240.jankenmaze.gameecs.components.Renderable;
 import com.tdt4240.jankenmaze.gameecs.components.SpriteComponent;
 import com.tdt4240.jankenmaze.gameecs.components.Remote;
-import com.tdt4240.jankenmaze.gameecs.components.Occupied;
+import com.tdt4240.jankenmaze.gameecs.components.Unoccupied;
 import com.tdt4240.jankenmaze.gameecs.components.HUDItemInfo;
 import com.tdt4240.jankenmaze.gameecs.components.PowerUpInfo;
 
@@ -33,15 +33,46 @@ public class EntityFactory {
         this.spriteBatch = spriteBatch;
     }
 
-    public Entity createPlayer(String type, int xPosition, int yPosition, int health, Texture texture) {
+    public Entity createPlayer(String type, float xPosition, float yPosition, int health, Texture texture) {
+ 
+        //creates a remote player
         Entity player = new Entity();
+        Sprite playerSprite=new Sprite(texture);
         player.add(new Health(health));
-        player.add(new Position(0,0)); //TODO: Consider whether the startposition should be given by some function which finds an unoccupied spot or just be taken as an input to the factory.
+        player.add(new Position(xPosition,yPosition)); //TODO: Consider whether the startposition should be given by some function which finds an unoccupied spot or just be taken as an input to the factory.
         player.add(new Velocity(0,0));
-        player.add(new BoundsBox(0,0,0,0)); //TODO: Gjør x og y identiske med Position.x og Position.y
-        String[] typeList = {"Rock", "Paper", "Scissors"};
-        String target;
-        String targetBy;
+
+        player.add(new BoundsBox(xPosition,yPosition,playerSprite.getWidth()-2,playerSprite.getHeight()-2)); //TODO: Gjør x og y identiske med Position.x og Position.y
+
+        //TODO: Should we use a hashmap to generate player info?
+        if (type.equals("Rock")) {
+            player.add(new PlayerInfo("Scissors", "Paper", "Rock"));
+        }
+        else if (type.equals("Paper")) {
+            player.add(new PlayerInfo("Rock", "Scissor", "Paper"));
+        }
+        else {
+            player.add(new PlayerInfo("Paper", "Rock", "Scissor"));
+        }
+        player.add(new Spawnable());
+     //   player.add(new LocalPlayer());
+        player.add(new Renderable());
+        player.add(new SpriteComponent(playerSprite));
+        player.add(new Remote());
+        return player;
+    }
+
+    public Entity createLocalPlayer(String type, float xPosition, float yPosition, int health, Texture texture) {
+        //creates local player
+
+        Entity player = new Entity();
+        Sprite playerSprite=new Sprite(texture);
+        player.add(new Health(health));
+        player.add(new Position(xPosition,yPosition)); //TODO: Consider whether the startposition should be given by some function which finds an unoccupied spot or just be taken as an input to the factory.
+        player.add(new Velocity(0,0));
+        player.add(new BoundsBox(xPosition,yPosition,playerSprite.getWidth()-2,playerSprite.getHeight()-2)); //TODO: Gjør x og y identiske med Position.x og Position.y
+
+        //TODO: Should we use a hashmap to generate player info?
         if (type.equals("Rock")) {
             player.add(new PlayerInfo("Scissors", "Paper", "Rock"));
         }
@@ -54,8 +85,8 @@ public class EntityFactory {
         player.add(new Spawnable());
         player.add(new LocalPlayer());
         player.add(new Renderable());
-        player.add(new SpriteComponent(texture));
-        player.add(new Remote());
+        player.add(new SpriteComponent(playerSprite));
+        //player.add(new Remote());
         return player;
     }
 
@@ -75,16 +106,18 @@ public class EntityFactory {
         Sprite wallSprite = new Sprite(texture);
         wall.add(new Position(xPosition,yPosition));
         wall.add(new BoundsBox(xPosition,yPosition,wallSprite.getWidth(),wallSprite.getHeight())); //TODO: Gjør x og y identiske med Position.x og Position.y
+
         wall.add(new Spawnable());
         wall.add(new Renderable());
         wall.add(new SpriteComponent(wallSprite));
         return wall;
     }
 
-    public Entity createSpawnPosition(int xPosition, int yPosition, Texture texture) {
+    public Entity createSpawnPosition(float xPosition, float yPosition) {
         Entity spawnPosition = new Entity();
         spawnPosition.add(new Position(0,0));
-        spawnPosition.add(new Occupied());
+        spawnPosition.add(new Unoccupied());
+        //spawnPosition.add(new Occupied()); I don't see why spawnPosition should have an occupied component.
         return spawnPosition;
     }
 
