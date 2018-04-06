@@ -24,6 +24,7 @@ import com.tdt4240.jankenmaze.gameecs.systems.MovementSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.EntityFactory;
 import com.tdt4240.jankenmaze.gameecs.systems.ReceiveSignalSystemExample;
 import com.tdt4240.jankenmaze.gameecs.systems.SendSignalSystemExample;
+import com.badlogic.ashley.utils.ImmutableArray;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -54,8 +55,9 @@ public class EntityManager {
     InputSystem inputSystem;
     public EntityFactory entityFactory;
     private Signal<GameEvent> gameEventSignal;
-    private ArrayList<float[]> spawnPositions = new ArrayList<float[]>();
+    //private ArrayList<float[]> spawnPositions = new ArrayList<float[]>();
     Random rand = new Random();
+    private ImmutableArray<Entity> spawnPositions;
 
     public EntityManager(Engine e, SpriteBatch sb) {
         this.engine = e;
@@ -81,9 +83,18 @@ public class EntityManager {
 
     //TODO: Should entityfactory add entities directly? It's currently done in playstate
     public void createPlayer(String type, Texture texture) {
-        float[] spawnPosition = randomSpawnPosition();
+        com.tdt4240.jankenmaze.gameecs.components.Position playerPosition
+                = ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.Position.class).get(randomSpawnPosition());
         engine.addEntity(
-            entityFactory.createPlayer(type, spawnPosition[0], spawnPosition[1], 3, texture)
+                entityFactory.createPlayer(type, playerPosition.x, playerPosition.y, 3, texture)
+        );
+    }
+
+    public void createLocalPlayer(String type, Texture texture) {
+        com.tdt4240.jankenmaze.gameecs.components.Position playerPosition
+                = ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.Position.class).get(randomSpawnPosition());
+        engine.addEntity(
+                entityFactory.createLocalPlayer(type, playerPosition.x, playerPosition.y, 3, texture)
         );
     }
 
@@ -93,12 +104,11 @@ public class EntityManager {
         );
     }
 
-    public float[] randomSpawnPosition() {
-        System.out.println(spawnPositions.size());
+    //Returns a random spawnposition Entity.
+    public Entity randomSpawnPosition() {
+        spawnPositions = engine.getEntitiesFor(Family.all(Unoccupied.class).get());
         int randomNumber = rand.nextInt(spawnPositions.size());
-        System.out.println("randomNumber = " + randomNumber);
         return spawnPositions.get(randomNumber);
-        //return new float[]{64, 64};
     }
 
     public void update(){
@@ -124,7 +134,6 @@ public class EntityManager {
                 }
                 else {
                     engine.addEntity(entityFactory.createSpawnPosition(i*32, j*32));
-                    spawnPositions.add(new float[]{i*32, j*32}); //Yes, this is a bit redundant, but desperate times...
                 }
             }
         }
