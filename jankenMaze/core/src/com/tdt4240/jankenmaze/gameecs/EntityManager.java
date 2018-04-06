@@ -89,7 +89,7 @@ public class EntityManager {
 
     public void createHUDItem() {
         engine.addEntity(
-                entityFactory.createHUDItem(100, 100, new Texture("button.png"), "playerHealth")
+                entityFactory.createHUDItem(1000, 1000, new Texture("button.png"), "playerHealth")
         );
     }
 

@@ -63,8 +63,9 @@ public class MovementSystem extends EntitySystem {
                 BoundsBox bounds = boundsBoxMapper.get(entity);
                 if (entity == localPlayers.get(0)) {
                     if(velocity.futureX != 0 || velocity.futureY != 0) {
-                        bounds.boundsBox.setX(position.x+velocity.futureX*dt);
-                        bounds.boundsBox.setY(position.y+velocity.futureY*dt);
+                        //This is where future velocity is tested
+                        bounds.boundsBox.setX(position.x+velocity.futureX*dt*2);
+                        bounds.boundsBox.setY(position.y+velocity.futureY*dt*2);
                         boolean collision = false;
                         for(int k=0; k < walls.size(); k++) {
                             Rectangle wallBox = bb.get(walls.get(k)).boundsBox;

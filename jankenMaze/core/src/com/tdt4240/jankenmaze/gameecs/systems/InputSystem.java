@@ -22,7 +22,7 @@ public class InputSystem extends EntitySystem{
 
     float velX = 0;
     float velY = 0;
-    float vel = 250;
+    float vel = 150;
     private float maxX;
     private float maxY;
     private float centerX;
