@@ -62,7 +62,7 @@ public class EntityFactory {
         return player;
     }
 
-    public Entity createLocalPlayer(String type, int xPosition, int yPosition, int health, Texture texture) {
+    public Entity createLocalPlayer(String type, float xPosition, float yPosition, int health, Texture texture) {
         //creates local player
 
         Entity player = new Entity();
@@ -70,9 +70,7 @@ public class EntityFactory {
         player.add(new Health(health));
         player.add(new Position(xPosition,yPosition)); //TODO: Consider whether the startposition should be given by some function which finds an unoccupied spot or just be taken as an input to the factory.
         player.add(new Velocity(0,0));
-
         player.add(new BoundsBox(xPosition,yPosition,playerSprite.getWidth()-2,playerSprite.getHeight()-2)); //TODO: Gjør x og y identiske med Position.x og Position.y
-
 
         //TODO: Should we use a hashmap to generate player info?
         if (type.equals("Rock")) {
