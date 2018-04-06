@@ -39,7 +39,6 @@ import com.tdt4240.jankenmaze.gameecs.systems.EntityFactory;
 
 public class EntityManager {
     private Engine engine;
-    private EntityFactory entityFactory; //TODO: Determine if this should belong to playstate or entitymanager
     SpriteBatch batch;
     OrthographicCamera cam;
     InputSystem inputSystem;
@@ -62,9 +61,6 @@ public class EntityManager {
         //TODO: Should entityfactory add entities directly?
         engine.addEntity(
             entityFactory.createPlayer("rock", 0, 0, 3, new Texture("badlogic.jpg"))
-        );
-        engine.addEntity(
-                entityFactory.createHUDItem(0, 0, new Texture("button.png"), "playerHealth")
         );
         engine.addEntity(
                 entityFactory.createWall(800, 800, new Texture("testWall.png")
