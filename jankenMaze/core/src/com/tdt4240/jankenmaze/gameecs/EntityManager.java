@@ -59,7 +59,7 @@ public class EntityManager {
 
     private Signal<GameEvent> playerCollisionSignal;
 
-    private ArrayList<float[]> spawnPositions = new ArrayList<float[]>();
+    private ImmutableArray<Entity> spawnPositions;
     Random rand = new Random();
 
 
