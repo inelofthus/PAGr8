@@ -32,7 +32,7 @@ public class PlayState extends State {
             {1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1},
             {1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1},
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
             {1 ,1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}}; //Map is instatiated from a binary matrix (A list of columns)
 
@@ -41,6 +41,8 @@ public class PlayState extends State {
         engine = new Engine();
         entityManager = new com.tdt4240.jankenmaze.gameecs.EntityManager(engine, batch);
         entityManager.createMap(binaryMap, new Texture("greyWall.png"));
+        entityManager.createPlayer("Rock", new Texture("singleRock.png")); //Players have to be created after map.
+        entityManager.createHUDItem();
     }
     @Override
     protected void handleInput() {
