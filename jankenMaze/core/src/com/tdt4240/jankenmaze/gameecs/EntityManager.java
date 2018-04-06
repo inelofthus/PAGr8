@@ -95,22 +95,28 @@ public class EntityManager {
         com.tdt4240.jankenmaze.gameecs.components.Position playerPosition
                 = ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.Position.class).get(randomSpawnPosition());
         engine.addEntity(
-            entityFactory.createPlayer(type, playerPosition.x, playerPosition.y, 3, texture)
-        );
-    }
 
-    public void createLocalPlayer(String type, Texture texture) {
-        com.tdt4240.jankenmaze.gameecs.components.Position playerPosition
-                = ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.Position.class).get(randomSpawnPosition());
+
+                entityFactory.createLocalPlayer("Rock", 64, 64, 3, new Texture("singleRock.png"))
+
+                // entityFactory.createPlayer(type, spawnPosition[0], spawnPosition[1], 3, texture)
+        );
+
         engine.addEntity(
-                entityFactory.createLocalPlayer(type, playerPosition.x, playerPosition.y, 3, texture)
+                entityFactory.createPlayer("Paper", 120, 64, 3, new Texture("badlogic.jpg"))
         );
     }
 
     public void createHUDItem() {
-        engine.addEntity(
-                entityFactory.createHUDItem(1000, 1000, new Texture("button.png"), "playerHealth")
-        );
+       
+    /*    engine.addEntity(
+                entityFactory.createHUDItem(100, 100, new Texture("button.png"), "playerHealth")
+        );*/
+        //engine.addEntity(
+        //        entityFactory.createWall(200, 200, new Texture("testWall.png")
+        //        ));
+
+
     }
 
     //Returns a random spawnposition Entity.
@@ -143,7 +149,6 @@ public class EntityManager {
                 }
                 else {
                     engine.addEntity(entityFactory.createSpawnPosition(i*32, j*32));
-                    spawnPositions.add(new float[]{i*32, j*32}); //Yes, this is a bit redundant, but desperate times...
                 }
             }
         }
