@@ -18,6 +18,7 @@ import com.google.android.gms.games.multiplayer.realtime.RealTimeMessageReceived
 import com.google.android.gms.games.multiplayer.realtime.Room;
 import com.google.android.gms.games.multiplayer.realtime.RoomConfig;
 import com.google.android.gms.games.multiplayer.realtime.RoomStatusUpdateListener;
+import com.google.android.gms.games.multiplayer.realtime.RoomUpdateCallback;
 import com.google.android.gms.games.multiplayer.realtime.RoomUpdateListener;
 import com.google.example.games.basegameutils.BaseGameUtils;
 import com.google.example.games.basegameutils.GameHelper;
@@ -45,7 +46,7 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
     private final static int RC_WAITING_ROOM = 10002;
     private static final String TAG = "PlayServiceLauncher";
 
-    private String currentRoomId = null;
+    public String currentRoomId = null;
     private final Activity activity;
     private GameHelper gameHelper;
     private GameListener gameListener;
@@ -288,7 +289,15 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
     @Override
     public void onRoomConnected(int status, Room room) {
         Log.d(TAG, "onRoomConnected(" + status + ", " + room + ")");
-        gameListener.onMultiplayerGameStarting();
+
+        //Need to run on an OpenGL context
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                gameListener.onMultiplayerGameStarting();
+            }
+        });
+
 
         if (status != STATUS_OK) {
             Log.e(TAG, "*** Error: onRoomConnected, status " + status);
@@ -306,7 +315,7 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
 
     // Show the waiting room UI to track the progress of other players as they enter the
     // room and get connected.
-    private void showWaitingRoom(Room room) {
+    protected void showWaitingRoom(Room room) {
         Log.d(TAG, "showWaitingRoom: " + room);
         if (room == null) {
             Log.w(TAG, "showWaitingRoom: room is null, returning");
@@ -428,7 +437,6 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
     public void onInvitationRemoved(String s) {
         Log.d(TAG, "onInvitationRemoved: ");
     }
-
 
     ///////////////END OnInvitationReceivedListener ////////////////////
 }

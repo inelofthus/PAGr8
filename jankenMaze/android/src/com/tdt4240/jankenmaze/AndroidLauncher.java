@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.tdt4240.jankenmaze.PlayServices.PlayServices;
 
 public class AndroidLauncher extends AndroidApplication {
 
