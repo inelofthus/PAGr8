@@ -27,6 +27,7 @@ import com.tdt4240.jankenmaze.gameecs.systems.ReceiveSignalSystemExample;
 import com.tdt4240.jankenmaze.gameecs.systems.SendSignalSystemExample;
 import com.badlogic.ashley.utils.ImmutableArray;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 /**
@@ -60,6 +61,7 @@ public class EntityManager {
     private Signal<GameEvent> playerCollisionSignal;
     Random rand = new Random();
     private ImmutableArray<Entity> spawnPositions;
+    private HashMap<String, Texture> textureMap;
 
 
     public EntityManager(Engine e, SpriteBatch sb) {
@@ -68,6 +70,11 @@ public class EntityManager {
         entityFactory = new EntityFactory(engine, batch);
         gameEventSignal = new Signal<GameEvent>();
         playerCollisionSignal = new Signal<GameEvent>();
+        //TODO: This should be an Enum
+        this.textureMap = new HashMap<String, Texture>();
+        textureMap.put("Rock", new Texture("singleRock.png"));
+        textureMap.put("Paper", new Texture("singlePaper.png"));
+        textureMap.put("Scissors", new Texture("Scissors.png"));
 
         MovementSystem cms = new MovementSystem(gameEventSignal);
         engine.addSystem(cms);
@@ -90,19 +97,20 @@ public class EntityManager {
     }
 
     //TODO: Should entityfactory add entities directly? It's currently done in playstate
-    public void createPlayer(String type, Texture texture) {
+    public void createPlayer(String type) {
         com.tdt4240.jankenmaze.gameecs.components.Position playerPosition
                 = ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.Position.class).get(randomSpawnPosition());
         engine.addEntity(
-                entityFactory.createPlayer(type, playerPosition.x, playerPosition.y, 3, texture)
+                entityFactory.createPlayer(type, playerPosition.x, playerPosition.y, 3, textureMap.get(type))
         );
     }
 
-    public void createLocalPlayer(String type, Texture texture) {
+    public void createLocalPlayer(String type) {
+
         com.tdt4240.jankenmaze.gameecs.components.Position playerPosition
                 = ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.Position.class).get(randomSpawnPosition());
         engine.addEntity(
-                entityFactory.createLocalPlayer(type, playerPosition.x, playerPosition.y, 3, texture)
+                entityFactory.createLocalPlayer(type, playerPosition.x, playerPosition.y, 3, textureMap.get(type))
         );
     }
 

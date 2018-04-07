@@ -10,7 +10,7 @@ public class PlayerNetworkData implements Component {
     public String participantId = "";
     public String playerId = "";
     public String displayName = "";
-    public boolean isSelf = false;
+    public boolean isLocalPlayer = false;
 
     public PlayerNetworkData(String playerId, String participantId, String displayName) {
         this.playerId = playerId;

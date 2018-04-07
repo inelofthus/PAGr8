@@ -18,7 +18,6 @@ import com.google.android.gms.games.multiplayer.realtime.RealTimeMessageReceived
 import com.google.android.gms.games.multiplayer.realtime.Room;
 import com.google.android.gms.games.multiplayer.realtime.RoomConfig;
 import com.google.android.gms.games.multiplayer.realtime.RoomStatusUpdateListener;
-import com.google.android.gms.games.multiplayer.realtime.RoomUpdateCallback;
 import com.google.android.gms.games.multiplayer.realtime.RoomUpdateListener;
 import com.google.example.games.basegameutils.BaseGameUtils;
 import com.google.example.games.basegameutils.GameHelper;
@@ -206,7 +205,7 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
                     String playerId = participant.getPlayer().getPlayerId();
                     PlayerNetworkData playerData = new PlayerNetworkData(playerId, participant.getParticipantId(), participant.getDisplayName());
                     if (currentPlayerId.equals(playerId)) {
-                        playerData.isSelf = true;
+                        playerData.isLocalPlayer = true;
                     }
                     playerList.add(playerData);
                 }
