@@ -22,7 +22,7 @@ public class MainMenuView extends View {
     private TextureAtlas atlas;
     private Skin skin;
     private Table table;
-    public TextButton btn_joinGame, btn_createGame, btn_quickGame;
+    public TextButton btn_joinGame, btn_createGame, btn_invite;
     private Label heading1;
     private BitmapFont font;
 
@@ -51,8 +51,8 @@ public class MainMenuView extends View {
         btn_createGame = new TextButton("Create Game", textButtonStyle);
         btn_createGame.pad(20);
 
-        btn_quickGame = new TextButton("Quick Game", textButtonStyle);
-        btn_quickGame.pad(20);
+        btn_invite = new TextButton("Invite", textButtonStyle);
+        btn_invite.pad(20);
 
         //creating heading
         Label.LabelStyle headingStyle = new Label.LabelStyle(font, Color.WHITE);
@@ -63,7 +63,7 @@ public class MainMenuView extends View {
         // putting stuff together
         table.add(heading1);
         table.row();
-        table.add(btn_quickGame);
+        table.add(btn_invite);
         table.row();
         table.add(btn_joinGame);
         table.row();

@@ -23,7 +23,7 @@ import java.util.List;
 public class PlayState extends State implements PlayServices.NetworkListener {
     Engine engine;
     private static final String TAG = "PlayState";
-    private static final byte  TOUCHED = 1;
+    private static final byte  POSITION = 1;
     private int numTouches = 0;
     com.tdt4240.jankenmaze.gameecs.EntityManager entityManager;
 
@@ -39,7 +39,12 @@ public class PlayState extends State implements PlayServices.NetworkListener {
         if (Gdx.input.isTouched()){
 
             // will send a byte code for touched
-            ByteBuffer buffer = ByteBuffer.allocate(TOUCHED);
+            ByteBuffer buffer = ByteBuffer.allocate(2 * 4 + 1);
+            int x = 1;
+            int y = 2;
+            buffer.put(POSITION);
+            buffer.putInt(x);
+            buffer.putInt(y);
             gsm.playServices.sendUnreliableMessageToOthers(buffer.array());
         }
     }
@@ -74,9 +79,10 @@ public class PlayState extends State implements PlayServices.NetworkListener {
 
         ByteBuffer buffer = ByteBuffer.wrap(messageData);
         byte messageType = buffer.get();
+        int x = buffer.getInt();
+        int y = buffer.getInt();
 
-                numTouches ++;
-                System.out.println("TOUCHED: " + numTouches);
+                System.out.println("POSITION UPDATED: MessageType: " + messageType + ", x: " + x + ", y:" + y);
 
     }
 
