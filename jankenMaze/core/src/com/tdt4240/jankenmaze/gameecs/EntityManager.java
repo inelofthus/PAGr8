@@ -103,7 +103,10 @@ public class EntityManager {
         );
 
         engine.addEntity(
-                entityFactory.createPlayer("Paper", 120, 64, 3, new Texture("badlogic.jpg"))
+                entityFactory.createPlayer("Paper", 120, 64, 3, new Texture("singlePaper.png"))
+        );
+        engine.addEntity(
+                entityFactory.createPlayer("Scissor", 360, 360, 3, new Texture("Scissors.png"))
         );
     }
 

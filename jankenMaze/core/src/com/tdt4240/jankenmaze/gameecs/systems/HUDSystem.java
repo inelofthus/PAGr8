@@ -33,7 +33,7 @@ public class HUDSystem extends EntitySystem {
     ComponentMapper<HUDItemInfo> hudItemInfoComponentMapper;
     ComponentMapper<SpriteComponent> spriteComponentMapper;
     ComponentMapper<Position> positionComponentMapper;
-    ComponentMapper<PlayerInfo> playerTypeMapper;
+    ComponentMapper<PlayerInfo> playerInfoMapper;
     private int numOfHealthSprites;
     private int maxHealthSpriteX;
     private boolean typeSpritesNotMade;
@@ -46,7 +46,7 @@ public class HUDSystem extends EntitySystem {
         hudItemInfoComponentMapper = ComponentMapper.getFor(HUDItemInfo.class);
         spriteComponentMapper = ComponentMapper.getFor(SpriteComponent.class);
         positionComponentMapper = ComponentMapper.getFor(Position.class);
-        playerTypeMapper = ComponentMapper.getFor(PlayerInfo.class);
+        playerInfoMapper = ComponentMapper.getFor(PlayerInfo.class);
 
         playerHearts = new ArrayList<Entity>();
         numOfHealthSprites = 0;
@@ -73,6 +73,7 @@ public class HUDSystem extends EntitySystem {
     @Override
     public void update(float deltaTime) {
         //Health-display
+
         int localPlayerHealth = healthComponentMapper.get(localPlayerEntities.get(0)).health;
 
         if (numOfHealthSprites != localPlayerHealth) {
@@ -104,10 +105,72 @@ public class HUDSystem extends EntitySystem {
             }
         }
 
-        //Type display:
-        if(typeSpritesNotMade){
+        //Type display. Wrapped in if-clause to only run once (uses created sprites so shouldn't be in constructor)
+        if(typeSpritesNotMade) {
+            //Check who eats who:
             Sprite localPlayerSprite = spriteComponentMapper.get(localPlayerEntities.get(0)).sprite;
+            ArrayList<Sprite> targetSprites = new ArrayList<Sprite>();
+            ArrayList<Sprite> targetedBySprites = new ArrayList<Sprite>();
 
+            String localPlayerType = playerInfoMapper.get(localPlayerEntities.get(0)).type;
+            for (Entity player : remotePlayerEntities) {
+                String playerTarget = playerInfoMapper.get(player).target;
+                String playerTargetedBy = playerInfoMapper.get(player).targetetBy;
+                if (playerTarget.equals(localPlayerType)) {
+                    targetedBySprites.add(spriteComponentMapper.get(player).sprite);
+                } else if (playerTargetedBy.equals("localPlayerType")) {
+                    targetSprites.add(spriteComponentMapper.get(player).sprite);
+                }
+            }
+
+            //Create the sprites:
+            int leftMostX = Math.round((
+                    Gdx.graphics.getWidth() / 2) - (localPlayerSprite.getWidth() / 2));
+            int rightMostX = Math.round((
+                    Gdx.graphics.getWidth() / 2) + (localPlayerSprite.getWidth() / 2));
+
+            getEngine().addEntity(new Entity()
+                    .add(new HUDItemInfo("playerType"))
+                    .add(new SpriteComponent(localPlayerSprite.getTexture()))
+                    .add(new Position(leftMostX, 0))
+                    .add(new Renderable()));
+
+            Texture eats = new Texture("eatsToRight.png");
+            leftMostX -= eats.getWidth();
+            getEngine().addEntity(new Entity()
+                    .add(new HUDItemInfo("eats"))
+                    .add(new SpriteComponent(eats))
+                    .add(new Position(leftMostX, 0))
+                    .add(new Renderable()));
+            getEngine().addEntity(new Entity()
+                    .add(new HUDItemInfo("eats"))
+                    .add(new SpriteComponent(eats))
+                    .add(new Position(rightMostX, 0))
+                    .add(new Renderable()));
+            rightMostX += eats.getWidth();
+            leftMostX -= eats.getWidth();
+
+            int highestY = 0;
+            for (Sprite playerSprite : targetedBySprites) {
+                getEngine().addEntity(new Entity()
+                        .add(new HUDItemInfo("targetedBy"))
+                        .add(new SpriteComponent(playerSprite))
+                        .add(new Position(leftMostX, highestY))
+                        .add(new Renderable())
+                );
+                highestY += playerSprite.getHeight();
+            }
+            highestY = 0;
+            for (Sprite playerSprite : targetSprites) {
+                getEngine().addEntity(new Entity()
+                        .add(new HUDItemInfo("target"))
+                        .add(new SpriteComponent(playerSprite))
+                        .add(new Position(rightMostX, highestY))
+                        .add(new Renderable())
+                );
+                highestY += playerSprite.getHeight();
+            }
+            typeSpritesNotMade = false;
         }
     }
 }
