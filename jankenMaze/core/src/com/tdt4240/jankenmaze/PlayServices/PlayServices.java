@@ -16,6 +16,7 @@ public interface PlayServices {
     public void startSelectOpponents(boolean autoMatch);
     void setGameListener(GameListener gameListener);
     public void setNetworkListener(NetworkListener networkListener);
+    void sendUnreliableMessageToOthers(byte[] messageData);
 
     public interface NetworkListener{
         void onReliableMessageReceived(String senderParticipantId, int describeContents, byte[] messageData);

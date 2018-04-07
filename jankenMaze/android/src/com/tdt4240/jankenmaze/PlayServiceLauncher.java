@@ -147,7 +147,24 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
 
     @Override
     public void setNetworkListener(NetworkListener networkListener) {
+        System.out.println("setNetworkListener");
         this.networkListener = networkListener;
+    }
+
+    @Override
+    public void sendUnreliableMessageToOthers(byte[] messageData) {
+        if (currentRoomId == null){
+            System.out.println("RoomID is null!");
+            return;
+        }
+        if (!gameHelper.isSignedIn()){
+            System.out.println("not signed in");
+            return;
+        }
+
+        Games.RealTimeMultiplayer.sendUnreliableMessageToOthers(gameHelper.getApiClient(), messageData, currentRoomId);
+        Log.d(TAG, "sendUnreliableMessageToOthers: ");
+
     }
 
 
@@ -168,6 +185,7 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
                 handleSelectPlayersResult(resultCode, data);
                 break;
             case RC_WAITING_ROOM:
+                Log.d(TAG, "onActivityResult: RC_WAITING_ROOM");
                 handleWaitingRoomResult(resultCode, data);
                 break;
             default:
@@ -255,12 +273,16 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
 
     @Override
     public void onRoomCreated(int status, Room room) {
-        Log.d(TAG, "onRoomCreated(" + status + ", " + room + ")");
-
-        if (status != STATUS_OK) {
-            Log.e(TAG, "*** Error: onRoomCreated, status " + status);
-            showGameError();
-            return;
+        Log.d(TAG, "onRoomCreated: ");
+        switch (status) {
+            case STATUS_OK:
+                currentRoomId = room.getRoomId();
+                showWaitingRoom(room);
+                break;
+            case STATUS_CLIENT_RECONNECT_REQUIRED:
+                signIn();
+                break;
+            default:
         }
 
     }
