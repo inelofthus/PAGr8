@@ -32,8 +32,8 @@ public class HealthSystem extends EntitySystem {
 
 
     public HealthSystem(Signal<GameEvent> playerCollisionSignal) {
+        //creates the CollisionSignal
         this.playerCollisionSignal = playerCollisionSignal;
-
         eventQueue = new EventQueue();
         playerCollisionSignal.add(eventQueue);
     }
@@ -43,10 +43,11 @@ public class HealthSystem extends EntitySystem {
 
     }
   public void decreaseHealth(Entity player, int delta){
-        //TODO: Move to spawnposition
 
+        //get the healthComponent for player
         Health health=healthComponentMapper.get(player);
         System.out.println(health.health);
+        //decrease health
         health.health=health.health-Math.abs(delta);
       System.out.println(health.health);
         if (health.health<=0){
@@ -60,6 +61,8 @@ public class HealthSystem extends EntitySystem {
                     = ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.Position.class).get(player);
             com.tdt4240.jankenmaze.gameecs.components.Position spawnPos
                     = ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.Position.class).get(spawn);
+
+            //TODO the player should loose all velocity when spawns?
             playerPosition.x=spawnPos.x;
             playerPosition.y=spawnPos.y;
 
@@ -70,7 +73,8 @@ public class HealthSystem extends EntitySystem {
     @Override
     public void addedToEngine(Engine engine) {
         //get localPLayer
-         localPlayer = engine.getEntitiesFor(Family.all(com.tdt4240.jankenmaze.gameecs.components.LocalPlayer.class).get());
+        localPlayer = engine.getEntitiesFor(Family.all(com.tdt4240.jankenmaze.gameecs.components.LocalPlayer.class).get());
+        //get all spawnPositions
         spawnPositions = engine.getEntitiesFor(Family.all(Unoccupied.class).get());
 
     }
@@ -82,6 +86,7 @@ public class HealthSystem extends EntitySystem {
 
     @Override
     public void update(float deltaTime) {
+      // decreases Health when local player has been eaten.
         for (GameEvent event: eventQueue.getEvents()){
            decreaseHealth(localPlayer.get(0),1);
 
@@ -91,7 +96,7 @@ public class HealthSystem extends EntitySystem {
 
 
 
-        //super.update(deltaTime);
+
     }
 }
 

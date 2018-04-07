@@ -107,9 +107,9 @@ public class EntityManager {
     }
 
     public void createHUDItem() {
-        engine.addEntity(
-                entityFactory.createHUDItem(100, 100, new Texture("button.png"), "playerHealth")
-        );
+       // engine.addEntity(
+        //        entityFactory.createHUDItem(100, 100, new Texture("button.png"), "playerHealth")
+        //);
         //engine.addEntity(
         //        entityFactory.createWall(200, 200, new Texture("testWall.png")
         //        ));
