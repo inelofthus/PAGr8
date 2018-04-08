@@ -22,7 +22,9 @@ import java.util.Random;
 public class HealthSystem extends EntitySystem {
     //TODO: Componentmapper and values
     private Signal<GameEvent> playerCollisionSignal;
-    private EventQueue eventQueue;
+    private EventQueue collisionQueue;
+    private Signal<GameEvent> gameOverSignal;
+    private EventQueue gameOverQueue;
     private ComponentMapper<com.tdt4240.jankenmaze.gameecs.components.Health> healthComponentMapper =ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.Health.class);
     ImmutableArray<Entity> localPlayer;
     Random rand = new Random();
@@ -31,11 +33,15 @@ public class HealthSystem extends EntitySystem {
 
 
 
-    public HealthSystem(Signal<GameEvent> playerCollisionSignal) {
+    public HealthSystem(Signal<GameEvent> playerCollisionSignal, Signal<GameEvent> gameOverSignal) {
         //creates the CollisionSignal
         this.playerCollisionSignal = playerCollisionSignal;
-        eventQueue = new EventQueue();
-        playerCollisionSignal.add(eventQueue);
+        collisionQueue = new EventQueue();
+        this.playerCollisionSignal.add(collisionQueue);
+        //creates the GameOverSignal
+        this.gameOverSignal=gameOverSignal;
+        gameOverQueue= new EventQueue();
+        this.gameOverSignal.add(gameOverQueue);
     }
 
     public void increaseHealth(Entity entity, int delta){
@@ -52,6 +58,7 @@ public class HealthSystem extends EntitySystem {
       System.out.println(health.health);
         if (health.health<=0){
             // GAME OVER
+            gameOverSignal.dispatch(GameEvent.GAME_OVER);
         }else{
             //Go to fucking spawn.
             //workaround the problem with static context
@@ -87,7 +94,7 @@ public class HealthSystem extends EntitySystem {
     @Override
     public void update(float deltaTime) {
       // decreases Health when local player has been eaten.
-        for (GameEvent event: eventQueue.getEvents()){
+        for (GameEvent event: collisionQueue.getEvents()){
            decreaseHealth(localPlayer.get(0),1);
 
 

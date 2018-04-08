@@ -1,8 +1,11 @@
 package com.tdt4240.jankenmaze.states;
 
 import com.badlogic.ashley.core.Engine;
+import com.badlogic.ashley.signals.Signal;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.tdt4240.jankenmaze.gameecs.events.EventQueue;
+import com.tdt4240.jankenmaze.gameecs.events.GameEvent;
 
 /**
  * Created by jonas on 07/03/2018.
@@ -14,6 +17,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class PlayState extends State {
     Engine engine;
+    private GameStateManager gsm;
+    private Signal<GameEvent> gameOverSignal;
+    private EventQueue gameOverQueue;
     com.tdt4240.jankenmaze.gameecs.EntityManager entityManager;
     int[][] binaryMap = {{1 ,1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
@@ -38,12 +44,16 @@ public class PlayState extends State {
 
     public PlayState(SpriteBatch batch){
         super();
+        gsm = GameStateManager.getGsm();
         engine = new Engine();
-        entityManager = new com.tdt4240.jankenmaze.gameecs.EntityManager(engine, batch);
+        gameOverSignal= new Signal<GameEvent>();
+        entityManager = new com.tdt4240.jankenmaze.gameecs.EntityManager(engine, batch,gameOverSignal);
         entityManager.createMap(binaryMap, new Texture("greyWall.png"));
         entityManager.createLocalPlayer("Rock", new Texture("singleRock.png"));
         entityManager.createPlayer("Paper", new Texture("singleRock.png"));//Players have to be created after map.
         entityManager.createHUDItem();
+        gameOverQueue= new EventQueue();
+        this.gameOverSignal.add(gameOverQueue);
     }
     @Override
     protected void handleInput() {
@@ -52,7 +62,11 @@ public class PlayState extends State {
 
     @Override
     public void update(float dt) {
+
         entityManager.update();
+        for(GameEvent gameOver: gameOverQueue.getEvents()){
+            gsm.push(new GameOverState());
+        }
     }
 
     @Override
