@@ -24,7 +24,6 @@ import com.tdt4240.jankenmaze.gameecs.systems.InputSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.MovementSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.EntityFactory;
 import com.tdt4240.jankenmaze.gameecs.systems.ReceiveSignalSystemExample;
-import com.tdt4240.jankenmaze.gameecs.systems.RenderSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.SendSignalSystemExample;
 import com.badlogic.ashley.utils.ImmutableArray;
 import java.util.ArrayList;
@@ -55,6 +54,7 @@ public class EntityManager {
     private Engine engine;
     SpriteBatch batch;
     OrthographicCamera cam;
+    InputSystem inputSystem;
     public EntityFactory entityFactory;
     private Signal<GameEvent> gameEventSignal;
 
@@ -76,7 +76,24 @@ public class EntityManager {
         textureMap.put("Paper", new Texture("singlePaper.png"));
         textureMap.put("Scissors", new Texture("Scissors.png"));
 
-        addSystemsToEngine();
+        MovementSystem cms = new MovementSystem(gameEventSignal);
+        engine.addSystem(cms);
+        com.tdt4240.jankenmaze.gameecs.systems.RenderSystem rs = new com.tdt4240.jankenmaze.gameecs.systems.RenderSystem(batch);
+        engine.addSystem(rs);
+        this.inputSystem = new InputSystem(gameEventSignal);
+        engine.addSystem(inputSystem);
+        HUDSystem hudSystem = new HUDSystem();
+        engine.addSystem(hudSystem);
+        CollisionSystem cs = new CollisionSystem(playerCollisionSignal);
+        engine.addSystem(cs);
+
+        HealthSystem hs=new HealthSystem(playerCollisionSignal);
+        engine.addSystem(hs);
+
+        SendSignalSystemExample sendEx = new SendSignalSystemExample(gameEventSignal);
+        engine.addSystem(sendEx);
+        ReceiveSignalSystemExample recEx = new ReceiveSignalSystemExample(gameEventSignal);
+        engine.addSystem(recEx);
     }
 
     //TODO: Should entityfactory add entities directly? It's currently done in playstate
@@ -142,31 +159,4 @@ public class EntityManager {
             }
         }
     }
-
-    void addSystemsToEngine(){
-        MovementSystem cms = new MovementSystem(gameEventSignal);
-        engine.addSystem(cms);
-
-        RenderSystem rs = new RenderSystem(batch);
-        engine.addSystem(rs);
-
-        InputSystem is = new InputSystem(gameEventSignal);
-        engine.addSystem(is);
-
-        HUDSystem hudSystem = new HUDSystem();
-        engine.addSystem(hudSystem);
-
-        CollisionSystem cs = new CollisionSystem(playerCollisionSignal);
-        engine.addSystem(cs);
-
-        HealthSystem hs = new HealthSystem(playerCollisionSignal);
-        engine.addSystem(hs);
-
-        SendSignalSystemExample sendEx = new SendSignalSystemExample(gameEventSignal);
-        engine.addSystem(sendEx);
-
-        ReceiveSignalSystemExample recEx = new ReceiveSignalSystemExample(gameEventSignal);
-        engine.addSystem(recEx);
-    }
-
 }
