@@ -18,13 +18,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
 public class MainMenuView extends View {
     TextButton.TextButtonStyle textButtonStyle;
-    protected Stage stage;
-    protected TextureAtlas atlas;
-    protected Skin skin;
-    protected Table table;
+    private Stage stage;
+    private TextureAtlas atlas;
+    private Skin skin;
+    private Table table;
     public TextButton btn_joinGame, btn_createGame, btn_invite;
     private Label heading1;
-    protected BitmapFont font;
+    private BitmapFont font;
 
     public MainMenuView() {
         stage = new Stage();
