@@ -57,32 +57,11 @@ public class InputSystem extends EntitySystem{
 
             if (pointInTriangle(touchX, touchY, maxX, 0, centerX, centerY, 0, 0)) {
                 //player moves up,
-                System.out.println("Player decided to move up");
-                System.out.println("Before input sytem has done its thing:");
                 Velocity velocity = velocityMapper.get(entities.get(0));
-                System.out.println("velocity.currentX = " + velocity.currentX);
-                System.out.println("velocity.currentY = " + velocity.currentY);
-                System.out.println("velocity.futureX = " + velocity.futureX);
-                System.out.println("velocity.futureY = " + velocity.futureY);
                 velocity.futureX = 0;
                 velocity.futureY = vel;
-                System.out.println("After input sytem has done its thing:");
-                System.out.println("velocity.currentX = " + velocity.currentX);
-                System.out.println("velocity.currentY = " + velocity.currentY);
-                System.out.println("velocity.futureX = " + velocity.futureX);
-                System.out.println("velocity.futureY = " + velocity.futureY);
-                //for (Entity e : entities) {
-                //    Velocity velocity = velocityMapper.get(e);
-                //    velocity.futureX = 0;
-                //    velocity.futureY = vel;
-                //    System.out.println("velocity.currentX = " + velocity.currentX);
-                //    System.out.println("velocity.currentY = " + velocity.currentY);
-                //    System.out.println("velocity.futureX = " + velocity.futureX);
-                //    System.out.println("velocity.futureY = " + velocity.futureY);
-                //}
             } else if (pointInTriangle(touchX, touchY, maxX, maxY, centerX, centerY, maxX, 0)) {
                 //player moves right
-                System.out.println("Player decided to move right");
                 for (Entity e : entities) {
                     Velocity velocity = velocityMapper.get(e);
                     velocity.futureX = vel;
@@ -90,7 +69,6 @@ public class InputSystem extends EntitySystem{
                 }
             } else if (pointInTriangle(touchX, touchY, 0, maxY, centerX, centerY, maxX, maxY)) {
                 //player moves down
-                System.out.println("Player decided to move down");
                 for (Entity e : entities) {
                     Velocity velocity = velocityMapper.get(e);
                     velocity.futureX = 0;
@@ -98,7 +76,6 @@ public class InputSystem extends EntitySystem{
                 }
             } else if (pointInTriangle(touchX, touchY, 0, 0, centerX, centerY, 0, maxY)) {
                 //player moves to the left
-                System.out.println("Player decided to move left");
                 for (Entity e : entities) {
                     Velocity velocity = velocityMapper.get(e);
                     velocity.futureX = -vel;

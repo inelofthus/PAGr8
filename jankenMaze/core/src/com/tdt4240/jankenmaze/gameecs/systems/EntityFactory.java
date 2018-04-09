@@ -62,7 +62,6 @@ public class EntityFactory {
         return player;
     }
 
-
     public Entity createLocalPlayer(String type, float xPosition, float yPosition, int health, Texture texture) {
         //creates local player
 
