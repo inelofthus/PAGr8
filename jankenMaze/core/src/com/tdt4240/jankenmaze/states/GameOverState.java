@@ -1,6 +1,8 @@
 package com.tdt4240.jankenmaze.states;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.tdt4240.jankenmaze.view.GameOverView;
 import com.tdt4240.jankenmaze.view.YouLooseView;
 import com.tdt4240.jankenmaze.view.YouWinView;
@@ -14,11 +16,24 @@ public class GameOverState extends State {
     private GameStateManager gms;
     private GameOverView gameOverView;
     private SpriteBatch batch;
+    private ClickListener listenerBtn_playAgain, listenerBtn_mainMenu, listenerBtn_quitGame;
 
     public GameOverState(){
         super();
         gms=GameStateManager.getGsm();
         this.gameOverView = new YouWinView();
+
+        listenerBtn_playAgain = new ClickListener();
+        gameOverView.btn_playAgain.addListener(listenerBtn_playAgain);
+
+        listenerBtn_mainMenu = new ClickListener();
+        gameOverView.btn_toMainMenu.addListener(listenerBtn_mainMenu);
+
+        listenerBtn_quitGame = new ClickListener();
+        gameOverView.btn_quitGame.addListener(listenerBtn_quitGame);
+
+
+        cam.setToOrtho(false);
 
 
 
@@ -26,11 +41,27 @@ public class GameOverState extends State {
 
     @Override
     protected void handleInput() {
+        if (gameOverView.btn_playAgain.isPressed()){
+            System.out.println("Is pressed");
+            gsm.push(new com.tdt4240.jankenmaze.states.PlayState(batch));
+        }
+        if (gameOverView.btn_toMainMenu.isPressed()){
+            //TODO: Push correct state
+            gsm.push(new com.tdt4240.jankenmaze.states.MenuState());
+        }
+        if (gameOverView.btn_quitGame.isPressed()){
+            //TODO: Push correct state
+            //gsm.push(new com.tdt4240.jankenmaze.states.PlayState(batch));
+        }
+
 
     }
 
     @Override
     public void update(float dt) {
+        if(Gdx.input.isTouched()){
+            handleInput();
+        }
 
     }
 
