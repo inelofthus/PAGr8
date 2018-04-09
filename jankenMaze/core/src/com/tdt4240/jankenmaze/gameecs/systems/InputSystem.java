@@ -53,30 +53,28 @@ public class InputSystem extends EntitySystem{
         float touchY = Gdx.input.getY();
 
         if(Gdx.input.isTouched()) {
-
+            Velocity velocity = velocityMapper.get(entities.get(0));
             if (pointInTriangle(touchX, touchY, maxX, 0, centerX, centerY, 0, 0)) {
                 //player moves up,
-                Velocity velocity = velocityMapper.get(entities.get(0));
-                velocity.futureX = 0;
-                velocity.futureY = vel;
+                if (velocity.currentY == 0) {
+                    velocity.futureX = 0;
+                    velocity.futureY = vel;
+                }
             } else if (pointInTriangle(touchX, touchY, maxX, maxY, centerX, centerY, maxX, 0)) {
                 //player moves right
-                for (Entity e : entities) {
-                    Velocity velocity = velocityMapper.get(e);
+                if (velocity.currentX == 0) {
                     velocity.futureX = vel;
                     velocity.futureY = 0;
                 }
             } else if (pointInTriangle(touchX, touchY, 0, maxY, centerX, centerY, maxX, maxY)) {
                 //player moves down
-                for (Entity e : entities) {
-                    Velocity velocity = velocityMapper.get(e);
+                if (velocity.currentY == 0) {
                     velocity.futureX = 0;
                     velocity.futureY = -vel;
                 }
             } else if (pointInTriangle(touchX, touchY, 0, 0, centerX, centerY, 0, maxY)) {
                 //player moves to the left
-                for (Entity e : entities) {
-                    Velocity velocity = velocityMapper.get(e);
+                if (velocity.currentX == 0) {
                     velocity.futureX = -vel;
                     velocity.futureY = 0;
                 }
