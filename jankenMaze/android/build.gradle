@@ -2,14 +2,14 @@ android {
 
 
 
-   /* signingConfigs {
+   signingConfigs {
         config {
             keyAlias 'jankenRelease'
             keyPassword 'Bolle1234'
             storeFile file('../../key_store/android.jks')
             storePassword 'Bolle1234'
         }
-    }*/
+    }
     buildToolsVersion "27.0.3"
     compileSdkVersion 27
     sourceSets {
@@ -39,7 +39,8 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-           // signingConfig signingConfigs.config
+            // signingConfig signingConfigs.config
+            signingConfig signingConfigs.config
         }
     }
 }
