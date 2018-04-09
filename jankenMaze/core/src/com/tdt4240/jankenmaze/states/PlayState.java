@@ -50,7 +50,7 @@ public class PlayState extends State {
         entityManager = new com.tdt4240.jankenmaze.gameecs.EntityManager(engine, batch,gameOverSignal);
         entityManager.createMap(binaryMap, new Texture("greyWall.png"));
         entityManager.createLocalPlayer("Rock", new Texture("singleRock.png"));
-        entityManager.createPlayer("Paper", new Texture("singleRock.png"));//Players have to be created after map.
+        entityManager.createPlayer("Paper", new Texture("singlePaper.png"));//Players have to be created after map.
         entityManager.createHUDItem();
         gameOverQueue= new EventQueue();
         this.gameOverSignal.add(gameOverQueue);

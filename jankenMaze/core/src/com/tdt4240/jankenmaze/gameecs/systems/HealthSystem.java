@@ -9,7 +9,9 @@ import com.badlogic.ashley.signals.Signal;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.tdt4240.jankenmaze.gameecs.EntityManager;
 import com.tdt4240.jankenmaze.gameecs.components.Health;
+import com.tdt4240.jankenmaze.gameecs.components.Position;
 import com.tdt4240.jankenmaze.gameecs.components.Unoccupied;
+import com.tdt4240.jankenmaze.gameecs.components.Velocity;
 import com.tdt4240.jankenmaze.gameecs.events.EventQueue;
 import com.tdt4240.jankenmaze.gameecs.events.GameEvent;
 
@@ -26,6 +28,7 @@ public class HealthSystem extends EntitySystem {
     private Signal<GameEvent> gameOverSignal;
     private EventQueue gameOverQueue;
     private ComponentMapper<com.tdt4240.jankenmaze.gameecs.components.Health> healthComponentMapper =ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.Health.class);
+    private ComponentMapper<Velocity> velocityComponentMapper = ComponentMapper.getFor(Velocity.class);
     ImmutableArray<Entity> localPlayer;
     Random rand = new Random();
     private ImmutableArray<Entity> spawnPositions;
@@ -52,6 +55,11 @@ public class HealthSystem extends EntitySystem {
 
         //get the healthComponent for player
         Health health=healthComponentMapper.get(player);
+        Velocity velocity = velocityComponentMapper.get(player);
+        velocity.currentX = 0;
+        velocity.currentY = 0;
+        velocity.futureX = 0;
+        velocity.futureY = 0;
         System.out.println(health.health);
         //decrease health
         health.health=health.health-Math.abs(delta);

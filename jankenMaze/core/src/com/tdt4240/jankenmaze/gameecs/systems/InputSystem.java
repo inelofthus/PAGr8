@@ -34,7 +34,6 @@ public class InputSystem extends EntitySystem{
         this.centerX = Gdx.graphics.getWidth() /2;
         this.centerY = Gdx.graphics.getHeight() /2;
 
-        //System.out.print("InputSystem created");
     }
 
     public void addedToEngine(Engine engine){
