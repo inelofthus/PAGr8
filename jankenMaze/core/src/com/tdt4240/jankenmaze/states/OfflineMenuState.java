@@ -49,14 +49,13 @@ public class OfflineMenuState extends State {
         handleInput();
         if (gsm.playServices.isSignedIn()){
             gsm.push(new OnlineMenuState());
-        }else {
-            gsm.push(new OfflineMenuState());
         }
 
     }
 
     @Override
     public void render(SpriteBatch sb) {
+        this.batch = sb;
         offlineMenuView.render(sb);
     }
 
