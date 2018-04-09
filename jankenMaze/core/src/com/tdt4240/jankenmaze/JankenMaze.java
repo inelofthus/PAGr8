@@ -10,6 +10,8 @@ import com.tdt4240.jankenmaze.states.GameStateManager;
 import com.tdt4240.jankenmaze.states.MenuState;
 import com.tdt4240.jankenmaze.gameecs.EntityManager;
 import com.tdt4240.jankenmaze.states.MultiPlayState;
+import com.tdt4240.jankenmaze.states.OfflineMenuState;
+import com.tdt4240.jankenmaze.states.OnlineMenuState;
 import com.tdt4240.jankenmaze.states.PlayState;
 import com.badlogic.ashley.core.Entity;
 import java.util.ArrayList;
@@ -52,7 +54,12 @@ public class JankenMaze extends ApplicationAdapter implements PlayServices.GameL
 		gsm.setPlayServices(playServices);
 		playServices.setGameListener(this);
 		this.multiPlayState = new MultiPlayState(batch);
-		gsm.push(new MenuState());
+		if (playServices.isSignedIn()){
+			gsm.push(new OnlineMenuState());
+		}else {
+			gsm.push(new OfflineMenuState());
+		}
+
 		powerUpTexture = (new Texture("powerUps.png"));
 		//Creates wall entities from binaryMap
 	}

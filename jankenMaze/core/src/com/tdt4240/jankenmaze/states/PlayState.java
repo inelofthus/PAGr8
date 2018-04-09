@@ -56,7 +56,6 @@ public class PlayState extends State {
         entityManager = new com.tdt4240.jankenmaze.gameecs.EntityManager(engine, batch);
         entityManager.createMap(binaryMap, new Texture("greyWall.png"));
         entityManager.createHUDItem();
-        entityManager.createLocalPlayer("Rock");
     }
     @Override
     protected void handleInput() {
