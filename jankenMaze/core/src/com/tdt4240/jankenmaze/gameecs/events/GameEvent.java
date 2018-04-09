@@ -5,7 +5,7 @@ package com.tdt4240.jankenmaze.gameecs.events;
  */
 
 public enum GameEvent {
-    GAME_FINISHED,
+    GAME_OVER,
 
     WALL_COLLISION,
     PLAYER_COLLISION,

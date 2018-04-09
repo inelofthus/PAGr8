@@ -56,18 +56,19 @@ public class EntityManager {
     InputSystem inputSystem;
     public EntityFactory entityFactory;
     private Signal<GameEvent> gameEventSignal;
-
+    private Signal<GameEvent> gameOverSignal;
     private Signal<GameEvent> playerCollisionSignal;
     Random rand = new Random();
     private ImmutableArray<Entity> spawnPositions;
 
 
-    public EntityManager(Engine e, SpriteBatch sb) {
+    public EntityManager(Engine e, SpriteBatch sb, Signal<GameEvent> gameOverSignal) {
         this.engine = e;
         this.batch = sb;
         entityFactory = new EntityFactory(engine, batch);
         gameEventSignal = new Signal<GameEvent>();
         playerCollisionSignal = new Signal<GameEvent>();
+        this.gameOverSignal = gameOverSignal;
 
         MovementSystem cms = new MovementSystem(gameEventSignal);
         engine.addSystem(cms);
@@ -80,7 +81,7 @@ public class EntityManager {
         CollisionSystem cs = new CollisionSystem(playerCollisionSignal);
         engine.addSystem(cs);
 
-        HealthSystem hs=new HealthSystem(playerCollisionSignal);
+        HealthSystem hs=new HealthSystem(playerCollisionSignal, gameOverSignal);
         engine.addSystem(hs);
 
         SendSignalSystemExample sendEx = new SendSignalSystemExample(gameEventSignal);
@@ -107,9 +108,9 @@ public class EntityManager {
     }
 
     public void createHUDItem() {
-        engine.addEntity(
-                entityFactory.createHUDItem(100, 100, new Texture("button.png"), "playerHealth")
-        );
+       // engine.addEntity(
+        //        entityFactory.createHUDItem(100, 100, new Texture("button.png"), "playerHealth")
+        //);
         //engine.addEntity(
         //        entityFactory.createWall(200, 200, new Texture("testWall.png")
         //        ));

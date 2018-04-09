@@ -44,8 +44,8 @@ public class CollisionSystem extends EntitySystem {
     private ComponentMapper<com.tdt4240.jankenmaze.gameecs.components.PlayerInfo> pi = ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.PlayerInfo.class);
 
     public CollisionSystem(Signal<GameEvent> playerCollisionSignal){
+        //creates playerCollisionSignal
         this.playerCollisionSignal = playerCollisionSignal;
-
         eventQueue = new EventQueue();
         playerCollisionSignal.add(eventQueue);
     }
@@ -68,8 +68,10 @@ public class CollisionSystem extends EntitySystem {
 
     //call PowerUpSystem on powerups.
     public void collisionWithWall(Entity player, Rectangle wall){
+        //gets the velocity of player
         com.tdt4240.jankenmaze.gameecs.components.Velocity playerVelocity
                 = ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.Velocity.class).get(player);
+        //gets the position of player
         com.tdt4240.jankenmaze.gameecs.components.Position playerPosition
                 = ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.Position.class).get(player);
         //checks if player is moving horizontally
@@ -118,6 +120,7 @@ public class CollisionSystem extends EntitySystem {
                     if(bb.get(player1).boundsBox.overlaps(bb.get(player2).boundsBox)){
 
                         if(pi.get(player2).target.equals(pi.get(player1).type)){
+                            //sends a playerCollisionSignal
                             playerCollisionSignal.dispatch(GameEvent.PLAYER_COLLISION);
                         }
                     }
