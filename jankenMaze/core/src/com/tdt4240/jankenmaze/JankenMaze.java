@@ -6,10 +6,10 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.tdt4240.jankenmaze.PlayServices.PlayServices;
-import com.tdt4240.jankenmaze.onlineservice.SocketConnection;
 import com.tdt4240.jankenmaze.states.GameStateManager;
 import com.tdt4240.jankenmaze.states.MenuState;
 import com.tdt4240.jankenmaze.gameecs.EntityManager;
+import com.tdt4240.jankenmaze.states.MultiPlayState;
 import com.tdt4240.jankenmaze.states.PlayState;
 import com.badlogic.ashley.core.Entity;
 import java.util.ArrayList;
@@ -25,11 +25,16 @@ public class JankenMaze extends ApplicationAdapter implements PlayServices.GameL
 	GameStateManager gsm;
 	//SocketConnection socket = SocketConnection.getSocketConnection();
 	PlayServices playServices;
-	PlayState playState;
+	PlayState multiPlayState;
 
+
+	//Constructor for the android app
 	public JankenMaze(PlayServices playServices) {
-
 		this.playServices = playServices;
+	}
+
+	//constructor for the Desktop app
+	public JankenMaze() {
 
 	}
 
@@ -46,7 +51,7 @@ public class JankenMaze extends ApplicationAdapter implements PlayServices.GameL
 		gsm = GameStateManager.getGsm();
 		gsm.setPlayServices(playServices);
 		playServices.setGameListener(this);
-		this.playState = new PlayState(batch);
+		this.multiPlayState = new MultiPlayState(batch);
 		gsm.push(new MenuState());
 		powerUpTexture = (new Texture("powerUps.png"));
 		//Creates wall entities from binaryMap
@@ -71,7 +76,7 @@ public class JankenMaze extends ApplicationAdapter implements PlayServices.GameL
 	public void onMultiplayerGameStarting() {
 		System.out.println("JankenMaze: onMultiplayerGameStarting");
 
-		gsm.push(playState);
+		gsm.push(multiPlayState);
 	}
 
 	@Override
