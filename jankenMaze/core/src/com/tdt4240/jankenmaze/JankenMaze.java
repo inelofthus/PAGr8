@@ -52,5 +52,4 @@ public class JankenMaze extends ApplicationAdapter {
 		batch.dispose();
 		//img.dispose();
 	}
-
 }

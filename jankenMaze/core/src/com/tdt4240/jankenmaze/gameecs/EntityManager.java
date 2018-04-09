@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.tdt4240.jankenmaze.gameecs.components.LocalPlayer;
 import com.tdt4240.jankenmaze.gameecs.components.Position;
+import com.tdt4240.jankenmaze.gameecs.components.PowerUpInfo;
 import com.tdt4240.jankenmaze.gameecs.components.Renderable;
 import com.tdt4240.jankenmaze.gameecs.components.SpriteComponent;
 import com.tdt4240.jankenmaze.gameecs.components.Velocity;
@@ -88,6 +89,11 @@ public class EntityManager {
         engine.addSystem(sendEx);
         ReceiveSignalSystemExample recEx = new ReceiveSignalSystemExample(gameEventSignal);
         engine.addSystem(recEx);
+
+        engine.addEntity(new Entity()
+                .add(new SpriteComponent(new Texture("testGrid.png")))
+                .add(new Renderable())
+                .add(new Position(Gdx.graphics.getWidth(),Gdx.graphics.getHeight())));
     }
 
     //TODO: Should entityfactory add entities directly? It's currently done in playstate
