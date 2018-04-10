@@ -2,6 +2,7 @@ package com.tdt4240.jankenmaze.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.tdt4240.jankenmaze.GameSettings;
 import com.tdt4240.jankenmaze.PlayServices.PlayServices;
 import com.tdt4240.jankenmaze.gameecs.components.PlayerNetworkData;
 
@@ -20,6 +21,11 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
     public MultiPlayState(SpriteBatch batch) {
         super(batch);
         gsm.playServices.setNetworkListener(this);
+        GameSettings.getInstance().isMultplayerGame = true;
+
+        if (!(GameSettings.getInstance().getPlayers() == null)){
+            onRoomReady(GameSettings.getInstance().getPlayers());
+        }
     }
 
     @Override
@@ -76,6 +82,9 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
     @Override
     public void onRoomReady(List<PlayerNetworkData> players) {
         System.out.println("Player1 " + players.get(0).displayName);
+        if (GameSettings.getInstance().getPlayers()== null){
+            GameSettings.getInstance().setPlayers(players);
+        }
         //TODO: Initialize the world with all systems and components. Among other things create a player entity for each PlayerNetworkData
 
 

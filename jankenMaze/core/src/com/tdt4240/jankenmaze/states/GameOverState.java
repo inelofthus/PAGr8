@@ -3,6 +3,7 @@ package com.tdt4240.jankenmaze.states;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.tdt4240.jankenmaze.GameSettings;
 import com.tdt4240.jankenmaze.view.GameOverView;
 import com.tdt4240.jankenmaze.view.YouLooseView;
 import com.tdt4240.jankenmaze.view.YouWinView;
@@ -40,17 +41,24 @@ public class GameOverState extends State {
     @Override
     protected void handleInput() {
         if (gameOverView.btn_playAgain.isPressed()){
-            System.out.println("Is pressed");
-            gsm.push(new com.tdt4240.jankenmaze.states.PlayState(batch));
+            if(GameSettings.getInstance().isMultplayerGame){
+                gsm.push(new MultiPlayState(batch));
+            }else {
+                gsm.push(new SinglePlayState(batch));
+            }
+
         }
         if (gameOverView.btn_toMainMenu.isPressed()){
             //TODO: Push correct state
-            gsm.push(new com.tdt4240.jankenmaze.states.MenuState());
+            if(gsm.playServices.isSignedIn()){
+                gsm.push(new OnlineMenuState());
+            }else {
+                gsm.push(new OfflineMenuState());
+            }
         }
         if (gameOverView.btn_quitGame.isPressed()){
-            //TODO: Push correct state
-            //gsm.push(new com.tdt4240.jankenmaze.states.PlayState(batch));
-        }
+            Gdx.app.exit();
+         }
 
 
     }
