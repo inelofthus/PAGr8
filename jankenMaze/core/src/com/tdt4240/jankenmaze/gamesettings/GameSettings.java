@@ -1,4 +1,4 @@
-package com.tdt4240.jankenmaze;
+package com.tdt4240.jankenmaze.gamesettings;
 
 import com.tdt4240.jankenmaze.gameecs.components.PlayerNetworkData;
 

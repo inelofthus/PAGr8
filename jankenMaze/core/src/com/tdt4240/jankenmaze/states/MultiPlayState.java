@@ -2,7 +2,7 @@ package com.tdt4240.jankenmaze.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.tdt4240.jankenmaze.GameSettings;
+import com.tdt4240.jankenmaze.gamesettings.GameSettings;
 import com.tdt4240.jankenmaze.PlayServices.PlayServices;
 import com.tdt4240.jankenmaze.gameecs.components.PlayerNetworkData;
 import com.tdt4240.jankenmaze.gamesettings.PlayerType;
@@ -10,7 +10,6 @@ import com.tdt4240.jankenmaze.gamesettings.PlayerTypes;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**

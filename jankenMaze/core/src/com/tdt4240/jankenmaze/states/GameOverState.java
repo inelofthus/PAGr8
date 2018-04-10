@@ -3,9 +3,8 @@ package com.tdt4240.jankenmaze.states;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.tdt4240.jankenmaze.GameSettings;
+import com.tdt4240.jankenmaze.gamesettings.GameSettings;
 import com.tdt4240.jankenmaze.view.GameOverView;
-import com.tdt4240.jankenmaze.view.YouLooseView;
 import com.tdt4240.jankenmaze.view.YouWinView;
 
 /**
