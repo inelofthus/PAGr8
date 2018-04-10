@@ -64,8 +64,8 @@ public class MovementSystem extends EntitySystem {
                 if (entity == localPlayers.get(0)) {
                     if(velocity.futureX != 0 || velocity.futureY != 0) {
                         //This is where future velocity is tested
-                        bounds.boundsBox.setX(position.x+velocity.futureX*dt*4);
-                        bounds.boundsBox.setY(position.y+velocity.futureY*dt*4);
+                        bounds.boundsBox.setX(position.x+velocity.futureX*dt*2);
+                        bounds.boundsBox.setY(position.y+velocity.futureY*dt*2);
                         boolean collision = false;
                         for(int k=0; k < walls.size(); k++) {
                             Rectangle wallBox = bb.get(walls.get(k)).boundsBox;
@@ -75,16 +75,14 @@ public class MovementSystem extends EntitySystem {
                             }
                         }
                         if(collision){
-                            bounds.boundsBox.setX(position.x += velocity.currentX * dt);
-                            bounds.boundsBox.setY(position.y += velocity.currentY * dt);
+                                bounds.boundsBox.setX(position.x += velocity.currentX * dt);
+                                bounds.boundsBox.setY(position.y += velocity.currentY * dt);
                         }
                         else {
                             velocity.currentX = velocity.futureX;
                             velocity.currentY = velocity.futureY;
                             velocity.futureY = 0;
                             velocity.futureX = 0;
-                            bounds.boundsBox.setX(position.x+velocity.currentX*dt);
-                            bounds.boundsBox.setY(position.y+velocity.currentY*dt);
                         }
                     }
                     else {

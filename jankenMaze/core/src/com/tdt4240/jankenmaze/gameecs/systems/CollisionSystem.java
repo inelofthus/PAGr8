@@ -9,6 +9,8 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.math.Rectangle;
 import com.tdt4240.jankenmaze.gameecs.events.EventQueue;
 import com.tdt4240.jankenmaze.gameecs.events.GameEvent;
+import com.tdt4240.jankenmaze.gameecs.events.GameVariable;
+import com.tdt4240.jankenmaze.gameecs.events.VariableQueue;
 
 /**
  * Created by bartosz on 3/15/18.
@@ -35,7 +37,9 @@ public class CollisionSystem extends EntitySystem {
     //not sure it an immutable array is 100% suited for the purpose of this system.
     //TODO check it in later stage of developement.
     private Signal<GameEvent> playerCollisionSignal;
+    private Signal<GameVariable> playerPositionSignal;
     private EventQueue eventQueue;
+    private VariableQueue positionQueue;
     private ImmutableArray<Entity> powerUps;
     private ImmutableArray<Entity> players;
     private ImmutableArray<Entity> localPlayer;
@@ -43,11 +47,15 @@ public class CollisionSystem extends EntitySystem {
     private ComponentMapper<com.tdt4240.jankenmaze.gameecs.components.BoundsBox> bb= ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.BoundsBox.class);
     private ComponentMapper<com.tdt4240.jankenmaze.gameecs.components.PlayerInfo> pi = ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.PlayerInfo.class);
 
-    public CollisionSystem(Signal<GameEvent> playerCollisionSignal){
-        //creates playerCollisionSignal
+    public CollisionSystem(Signal<GameEvent> playerCollisionSignal, Signal<GameVariable> playerPositionSignal){
+        //asignes playerCollisionSignal
         this.playerCollisionSignal = playerCollisionSignal;
         eventQueue = new EventQueue();
         playerCollisionSignal.add(eventQueue);
+        //assignes playerPositionSignal
+        this.playerPositionSignal=playerPositionSignal;
+        positionQueue = new VariableQueue();
+        playerPositionSignal.add(positionQueue);
     }
 
 
@@ -143,6 +151,8 @@ public class CollisionSystem extends EntitySystem {
                         //we want player to be outside wall
                         collisionWithWall(player1,wallBox);
                     }
+
+                    playerPositionSignal.dispatch(GameVariable.PLAYER_POSITION);
                 }
             }
         }

@@ -156,8 +156,7 @@ public class EntityManager {
     }
 
     void addSystemsToEngine(){
-        MovementSystem cms = new MovementSystem(gameEventSignal);
-        engine.addSystem(cms);
+
         com.tdt4240.jankenmaze.gameecs.systems.RenderSystem rs = new com.tdt4240.jankenmaze.gameecs.systems.RenderSystem(batch);
         engine.addSystem(rs);
         this.inputSystem = new InputSystem(gameEventSignal);
