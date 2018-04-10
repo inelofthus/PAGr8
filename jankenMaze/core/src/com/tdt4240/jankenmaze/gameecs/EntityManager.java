@@ -57,43 +57,29 @@ public class EntityManager {
     InputSystem inputSystem;
     public EntityFactory entityFactory;
     private Signal<GameEvent> gameEventSignal;
-
+    private Signal<GameEvent> gameOverSignal;
     private Signal<GameEvent> playerCollisionSignal;
     Random rand = new Random();
     private ImmutableArray<Entity> spawnPositions;
     private HashMap<String, Texture> textureMap;
 
 
-    public EntityManager(Engine e, SpriteBatch sb) {
+    public EntityManager(Engine e, SpriteBatch sb, Signal<GameEvent> gameOverSignal) {
         this.engine = e;
         this.batch = sb;
         entityFactory = new EntityFactory(engine, batch);
         gameEventSignal = new Signal<GameEvent>();
         playerCollisionSignal = new Signal<GameEvent>();
+
         //TODO: This should be an Enum
         this.textureMap = new HashMap<String, Texture>();
         textureMap.put("Rock", new Texture("singleRock.png"));
-        textureMap.put("Paper", new Texture("singlePaper.png"));
-        textureMap.put("Scissors", new Texture("Scissors.png"));
+        textureMap.put("Paper", new Texture("singleScissors.png"));
+        textureMap.put("Scissors", new Texture("singleScissors.png"));
 
-        MovementSystem cms = new MovementSystem(gameEventSignal);
-        engine.addSystem(cms);
-        com.tdt4240.jankenmaze.gameecs.systems.RenderSystem rs = new com.tdt4240.jankenmaze.gameecs.systems.RenderSystem(batch);
-        engine.addSystem(rs);
-        this.inputSystem = new InputSystem(gameEventSignal);
-        engine.addSystem(inputSystem);
-        HUDSystem hudSystem = new HUDSystem();
-        engine.addSystem(hudSystem);
-        CollisionSystem cs = new CollisionSystem(playerCollisionSignal);
-        engine.addSystem(cs);
+        this.gameOverSignal = gameOverSignal;
 
-        HealthSystem hs=new HealthSystem(playerCollisionSignal);
-        engine.addSystem(hs);
-
-        SendSignalSystemExample sendEx = new SendSignalSystemExample(gameEventSignal);
-        engine.addSystem(sendEx);
-        ReceiveSignalSystemExample recEx = new ReceiveSignalSystemExample(gameEventSignal);
-        engine.addSystem(recEx);
+        addSystemsToEngine();
     }
 
     //TODO: Should entityfactory add entities directly? It's currently done in playstate
@@ -115,9 +101,9 @@ public class EntityManager {
     }
 
     public void createHUDItem() {
-        engine.addEntity(
-                entityFactory.createHUDItem(100, 100, new Texture("button.png"), "playerHealth")
-        );
+       // engine.addEntity(
+        //        entityFactory.createHUDItem(100, 100, new Texture("button.png"), "playerHealth")
+        //);
         //engine.addEntity(
         //        entityFactory.createWall(200, 200, new Texture("testWall.png")
         //        ));
@@ -158,5 +144,26 @@ public class EntityManager {
                 }
             }
         }
+    }
+
+    void addSystemsToEngine(){
+        MovementSystem cms = new MovementSystem(gameEventSignal);
+        engine.addSystem(cms);
+        com.tdt4240.jankenmaze.gameecs.systems.RenderSystem rs = new com.tdt4240.jankenmaze.gameecs.systems.RenderSystem(batch);
+        engine.addSystem(rs);
+        this.inputSystem = new InputSystem(gameEventSignal);
+        engine.addSystem(inputSystem);
+        HUDSystem hudSystem = new HUDSystem();
+        engine.addSystem(hudSystem);
+        CollisionSystem cs = new CollisionSystem(playerCollisionSignal);
+        engine.addSystem(cs);
+
+        HealthSystem hs=new HealthSystem(playerCollisionSignal, gameOverSignal);
+        engine.addSystem(hs);
+
+        SendSignalSystemExample sendEx = new SendSignalSystemExample(gameEventSignal);
+        engine.addSystem(sendEx);
+        ReceiveSignalSystemExample recEx = new ReceiveSignalSystemExample(gameEventSignal);
+        engine.addSystem(recEx);
     }
 }

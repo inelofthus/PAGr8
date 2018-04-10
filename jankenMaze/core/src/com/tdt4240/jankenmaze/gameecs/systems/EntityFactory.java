@@ -52,7 +52,7 @@ public class EntityFactory {
             player.add(new PlayerInfo("Rock", "Scissor", "Paper"));
         }
         else {
-            player.add(new PlayerInfo("Paper", "Rock", "Scissor"));
+            player.add(new PlayerInfo("Paper", "Rock", "Scissors"));
         }
         player.add(new Spawnable());
      //   player.add(new LocalPlayer());
@@ -61,7 +61,6 @@ public class EntityFactory {
         player.add(new Remote());
         return player;
     }
-
 
     public Entity createLocalPlayer(String type, float xPosition, float yPosition, int health, Texture texture) {
         //creates local player
@@ -81,7 +80,7 @@ public class EntityFactory {
             player.add(new PlayerInfo("Rock", "Scissor", "Paper"));
         }
         else {
-            player.add(new PlayerInfo("Paper", "Rock", "Scissor"));
+            player.add(new PlayerInfo("Paper", "Rock", "Scissors"));
         }
         player.add(new Spawnable());
         player.add(new LocalPlayer());
