@@ -119,7 +119,7 @@ public class CollisionSystem extends EntitySystem {
                     //checks if player1 collides with player2
                     if(bb.get(player1).boundsBox.overlaps(bb.get(player2).boundsBox)){
 
-                        if(pi.get(player2).target.equals(pi.get(player1).type)){
+                        if (pi.get(player1).targetetBy.equals(pi.get(player2).type)) {
                             //sends a playerCollisionSignal
                             playerCollisionSignal.dispatch(GameEvent.PLAYER_COLLISION);
                         }
