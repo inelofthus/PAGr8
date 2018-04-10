@@ -13,8 +13,6 @@ public class GameSettings {
 
     private static final GameSettings INSTANCE = new GameSettings();
     public boolean isMultplayerGame = false;
-
-
     private List<PlayerNetworkData> players = null;
 
     public GameSettings() {
