@@ -1,6 +1,7 @@
 package com.tdt4240.jankenmaze.states;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.tdt4240.jankenmaze.gameecs.events.GameEvent;
 import com.tdt4240.jankenmaze.gamesettings.PlayerType;
 
 /**
@@ -22,6 +23,9 @@ public class SinglePlayState extends PlayState {
     @Override
     public void update(float dt) {
         super.update(dt);
+        for(GameEvent gameOver: gameOverQueue.getEvents()){
+            gsm.push(new GameOverState());
+        }
     }
 
     @Override

@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.ashley.signals.Signal;
 import com.tdt4240.jankenmaze.gameecs.events.EventQueue;
 import com.tdt4240.jankenmaze.gameecs.events.GameEvent;
+import com.tdt4240.jankenmaze.gamesettings.GameSettings;
 import com.tdt4240.jankenmaze.gamesettings.PlayerType;
 
 /**
@@ -18,8 +19,8 @@ import com.tdt4240.jankenmaze.gamesettings.PlayerType;
 
 public class PlayState extends State {
     Engine engine;
-    private Signal<GameEvent> gameOverSignal;
-    private EventQueue gameOverQueue;
+    protected Signal<GameEvent> gameOverSignal;
+    protected EventQueue gameOverQueue;
     com.tdt4240.jankenmaze.gameecs.EntityManager entityManager;
     SpriteBatch batch;
     int[][] binaryMap = {{1 ,1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
@@ -65,9 +66,8 @@ public class PlayState extends State {
         handleInput();
         entityManager.update();
 
-        for(GameEvent gameOver: gameOverQueue.getEvents()){
-            gsm.push(new GameOverState());
-        }
+
+
     }
 
     @Override
