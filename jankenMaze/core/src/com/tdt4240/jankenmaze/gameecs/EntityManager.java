@@ -75,7 +75,7 @@ public class EntityManager {
         //TODO: This should be an Enum
         this.textureMap = new HashMap<String, Texture>();
         textureMap.put("Rock", new Texture("singleRock.png"));
-        textureMap.put("Paper", new Texture("singleScissors.png"));
+        textureMap.put("Paper", new Texture("singlePaper.png"));
         textureMap.put("Scissors", new Texture("singleScissors.png"));
 
         this.gameOverSignal = gameOverSignal;

@@ -11,7 +11,7 @@ import com.tdt4240.jankenmaze.view.OnlineMenuView;
 public class OnlineMenuState extends State {
     OnlineMenuView onlineMenuView;
     private SpriteBatch batch;
-    private ClickListener listenerBtn_invite, listenerBtn_signOut;
+    private ClickListener listenerBtn_invite, listenerBtn_signOut, listenerBtn_playSingle;
 
 
     public OnlineMenuState() {
@@ -25,6 +25,9 @@ public class OnlineMenuState extends State {
         listenerBtn_signOut = new ClickListener();
         onlineMenuView.btn_signout.addListener(listenerBtn_signOut);
 
+        listenerBtn_playSingle = new ClickListener();
+        onlineMenuView.btn_PlaySingle.addListener(listenerBtn_playSingle);
+
         cam.setToOrtho(false);
     }
 
@@ -32,6 +35,9 @@ public class OnlineMenuState extends State {
     protected void handleInput() {
         if (onlineMenuView.btn_invite.isPressed()){
             gsm.playServices.startSelectOpponents(false);
+        }
+        if (onlineMenuView.btn_PlaySingle.isPressed()){
+            gsm.push(new SinglePlayState(batch));
         }
         if (onlineMenuView.btn_signout.isPressed()){
             gsm.playServices.signOut();
@@ -44,8 +50,8 @@ public class OnlineMenuState extends State {
     @Override
     public void update(float dt) {
         handleInput();
-        if (gsm.playServices.isSignedIn()){
-            gsm.push(new OnlineMenuState());
+        if (!gsm.playServices.isSignedIn()){
+            gsm.push(new OfflineMenuState());
         }
     }
 
