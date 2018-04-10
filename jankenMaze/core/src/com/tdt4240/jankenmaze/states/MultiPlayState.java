@@ -1,9 +1,12 @@
 package com.tdt4240.jankenmaze.states;
 
+import com.badlogic.ashley.signals.Signal;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.tdt4240.jankenmaze.PlayServices.PlayServices;
 import com.tdt4240.jankenmaze.gameecs.components.PlayerNetworkData;
+import com.tdt4240.jankenmaze.gameecs.events.RemoteQueue;
+import com.tdt4240.jankenmaze.gameecs.events.RemoteVariable;
 import com.tdt4240.jankenmaze.gameecs.systems.*;
 
 import java.nio.ByteBuffer;
@@ -17,16 +20,21 @@ import java.util.List;
 
 public class MultiPlayState extends PlayState implements PlayServices.NetworkListener {
     private static final byte  POSITION = 1;
+    private Signal<RemoteVariable> remotePositionSignal;
+    private RemoteQueue remoteQueue;
 
     public MultiPlayState(SpriteBatch batch) {
         super(batch);
         gsm.playServices.setNetworkListener(this);
         entityManager.addMPSystemsToEngine(gsm.playServices);
+        this.remotePositionSignal = new Signal<RemoteVariable>();
+        this.remoteQueue = new RemoteQueue();
+        remotePositionSignal.add(remoteQueue);
     }
 
     @Override
     protected void handleInput() {
-        super.handleInput();
+        /*super.handleInput();
         if (Gdx.input.isTouched()){
 
             // will send a byte code for touched
@@ -36,8 +44,8 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
             buffer.put(POSITION);
             buffer.putInt(x);
             buffer.putInt(y);
-            gsm.playServices.sendUnreliableMessageToOthers(buffer.array());
-        }
+            gsm.playServices.sendUnreliableMessageToOthers(buffer.array());}*/
+
     }
 
     @Override
@@ -64,14 +72,28 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
     @Override
     public void onUnreliableMessageReceived(String senderParticipantId, int describeContents, byte[] messageData) {
         //TODO: A system needs to handle this message
-        System.out.println("onUnreliableMessageReceived: " + senderParticipantId + "," + describeContents);
+       /* System.out.println("onUnreliableMessageReceived: " + senderParticipantId + "," + describeContents);
 
         ByteBuffer buffer = ByteBuffer.wrap(messageData);
         byte messageType = buffer.get();
         int x = buffer.getInt();
         int y = buffer.getInt();
 
-        System.out.println("POSITION UPDATED: MessageType: " + messageType + ", x: " + x + ", y:" + y);
+        System.out.println("POSITION UPDATED: MessageType: " + messageType + ", x: " + x + ", y:" + y);*/
+
+       ByteBuffer buffer = ByteBuffer.wrap(messageData);
+       byte messageType=buffer.get();
+
+       switch (messageType){
+           case POSITION:
+               float x=buffer.getFloat();
+               float y=buffer.getFloat();
+               remotePositionSignal.dispatch(new RemoteVariable(x,y, senderParticipantId));
+               break;
+            default:
+                break;
+
+       }
 
     }
 
