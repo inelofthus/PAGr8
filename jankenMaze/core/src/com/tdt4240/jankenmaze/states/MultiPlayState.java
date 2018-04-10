@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.tdt4240.jankenmaze.PlayServices.PlayServices;
 import com.tdt4240.jankenmaze.gameecs.components.PlayerNetworkData;
+import com.tdt4240.jankenmaze.gamesettings.PlayerType;
+import com.tdt4240.jankenmaze.gamesettings.PlayerTypes;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -78,16 +80,14 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
         System.out.println("Player1 " + players.get(0).displayName);
         //TODO: Initialize the world with all systems and components. Among other things create a player entity for each PlayerNetworkData
 
-
-        ArrayList<String> playerTypes = new ArrayList<String>();
-        playerTypes.addAll(Arrays.asList("Rock", "Paper", "Scissors"));
+        ArrayList<PlayerType> playerTypes = PlayerTypes.getPlayerTypes();
 
         for(int i = 0; i < players.size(); i++){
             if (players.get(i).isLocalPlayer) {
-                entityManager.createLocalPlayer(playerTypes.get(i%3)); //Players have to be created after map.
+                entityManager.createLocalPlayer(playerTypes.get(i % 3)); //Players have to be created after map.
             }
             else{
-                entityManager.createPlayer(playerTypes.get(i%3));
+                entityManager.createPlayer(playerTypes.get(i % 3));
             }
         }
     }
