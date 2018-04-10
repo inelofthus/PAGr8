@@ -84,10 +84,10 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
 
         for(int i = 0; i < players.size(); i++){
             if (players.get(i).isLocalPlayer) {
-                entityManager.createLocalPlayer(playerTypes.get(i)); //Players have to be created after map.
+                entityManager.createLocalPlayer(playerTypes.get(i%3)); //Players have to be created after map.
             }
             else{
-                entityManager.createPlayer(playerTypes.get(i));
+                entityManager.createPlayer(playerTypes.get(i%3));
             }
         }
     }
