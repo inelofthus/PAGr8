@@ -80,7 +80,6 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
         System.out.println("Player1 " + players.get(0).displayName);
         //TODO: Initialize the world with all systems and components. Among other things create a player entity for each PlayerNetworkData
 
-
         ArrayList<PlayerType> playerTypes = PlayerTypes.getPlayerTypes();
 
         for(int i = 0; i < players.size(); i++){

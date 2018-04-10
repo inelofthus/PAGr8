@@ -11,7 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
 public class OnlineMenuView extends MenuView {
 
-    public TextButton btn_invite, btn_signout;
+    public TextButton btn_invite, btn_signout, btn_PlaySingle;
     private Label heading;
 
     public OnlineMenuView() {
@@ -20,8 +20,13 @@ public class OnlineMenuView extends MenuView {
         btn_invite = new TextButton("Invite", textButtonStyle);
         btn_invite.pad(20);
 
+        btn_PlaySingle = new TextButton("Play Single Player Game", textButtonStyle);
+        btn_PlaySingle.pad(20);
+
         btn_signout = new TextButton("Sign Out", textButtonStyle);
         btn_signout.pad(20);
+
+
 
         //creating heading
         Label.LabelStyle headingStyle = new Label.LabelStyle(font, Color.WHITE);
@@ -32,6 +37,8 @@ public class OnlineMenuView extends MenuView {
         table.add(heading);
         table.row();
         table.add(btn_invite);
+        table.row();
+        table.add(btn_PlaySingle);
         table.row();
         table.add(btn_signout);
 
