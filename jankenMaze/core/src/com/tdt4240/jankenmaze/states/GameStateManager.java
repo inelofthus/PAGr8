@@ -1,6 +1,8 @@
 package com.tdt4240.jankenmaze.states;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.tdt4240.jankenmaze.JankenMaze;
+import com.tdt4240.jankenmaze.PlayServices.PlayServices;
 
 import java.util.Stack;
 
@@ -12,6 +14,8 @@ import java.util.Stack;
 public class GameStateManager {
     private static final GameStateManager gsm = new GameStateManager();
     private Stack<State> states = new Stack<State>();
+    PlayServices playServices;
+
     private GameStateManager(){
     }
 
@@ -40,5 +44,9 @@ public class GameStateManager {
 
     public void render(SpriteBatch sb){
         states.peek().render(sb);
+    }
+
+    public void setPlayServices(PlayServices playServices) {
+        this.playServices = playServices;
     }
 }

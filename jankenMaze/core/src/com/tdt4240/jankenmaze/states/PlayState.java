@@ -1,8 +1,19 @@
 package com.tdt4240.jankenmaze.states;
 
 import com.badlogic.ashley.core.Engine;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.tdt4240.jankenmaze.PlayServices.PlayServices;
+import com.tdt4240.jankenmaze.gameecs.components.PlayerNetworkData;
+
+import java.awt.Font;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by jonas on 07/03/2018.
@@ -15,6 +26,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class PlayState extends State {
     Engine engine;
     com.tdt4240.jankenmaze.gameecs.EntityManager entityManager;
+    SpriteBatch batch;
     int[][] binaryMap = {{1 ,1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 1},
@@ -38,10 +50,11 @@ public class PlayState extends State {
 
     public PlayState(SpriteBatch batch){
         super();
+        this.batch = batch;
+
         engine = new Engine();
         entityManager = new com.tdt4240.jankenmaze.gameecs.EntityManager(engine, batch);
         entityManager.createMap(binaryMap, new Texture("greyWall.png"));
-        entityManager.createLocalPlayer("Rock", new Texture("singleRock.png")); //Players have to be created after map.
         entityManager.createHUDItem();
     }
     @Override
@@ -52,6 +65,7 @@ public class PlayState extends State {
     @Override
     public void update(float dt) {
         entityManager.update();
+        handleInput();
     }
 
     @Override
@@ -63,4 +77,6 @@ public class PlayState extends State {
     public void dispose() {
 
     }
+
+
 }
