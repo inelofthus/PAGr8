@@ -1,5 +1,6 @@
 package com.tdt4240.jankenmaze.gameecs;
 
+import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
@@ -83,11 +84,18 @@ public class EntityManager {
     }
 
     //TODO: Should entityfactory add entities directly? It's currently done in playstate
-    public void createPlayer(String type) {
+    public void createRemotePlayer(String type, Component playerNetData) {
         com.tdt4240.jankenmaze.gameecs.components.Position playerPosition
                 = ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.Position.class).get(randomSpawnPosition());
         engine.addEntity(
-                entityFactory.createPlayer(type, playerPosition.x, playerPosition.y, 3, textureMap.get(type))
+                entityFactory.createRemotePlayer(type, playerPosition.x, playerPosition.y, 3, textureMap.get(type), playerNetData)
+        );
+    }
+    public void createBot(String type) {
+        com.tdt4240.jankenmaze.gameecs.components.Position playerPosition
+                = ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.Position.class).get(randomSpawnPosition());
+        engine.addEntity(
+                entityFactory.createBot(type, playerPosition.x, playerPosition.y, 3, textureMap.get(type))
         );
     }
 

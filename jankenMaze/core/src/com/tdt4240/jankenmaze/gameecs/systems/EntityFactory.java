@@ -1,5 +1,6 @@
 package com.tdt4240.jankenmaze.gameecs.systems;
 
+import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Texture;
@@ -32,9 +33,37 @@ public class EntityFactory {
         this.engine = engine;
         this.spriteBatch = spriteBatch;
     }
-
-    public Entity createPlayer(String type, float xPosition, float yPosition, int health, Texture texture) {
+//TODO : Create player has to use a playernetworkcomponent
+    public Entity createRemotePlayer(String type, float xPosition, float yPosition, int health, Texture texture, Component playerNetData) {
  
+        //creates a remote player
+        Entity player = new Entity();
+        Sprite playerSprite=new Sprite(texture);
+        player.add(new Health(health));
+        player.add(new Position(xPosition,yPosition)); //TODO: Consider whether the startposition should be given by some function which finds an unoccupied spot or just be taken as an input to the factory.
+        player.add(new Velocity(0,0));
+        player.add(playerNetData);
+        player.add(new BoundsBox(xPosition,yPosition,playerSprite.getWidth()-2,playerSprite.getHeight()-2)); //TODO: Gjør x og y identiske med Position.x og Position.y
+
+        //TODO: Should we use a hashmap to generate player info?
+        if (type.equals("Rock")) {
+            player.add(new PlayerInfo("Scissors", "Paper", "Rock"));
+        }
+        else if (type.equals("Paper")) {
+            player.add(new PlayerInfo("Rock", "Scissor", "Paper"));
+        }
+        else {
+            player.add(new PlayerInfo("Paper", "Rock", "Scissors"));
+        }
+        player.add(new Spawnable());
+     //   player.add(new LocalPlayer());
+        player.add(new Renderable());
+        player.add(new SpriteComponent(playerSprite));
+        player.add(new Remote());
+        return player;
+    }
+    public Entity createBot(String type, float xPosition, float yPosition, int health, Texture texture) {
+
         //creates a remote player
         Entity player = new Entity();
         Sprite playerSprite=new Sprite(texture);
@@ -55,7 +84,7 @@ public class EntityFactory {
             player.add(new PlayerInfo("Paper", "Rock", "Scissors"));
         }
         player.add(new Spawnable());
-     //   player.add(new LocalPlayer());
+        //   player.add(new LocalPlayer());
         player.add(new Renderable());
         player.add(new SpriteComponent(playerSprite));
         player.add(new Remote());
