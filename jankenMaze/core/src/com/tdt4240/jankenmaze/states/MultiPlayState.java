@@ -26,10 +26,11 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
     public MultiPlayState(SpriteBatch batch) {
         super(batch);
         gsm.playServices.setNetworkListener(this);
-        entityManager.addMPSystemsToEngine(gsm.playServices);
+
         this.remotePositionSignal = new Signal<RemoteVariable>();
         this.remoteQueue = new RemoteQueue();
         remotePositionSignal.add(remoteQueue);
+        entityManager.addMPSystemsToEngine(gsm.playServices, remotePositionSignal);
     }
 
     @Override
