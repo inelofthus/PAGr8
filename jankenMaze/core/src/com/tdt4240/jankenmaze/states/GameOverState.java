@@ -50,7 +50,7 @@ public class GameOverState extends State implements PlayServices.NetworkListener
             if(GameSettings.getInstance().isMultplayerGame){
                 ByteBuffer buffer = ByteBuffer.allocate(1);
                 buffer.put(PLAY_AGAIN);
-                gsm.playServices.sendUnreliableMessageToOthers(buffer.array());
+                gsm.playServices.sendReliableMessageToOthers(buffer.array());
                 gsm.push(new MultiPlayState(batch));
             }else {
                 gsm.push(new SinglePlayState(batch));
@@ -96,12 +96,7 @@ public class GameOverState extends State implements PlayServices.NetworkListener
 
     @Override
     public void onReliableMessageReceived(String senderParticipantId, int describeContents, byte[] messageData) {
-
-    }
-
-    @Override
-    public void onUnreliableMessageReceived(String senderParticipantId, int describeContents, byte[] messageData) {
-        System.out.println("GameOverState: onUnreliableMessageReceived: " + senderParticipantId + "," + describeContents);
+        System.out.println("GameOverState: onReliableMessageReceived: " + senderParticipantId + "," + describeContents);
 
         ByteBuffer buffer = ByteBuffer.wrap(messageData);
         byte messageType = buffer.get();
@@ -117,6 +112,11 @@ public class GameOverState extends State implements PlayServices.NetworkListener
 
                 break;
         }
+    }
+
+    @Override
+    public void onUnreliableMessageReceived(String senderParticipantId, int describeContents, byte[] messageData) {
+
 
     }
 

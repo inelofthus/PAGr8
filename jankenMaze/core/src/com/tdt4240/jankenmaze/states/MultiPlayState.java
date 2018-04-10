@@ -55,7 +55,7 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
             System.out.println("GameOverEvent");
             ByteBuffer buffer = ByteBuffer.allocate(1);
             buffer.put(GAME_OVER);
-            gsm.playServices.sendUnreliableMessageToOthers(buffer.array());
+            gsm.playServices.sendReliableMessageToOthers(buffer.array());
             gsm.push(new GameOverState());
         }
 
@@ -75,6 +75,23 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
     ///////////NETWORK LISTENER METHODS //////////////////////
     @Override
     public void onReliableMessageReceived(String senderParticipantId, int describeContents, byte[] messageData) {
+        System.out.println("MultiPlayState:    onReliableMessageReceived: " + senderParticipantId + "," + describeContents);
+
+        ByteBuffer buffer = ByteBuffer.wrap(messageData);
+        byte messageType = buffer.get();
+
+        switch (messageType){
+            case GAME_OVER:
+                System.out.println("GAME OVER MESSAGE RECEIVED");
+                Gdx.app.postRunnable(new Runnable() {
+                    @Override
+                    public void run() {
+                        gsm.push(new GameOverState());
+                    }
+                });
+
+                break;
+        }
     }
 
     @Override
