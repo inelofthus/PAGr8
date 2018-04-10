@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.tdt4240.jankenmaze.PlayServices.PlayServices;
 import com.tdt4240.jankenmaze.gameecs.components.PlayerNetworkData;
+import com.tdt4240.jankenmaze.gameecs.systems.*;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
     public MultiPlayState(SpriteBatch batch) {
         super(batch);
         gsm.playServices.setNetworkListener(this);
+        entityManager.addMPSystemsToEngine(gsm.playServices);
     }
 
     @Override

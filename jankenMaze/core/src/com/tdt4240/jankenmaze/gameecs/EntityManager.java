@@ -10,6 +10,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.tdt4240.jankenmaze.PlayServices.PlayServices;
 import com.tdt4240.jankenmaze.gameecs.components.LocalPlayer;
 import com.tdt4240.jankenmaze.gameecs.components.Position;
 import com.tdt4240.jankenmaze.gameecs.components.Renderable;
@@ -173,5 +174,9 @@ public class EntityManager {
         engine.addSystem(sendEx);
         ReceiveSignalSystemExample recEx = new ReceiveSignalSystemExample(gameEventSignal);
         engine.addSystem(recEx);
+    }
+
+    public void addMPSystemsToEngine(PlayServices playservices){
+
     }
 }

@@ -52,8 +52,8 @@ public class PlayState extends State {
         entityManager = new com.tdt4240.jankenmaze.gameecs.EntityManager(engine, batch, gameOverSignal);
         entityManager.createMap(binaryMap, new Texture("redAndWhiteWall.png"));
         entityManager.createLocalPlayer("Rock");
-        entityManager.createPlayer("Paper");//Players have to be created after map.
-        entityManager.createPlayer("Scissors");
+       /* entityManager.createPlayer("Paper");//Players have to be created after map.
+        entityManager.createPlayer("Scissors");*/
         entityManager.createHUDItem();
     }
     @Override
