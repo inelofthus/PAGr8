@@ -34,10 +34,11 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
         this.remotePositionSignal = new Signal<RemoteVariable>();
         this.remoteQueue = new RemoteQueue();
         remotePositionSignal.add(remoteQueue);
-        entityManager.addMPSystemsToEngine(gsm.playServices, remotePositionSignal);
+
 
         if (!(GameSettings.getInstance().getPlayers() == null)){
             onRoomReady(GameSettings.getInstance().getPlayers());
+            entityManager.addMPSystemsToEngine(gsm.playServices, remotePositionSignal);
         }
     }
 
@@ -92,11 +93,7 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
 
         switch (messageType){
 
-            case POSITION:
-                float x=buffer.getFloat();
-                float y=buffer.getFloat();
-                remotePositionSignal.dispatch(new RemoteVariable(x,y, senderParticipantId));
-                break;
+
             case GAME_OVER:
                 System.out.println("GAME OVER MESSAGE RECEIVED");
                 Gdx.app.postRunnable(new Runnable() {
@@ -120,9 +117,9 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
 
         switch (messageType){
             case POSITION:
-                int x = buffer.getInt();
-                int y = buffer.getInt();
-                System.out.println("POSITION UPDATED: MessageType: " + messageType + ", x: " + x + ", y:" + y);
+                float x=buffer.getFloat();
+                float y=buffer.getFloat();
+                remotePositionSignal.dispatch(new RemoteVariable(x,y, senderParticipantId));
                 break;
             case GAME_OVER:
                 System.out.println("GAME OVER MESSAGE RECEIVED");

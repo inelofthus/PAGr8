@@ -160,7 +160,7 @@ public class EntityManager {
         engine.addSystem(inputSystem);
         HUDSystem hudSystem = new HUDSystem();
         engine.addSystem(hudSystem);
-        CollisionSystem cs = new CollisionSystem(playerCollisionSignal);
+        CollisionSystem cs = new CollisionSystem(playerCollisionSignal, playerPositionSignal);
         engine.addSystem(cs);
 
         HealthSystem hs=new HealthSystem(playerCollisionSignal, gameOverSignal);

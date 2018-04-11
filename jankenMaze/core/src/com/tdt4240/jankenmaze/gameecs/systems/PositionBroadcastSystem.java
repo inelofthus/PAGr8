@@ -31,7 +31,7 @@ import java.nio.ByteBuffer;
         }
 
 
-        private void broadCastPosition(){
+        private void broadcastPosition(){
             ByteBuffer buffer = ByteBuffer.allocate(2 * 4 + 1);
             buffer.put(POSITION);
             buffer.putFloat(playerPosition.x);
@@ -42,7 +42,7 @@ import java.nio.ByteBuffer;
 
         public void update(float dt) {
             for (GameVariable position : variableQueue.getVariables()){
-                broadCastPosition();fuck, glemte å pushe
+                broadcastPosition();
             }
         }
 
