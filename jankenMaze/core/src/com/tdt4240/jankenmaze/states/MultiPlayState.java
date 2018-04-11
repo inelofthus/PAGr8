@@ -3,6 +3,8 @@ package com.tdt4240.jankenmaze.states;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.tdt4240.jankenmaze.gameecs.events.GameEvent;
+import com.tdt4240.jankenmaze.gameecs.events.RemoteQueue;
+import com.tdt4240.jankenmaze.gameecs.events.RemoteVariable;
 import com.tdt4240.jankenmaze.gamesettings.GameSettings;
 import com.tdt4240.jankenmaze.PlayServices.PlayServices;
 import com.tdt4240.jankenmaze.gameecs.components.PlayerNetworkData;
@@ -13,6 +15,8 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.ashley.signals.Signal;
+
 /**
  * Created by karim on 09/04/2018.
  */
@@ -20,11 +24,17 @@ import java.util.List;
 public class MultiPlayState extends PlayState implements PlayServices.NetworkListener {
     private static final byte  POSITION = 1;
     private static final byte  GAME_OVER = 2;
+    private Signal<RemoteVariable> remotePositionSignal;
+    private RemoteQueue remoteQueue;
 
     public MultiPlayState(SpriteBatch batch) {
         super(batch);
         gsm.playServices.setNetworkListener(this);
         GameSettings.getInstance().isMultplayerGame = true;
+        this.remotePositionSignal = new Signal<RemoteVariable>();
+        this.remoteQueue = new RemoteQueue();
+        remotePositionSignal.add(remoteQueue);
+        entityManager.addMPSystemsToEngine(gsm.playServices, remotePositionSignal);
 
         if (!(GameSettings.getInstance().getPlayers() == null)){
             onRoomReady(GameSettings.getInstance().getPlayers());
@@ -81,6 +91,12 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
         byte messageType = buffer.get();
 
         switch (messageType){
+
+            case POSITION:
+                float x=buffer.getFloat();
+                float y=buffer.getFloat();
+                remotePositionSignal.dispatch(new RemoteVariable(x,y, senderParticipantId));
+                break;
             case GAME_OVER:
                 System.out.println("GAME OVER MESSAGE RECEIVED");
                 Gdx.app.postRunnable(new Runnable() {

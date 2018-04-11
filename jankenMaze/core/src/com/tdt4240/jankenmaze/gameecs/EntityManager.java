@@ -9,12 +9,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.tdt4240.jankenmaze.PlayServices.PlayServices;
 import com.tdt4240.jankenmaze.gameecs.components.LocalPlayer;
 import com.tdt4240.jankenmaze.gameecs.components.Position;
 import com.tdt4240.jankenmaze.gameecs.components.Renderable;
 import com.tdt4240.jankenmaze.gameecs.components.SpriteComponent;
 import com.tdt4240.jankenmaze.gameecs.components.Velocity;
 import com.tdt4240.jankenmaze.gameecs.components.Unoccupied;
+import com.tdt4240.jankenmaze.gameecs.events.GameVariable;
+import com.tdt4240.jankenmaze.gameecs.events.RemoteVariable;
 import com.tdt4240.jankenmaze.gameecs.systems.CollisionSystem;
 import com.tdt4240.jankenmaze.gameecs.events.GameEvent;
 import com.tdt4240.jankenmaze.gameecs.systems.EntityFactory;
@@ -23,6 +26,8 @@ import com.tdt4240.jankenmaze.gameecs.systems.HealthSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.InputSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.MovementSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.EntityFactory;
+import com.tdt4240.jankenmaze.gameecs.systems.PositionBroadcastSystem;
+import com.tdt4240.jankenmaze.gameecs.systems.PositionReceiveSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.ReceiveSignalSystemExample;
 import com.tdt4240.jankenmaze.gameecs.systems.SendSignalSystemExample;
 import com.badlogic.ashley.utils.ImmutableArray;
@@ -62,6 +67,7 @@ public class EntityManager {
     private Signal<GameEvent> gameEventSignal;
     private Signal<GameEvent> gameOverSignal;
     private Signal<GameEvent> playerCollisionSignal;
+    private Signal<GameVariable> playerPositionSignal;
     Random rand = new Random();
     private ImmutableArray<Entity> spawnPositions;
     private HashMap<PlayerType, Texture> playerTextureMap;
@@ -72,7 +78,7 @@ public class EntityManager {
         entityFactory = new EntityFactory(engine, batch);
         gameEventSignal = new Signal<GameEvent>();
         playerCollisionSignal = new Signal<GameEvent>();
-
+        playerPositionSignal = new Signal<GameVariable>();
         playerTextureMap = PlayerTypes.getPlayerTextures();
 
         this.gameOverSignal = gameOverSignal;
@@ -164,5 +170,12 @@ public class EntityManager {
         engine.addSystem(sendEx);
         ReceiveSignalSystemExample recEx = new ReceiveSignalSystemExample(gameEventSignal);
         engine.addSystem(recEx);
+    }
+
+    public void addMPSystemsToEngine(PlayServices playServices, Signal<RemoteVariable> remotePositionSignal){
+       PositionBroadcastSystem positionBroadcastSystem = new PositionBroadcastSystem(playerPositionSignal,playServices);
+        engine.addSystem(positionBroadcastSystem);
+        PositionReceiveSystem positionReceiveSystem = new PositionReceiveSystem(remotePositionSignal);
+        engine.addSystem(positionReceiveSystem);
     }
 }
