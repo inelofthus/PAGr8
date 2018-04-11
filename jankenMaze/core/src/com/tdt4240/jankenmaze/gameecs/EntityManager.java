@@ -20,6 +20,7 @@ import com.tdt4240.jankenmaze.gameecs.systems.EntityFactory;
 import com.tdt4240.jankenmaze.gameecs.systems.HUDSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.HealthSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.InputSystem;
+import com.tdt4240.jankenmaze.gameecs.systems.MovementSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.PositionBroadcastSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.PositionReceiveSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.ReceiveSignalSystemExample;
@@ -164,6 +165,8 @@ public class EntityManager {
         engine.addSystem(hudSystem);
         CollisionSystem cs = new CollisionSystem(playerCollisionSignal, playerPositionSignal);
         engine.addSystem(cs);
+        MovementSystem cms = new MovementSystem(gameEventSignal);
+        engine.addSystem(cms);
 
         HealthSystem hs=new HealthSystem(playerCollisionSignal, gameOverSignal);
         engine.addSystem(hs);
