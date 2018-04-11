@@ -8,6 +8,7 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.badlogic.gdx.Gdx;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.RealTimeMultiplayerClient;
 import com.google.android.gms.games.multiplayer.Invitation;
@@ -49,6 +50,7 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
     private static final String TAG = "PlayServiceLauncher";
 
     public String currentRoomId = null;
+    private RoomConfig currentRoomConfig = null;
     private final Activity activity;
     private GameHelper gameHelper;
     private GameListener gameListener;
@@ -86,7 +88,8 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
                 .setMessageReceivedListener(this)
                 .setRoomStatusUpdateListener(this);
         keepScreenOn();
-        Games.RealTimeMultiplayer.join(gameHelper.getApiClient(), roomConfigBuilder.build());
+        this.currentRoomConfig = roomConfigBuilder.build();
+        Games.RealTimeMultiplayer.join(gameHelper.getApiClient(), currentRoomConfig);
     }
 
 
@@ -158,10 +161,7 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
     public void sendUnreliableMessageToOthers(byte[] messageData) {
         if (currentRoomId == null){
             System.out.println("RoomID is null!");
-            if (! (GameSettings.getInstance().roomID == null)){
-                System.out.println("Setting RoomId:" + GameSettings.getInstance().roomID);
-                currentRoomId = GameSettings.getInstance().roomID;
-            }
+            return;
         }
         if (!gameHelper.isSignedIn()){
             System.out.println("not signed in");
@@ -176,10 +176,8 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
     @Override
     public void sendReliableMessageToOthers(byte[] messageData) {
         if (currentRoomId == null){
-            if (! (GameSettings.getInstance().roomID == null)){
-                System.out.println("Setting RoomId:" + GameSettings.getInstance().roomID);
-                currentRoomId = GameSettings.getInstance().roomID;
-            }
+            System.out.println("RoomID is null!");
+            return;
         }
         if (!gameHelper.isSignedIn()){
             System.out.println("not signed in");
@@ -232,6 +230,24 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
         Log.d(TAG, "sendReliableMessageTo: ");
         }
 
+    @Override
+    public void leaveRoom() {
+        Log.d(TAG, "leaveRoom:  ");
+        if (currentRoomConfig == null){
+            Log.d(TAG, "leaveRoom: roomConfig is null ");
+            return;
+        }
+        if (currentRoomId == null){
+            Log.d(TAG, "leaveRoom: roomID is null ");
+            return;
+        }
+
+        Games.getRealTimeMultiplayerClient(activity, GoogleSignIn.getLastSignedInAccount(activity.getApplicationContext())).leave(currentRoomConfig, currentRoomId);
+        currentRoomId = null;
+        currentRoomConfig = null;
+    }
+
+
 
     public void onStart() {
         gameHelper.onStart(activity);
@@ -260,6 +276,7 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
 
     private void handleWaitingRoomResult(int resultCode, Intent intent) {
         Room room = intent.getParcelableExtra(Multiplayer.EXTRA_ROOM);
+        currentRoomId = room.getRoomId();
         Log.d(TAG, "handleWaitingRoomResult: ");
         switch (resultCode) {
             case Activity.RESULT_OK:
@@ -325,7 +342,8 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
             rtmConfigBuilder.setAutoMatchCriteria(autoMatchCriteria);
         }
         keepScreenOn();
-        Games.RealTimeMultiplayer.create(gameHelper.getApiClient(), rtmConfigBuilder.build());
+        this.currentRoomConfig = rtmConfigBuilder.build();
+        Games.RealTimeMultiplayer.create(gameHelper.getApiClient(), currentRoomConfig);
         Log.d(TAG, "Room created, waiting for it to be ready...");
     }
 
@@ -455,15 +473,14 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
     @Override
     public void onConnectedToRoom(Room room) {
         Log.d(TAG, "onConnectedToRoom: ");
-
         if (currentRoomId == null) currentRoomId = room.getRoomId();
     }
 
     @Override
     public void onDisconnectedFromRoom(Room room) {
         Log.d(TAG, "onDisconnectedFromRoom: ");
+        leaveRoom();
         stopKeepingScreenOn();
-        currentRoomId = null;
     }
 
     @Override
@@ -474,6 +491,7 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
     @Override
     public void onPeersDisconnected(Room room, List<String> list) {
         Log.d(TAG, "onPeersDisconnected");
+        leaveRoom();
     }
 
     @Override

@@ -31,6 +31,10 @@ public class OnlineMenuState extends State {
         cam.setToOrtho(false);
     }
 
+    public OnlineMenuState(String message) {
+        onlineMenuView.setMessage(message);
+    }
+
     @Override
     protected void handleInput() {
         if (onlineMenuView.btn_invite.isPressed()){
