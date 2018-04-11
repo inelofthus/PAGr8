@@ -3,13 +3,14 @@ package com.tdt4240.jankenmaze.gameecs.events;
 import com.badlogic.ashley.signals.Listener;
 import com.badlogic.ashley.signals.Signal;
 
+import java.util.LinkedList;
 import java.util.PriorityQueue;
 
 public class RemoteQueue implements Listener<RemoteVariable> {
-    private PriorityQueue<RemoteVariable> remoteQueue;
+    private LinkedList<RemoteVariable> remoteQueue;
 
     public RemoteQueue(){
-        remoteQueue = new PriorityQueue<RemoteVariable>();
+        remoteQueue = new LinkedList<RemoteVariable>();
     }
 
     public RemoteVariable[] getRemoteVariable(){
