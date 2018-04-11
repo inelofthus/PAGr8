@@ -2,8 +2,8 @@ package com.tdt4240.jankenmaze.states;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.tdt4240.jankenmaze.gamesettings.GameSettings;
 import com.tdt4240.jankenmaze.view.OfflineMenuView;
-import com.tdt4240.jankenmaze.view.OnlineMenuView;
 
 /**
  * Created by karim on 09/04/2018.
@@ -33,6 +33,7 @@ public class OfflineMenuState extends State {
     @Override
     protected void handleInput() {
         if (offlineMenuView.btn_PlaySingle.isPressed()){
+            GameSettings.getInstance().isMultplayerGame = false;
             gsm.push(new SinglePlayState(batch));
         }
         if (offlineMenuView.btn_signin.isPressed()){
