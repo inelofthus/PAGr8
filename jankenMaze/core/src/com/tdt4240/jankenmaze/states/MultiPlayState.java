@@ -23,8 +23,6 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import sun.awt.X11.XConstants;
-
 /**
  * Created by karim on 09/04/2018.
  */
@@ -72,7 +70,7 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
             ImmutableArray<Entity> players = engine.getEntitiesFor(Family.all(com.tdt4240.jankenmaze.gameecs.components.PlayerInfo.class).get());
             ComponentMapper<PlayerInfo> info =ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.PlayerInfo.class);
             for(Entity player:players) {
-                System.out.println(info.get(player).type);
+                System.out.println("gameOverInfo: " + info.get(player).type);
             }
             gsm.push(new GameOverState());
         }
