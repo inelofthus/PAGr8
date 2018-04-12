@@ -8,9 +8,9 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.signals.Signal;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.tdt4240.jankenmaze.PlayServices.PlayServices;
+import com.tdt4240.jankenmaze.gameMessages.MessageCodes;
 import com.tdt4240.jankenmaze.gameecs.events.EventQueue;
 import com.tdt4240.jankenmaze.gameecs.events.GameEvent;
-
 import java.nio.ByteBuffer;
 
 
@@ -21,7 +21,6 @@ public class HealthBroadcastSystem extends EntitySystem {
     private ImmutableArray<Entity> localPlayer;
     private Signal<GameEvent> decreaseHealthSignal;
     private EventQueue healthQueue;
-    private static final byte  HEALTH = 4;
 
     public HealthBroadcastSystem(PlayServices playServices, Signal<GameEvent> decreaseHealthSignal){
         this.playServices=playServices;
@@ -53,7 +52,7 @@ public class HealthBroadcastSystem extends EntitySystem {
     }
     private  void broadcastHealth(){
         ByteBuffer buffer = ByteBuffer.allocate(1*4+1);
-        buffer.put(HEALTH);
+        buffer.put(MessageCodes.HEALTH);
         buffer.putInt(health.health);
         playServices.sendReliableMessageToOthers(buffer.array());
     }

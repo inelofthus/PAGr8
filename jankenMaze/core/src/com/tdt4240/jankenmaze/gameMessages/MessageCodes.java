@@ -8,5 +8,6 @@ public class MessageCodes {
     public static final byte  POSITION = 1;
     public static final byte  GAME_OVER = 2;
     public static final byte  PLAY_AGAIN = 3;
+    public static  final byte HEALTH=4;
 
 }
