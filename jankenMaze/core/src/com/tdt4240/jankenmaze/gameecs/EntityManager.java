@@ -9,13 +9,17 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.tdt4240.jankenmaze.PlayServices.PlayServices;
 import com.tdt4240.jankenmaze.gameecs.components.LocalPlayer;
+import com.tdt4240.jankenmaze.gameecs.components.PlayerNetworkData;
 import com.tdt4240.jankenmaze.gameecs.components.Position;
 import com.tdt4240.jankenmaze.gameecs.components.PowerUpInfo;
 import com.tdt4240.jankenmaze.gameecs.components.Renderable;
 import com.tdt4240.jankenmaze.gameecs.components.SpriteComponent;
 import com.tdt4240.jankenmaze.gameecs.components.Velocity;
 import com.tdt4240.jankenmaze.gameecs.components.Unoccupied;
+import com.tdt4240.jankenmaze.gameecs.events.GameVariable;
+
 import com.tdt4240.jankenmaze.gameecs.systems.CollisionSystem;
 import com.tdt4240.jankenmaze.gameecs.events.GameEvent;
 import com.tdt4240.jankenmaze.gameecs.systems.EntityFactory;
@@ -24,6 +28,7 @@ import com.tdt4240.jankenmaze.gameecs.systems.HealthSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.InputSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.MovementSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.EntityFactory;
+import com.tdt4240.jankenmaze.gameecs.systems.PositionBroadcastSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.ReceiveSignalSystemExample;
 import com.tdt4240.jankenmaze.gameecs.systems.SendSignalSystemExample;
 import com.badlogic.ashley.utils.ImmutableArray;
@@ -63,6 +68,7 @@ public class EntityManager {
     private Signal<GameEvent> gameEventSignal;
     private Signal<GameEvent> gameOverSignal;
     private Signal<GameEvent> playerCollisionSignal;
+    private Signal<GameVariable> playerPositionSignal;
     Random rand = new Random();
     private ImmutableArray<Entity> spawnPositions;
     private HashMap<PlayerType, Texture> playerTextureMap;
@@ -73,7 +79,7 @@ public class EntityManager {
         entityFactory = new EntityFactory(engine, batch);
         gameEventSignal = new Signal<GameEvent>();
         playerCollisionSignal = new Signal<GameEvent>();
-
+        playerPositionSignal = new Signal<GameVariable>();
         playerTextureMap = PlayerTypes.getPlayerTextures();
 
         this.gameOverSignal = gameOverSignal;
@@ -82,21 +88,21 @@ public class EntityManager {
     }
 
     //TODO: Should entityfactory add entities directly? It's currently done in playstate
-    public void createPlayer(PlayerType type) {
+    public void createPlayer(PlayerType type, PlayerNetworkData networkData) {
         System.out.println("Create player " + PlayerTypes.getPlayerTextures().get(type));
         com.tdt4240.jankenmaze.gameecs.components.Position playerPosition
                 = ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.Position.class).get(randomSpawnPosition());
         engine.addEntity(
-                entityFactory.createPlayer(type, playerPosition.x, playerPosition.y, 3, playerTextureMap.get(type))
+                entityFactory.createPlayer(type, playerPosition.x, playerPosition.y, 3, playerTextureMap.get(type), networkData)
         );
     }
 
-    public void createLocalPlayer(PlayerType type) {
+    public void createLocalPlayer(PlayerType type, PlayerNetworkData networkData) {
         System.out.println("Create local player " + PlayerTypes.getPlayerTextures().get(type));
         com.tdt4240.jankenmaze.gameecs.components.Position playerPosition
                 = ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.Position.class).get(randomSpawnPosition());
         engine.addEntity(
-                entityFactory.createLocalPlayer(type, playerPosition.x, playerPosition.y, 3, playerTextureMap.get(type))
+                entityFactory.createLocalPlayer(type, playerPosition.x, playerPosition.y, 3, playerTextureMap.get(type), networkData)
         );
     }
 
@@ -155,7 +161,7 @@ public class EntityManager {
         engine.addSystem(inputSystem);
         HUDSystem hudSystem = new HUDSystem();
         engine.addSystem(hudSystem);
-        CollisionSystem cs = new CollisionSystem(playerCollisionSignal);
+        CollisionSystem cs = new CollisionSystem(playerCollisionSignal, playerPositionSignal);
         engine.addSystem(cs);
 
         HealthSystem hs=new HealthSystem(playerCollisionSignal, gameOverSignal);
@@ -165,5 +171,10 @@ public class EntityManager {
         engine.addSystem(sendEx);
         ReceiveSignalSystemExample recEx = new ReceiveSignalSystemExample(gameEventSignal);
         engine.addSystem(recEx);
+    }
+
+    public void addMPSystemsToEngine(PlayServices playServices){
+       PositionBroadcastSystem positionBroadcastSystem = new PositionBroadcastSystem(playerPositionSignal,playServices);
+        engine.addSystem(positionBroadcastSystem);
     }
 }

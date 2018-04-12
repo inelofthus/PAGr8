@@ -12,7 +12,7 @@ public class SinglePlayState extends PlayState {
 
     public SinglePlayState(SpriteBatch batch) {
         super(batch);
-        entityManager.createLocalPlayer(PlayerType.ROCK);
+        //entityManager.createLocalPlayer(PlayerType.ROCK);
     }
 
     @Override
