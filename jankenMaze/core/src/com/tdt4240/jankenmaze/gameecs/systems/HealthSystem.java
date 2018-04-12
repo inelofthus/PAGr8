@@ -137,7 +137,6 @@ public class HealthSystem extends EntitySystem {
           Health newHealth=HealthMessage.getInstance().getRemotePlayerHealth().get(netData.participantId);
           Health healthComp = healthComponentMapper.get(remotePlayer);
           healthComp.health=newHealth.health;
-          System.out.println("Remoteplayers health is : " + healthComp.health);
 
       }
 
