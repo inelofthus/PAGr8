@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.tdt4240.jankenmaze.PlayServices.PlayServices;
+import com.tdt4240.jankenmaze.gameMessages.MessageCodes;
 import com.tdt4240.jankenmaze.gameecs.components.PlayerNetworkData;
 import com.tdt4240.jankenmaze.gamesettings.GameSettings;
 import com.tdt4240.jankenmaze.view.GameOverView;
@@ -18,7 +19,7 @@ import java.util.List;
  */
 
 public class GameOverState extends State implements PlayServices.NetworkListener {
-    private static final byte  PLAY_AGAIN = 1;
+
     private GameOverView gameOverView;
     private SpriteBatch batch;
     private ClickListener listenerBtn_playAgain, listenerBtn_mainMenu, listenerBtn_quitGame;
@@ -49,7 +50,7 @@ public class GameOverState extends State implements PlayServices.NetworkListener
         if (gameOverView.btn_playAgain.isPressed()){
             if(GameSettings.getInstance().isMultplayerGame){
                 ByteBuffer buffer = ByteBuffer.allocate(1);
-                buffer.put(PLAY_AGAIN);
+                buffer.put(MessageCodes.PLAY_AGAIN);
                 gsm.playServices.sendReliableMessageToOthers(buffer.array());
                 gsm.push(new MultiPlayState(batch));
             }else {
@@ -102,7 +103,7 @@ public class GameOverState extends State implements PlayServices.NetworkListener
         byte messageType = buffer.get();
 
         switch (messageType){
-            case PLAY_AGAIN:
+            case MessageCodes.PLAY_AGAIN:
                 System.out.println("PLAY AGAIN MESSAGE RECEIVED");
                 Gdx.app.postRunnable(new Runnable() {
                     @Override
