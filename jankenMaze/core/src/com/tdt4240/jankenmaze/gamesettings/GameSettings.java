@@ -15,8 +15,12 @@ public class GameSettings {
     public boolean isMultplayerGame = false;
     public String roomID = null;
     private List<PlayerNetworkData> players = null;
+    public int viewPortWidth;
+    public int viewPortHeight;
 
     public GameSettings() {
+        viewPortHeight = 480;
+        viewPortWidth = 800;
     }
 
     public static GameSettings getInstance(){
@@ -30,5 +34,4 @@ public class GameSettings {
     public List<PlayerNetworkData> getPlayers() {
         return players;
     }
-
 }

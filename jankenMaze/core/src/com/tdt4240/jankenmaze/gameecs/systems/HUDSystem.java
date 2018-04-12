@@ -17,6 +17,7 @@ import com.tdt4240.jankenmaze.gameecs.components.Position;
 import com.tdt4240.jankenmaze.gameecs.components.Remote;
 import com.tdt4240.jankenmaze.gameecs.components.Renderable;
 import com.tdt4240.jankenmaze.gameecs.components.SpriteComponent;
+import com.tdt4240.jankenmaze.gamesettings.GameSettings;
 
 import java.util.ArrayList;
 
@@ -26,6 +27,7 @@ import java.util.ArrayList;
  */
 
 public class HUDSystem extends EntitySystem {
+    GameSettings gameSettings;
     ImmutableArray<Entity> hudEntities;
     ImmutableArray<Entity> localPlayerEntities;
     ComponentMapper<Health> healthComponentMapper;
@@ -37,6 +39,9 @@ public class HUDSystem extends EntitySystem {
     private int maxHealthSpriteX;
     private boolean typeSpritesNotMade;
 
+    private int typeSpriteWidth;
+    private int typepriteHeight;
+
     int playerHealth;
     ArrayList<Entity> playerHearts;
 
@@ -47,13 +52,14 @@ public class HUDSystem extends EntitySystem {
         positionComponentMapper = ComponentMapper.getFor(Position.class);
         playerInfoMapper = ComponentMapper.getFor(PlayerInfo.class);
 
+        gameSettings = GameSettings.getInstance();
+        typepriteHeight = 160;
+        typeSpriteWidth = 160;
+
         playerHearts = new ArrayList<Entity>();
         numOfHealthSprites = 0;
-        maxHealthSpriteX = 800-160;
-
         typeSpritesNotMade = true;
-
-
+        maxHealthSpriteX = gameSettings.viewPortWidth - typeSpriteWidth;
     }
 
     @Override
@@ -79,19 +85,20 @@ public class HUDSystem extends EntitySystem {
 
         if (numOfHealthSprites != localPlayerHealth) {
             //Gets the texture of the local player with a long-ass line of code
-            Texture healthTexture = spriteComponentMapper.get(localPlayer).sprite.getTexture();
+            Texture healthTexture = new Texture("greenSquare.png");
             //  Adding healthsprites:
-
+            int margin = 8;
             while (numOfHealthSprites < localPlayerHealth) {
                 Entity heartEntity = new Entity()
                         .add(new HUDItemInfo("playerHealth"))
                         .add(new SpriteComponent(healthTexture))
-                        .add(new Position(maxHealthSpriteX, 480-healthTexture.getHeight()))
+                        .add(new Position(maxHealthSpriteX,
+                                gameSettings.viewPortHeight-(typepriteHeight+healthTexture.getHeight()) - margin))
                         .add(new Renderable());
 
                 getEngine().addEntity(heartEntity);
                 playerHearts.add(heartEntity);
-                maxHealthSpriteX += healthTexture.getWidth();
+                maxHealthSpriteX += healthTexture.getWidth() + margin;
                 numOfHealthSprites++;
             }
 
@@ -101,7 +108,7 @@ public class HUDSystem extends EntitySystem {
                     Entity lastHeart = playerHearts.get(playerHearts.size() - 1);
                     getEngine().removeEntity(lastHeart);
                     playerHearts.remove(lastHeart);
-                    maxHealthSpriteX -= healthTexture.getWidth();
+                    maxHealthSpriteX -= healthTexture.getWidth() + margin;
 
                 }
                 numOfHealthSprites --;
@@ -114,24 +121,16 @@ public class HUDSystem extends EntitySystem {
 
             //Make big localplayer-sprite
             Texture playerTexture = spriteComponentMapper.get(localPlayer).sprite.getTexture();
-            String playerType = playerInfoMapper.get(localPlayer).type;
-            /*f (playerType.equals("Rock")) { //TODO: This shouldn't be hardcoded
-                playerTexture = new Texture("bigRock.png");
-            } else if (playerType.equals("Paper")) {
-                playerTexture = new Texture("bigPaper.png");
-            } else if (playerType.equals("Scissors")) {
-                playerTexture = new Texture("bigScissors.png");
-            } else {
-                playerTexture = new Texture("testHeart.png"); //In case if-loop fail otherwise
-            }*/
-            float bigPlayerSpriteX = (800 - 160);
-            float bigPlayerSpriteY = (480 - 160);
+            float bigPlayerSpriteX = (gameSettings.viewPortWidth - typeSpriteWidth);
+            float bigPlayerSpriteY = (gameSettings.viewPortHeight - typepriteHeight);
 
             engine.addEntity(new Entity()
                     .add(new SpriteComponent(playerTexture, 160, 160))
                     .add(new Position(bigPlayerSpriteX, bigPlayerSpriteY))
                     .add(new Renderable())
                     .add(new HUDItemInfo("playerType")));
+
+            typeSpritesNotMade = false;
         }
     }
 }
