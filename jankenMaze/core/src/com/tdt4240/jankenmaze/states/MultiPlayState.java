@@ -2,6 +2,8 @@ package com.tdt4240.jankenmaze.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.tdt4240.jankenmaze.gameMessages.positionMessage;
+import com.tdt4240.jankenmaze.gameecs.components.Position;
 import com.tdt4240.jankenmaze.gameecs.events.GameEvent;
 import com.tdt4240.jankenmaze.gameecs.events.RemoteQueue;
 import com.tdt4240.jankenmaze.gameecs.events.RemoteVariable;
@@ -38,7 +40,7 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
 
         if (!(GameSettings.getInstance().getPlayers() == null)){
             onRoomReady(GameSettings.getInstance().getPlayers());
-            entityManager.addMPSystemsToEngine(gsm.playServices, remotePositionSignal);
+
         }
     }
 
@@ -119,7 +121,9 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
             case POSITION:
                 float x=buffer.getFloat();
                 float y=buffer.getFloat();
-                remotePositionSignal.dispatch(new RemoteVariable(x,y, senderParticipantId));
+                System.out.println("MultiPlayState: x:" + x + "y: " + y );
+                positionMessage.getInstance().updateRemotePlayerPostion(senderParticipantId, new Position(x,y));
+                //remotePositionSignal.dispatch(new RemoteVariable(x,y, senderParticipantId));
                 break;
             case GAME_OVER:
                 System.out.println("GAME OVER MESSAGE RECEIVED");
@@ -146,14 +150,17 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
 
         ArrayList<PlayerType> playerTypes = PlayerTypes.getPlayerTypes();
 
+
         for(int i = 0; i < players.size(); i++){
             if (players.get(i).isLocalPlayer) {
-                entityManager.createLocalPlayer(playerTypes.get(i % 3)); //Players have to be created after map.
+                entityManager.createLocalPlayer(playerTypes.get(i % 3), players.get(i)); //Players have to be created after map.
             }
             else{
-                entityManager.createPlayer(playerTypes.get(i % 3));
+                entityManager.createPlayer(playerTypes.get(i % 3), players.get(i));
             }
         }
+
+        entityManager.addMPSystemsToEngine(gsm.playServices, remotePositionSignal);
     }
 
     ////////////// END NETWORK LISTENER METHODS //////////////

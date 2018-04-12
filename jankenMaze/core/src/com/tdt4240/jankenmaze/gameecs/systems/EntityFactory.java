@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.tdt4240.jankenmaze.gameecs.EntityManager;
+import com.tdt4240.jankenmaze.gameecs.components.PlayerNetworkData;
 import com.tdt4240.jankenmaze.gameecs.components.Position;
 import com.tdt4240.jankenmaze.gameecs.components.Velocity;
 import com.tdt4240.jankenmaze.gameecs.components.Health;
@@ -34,7 +35,7 @@ public class EntityFactory {
         this.spriteBatch = spriteBatch;
     }
 
-    public Entity createPlayer(PlayerType type, float xPosition, float yPosition, int health, Texture texture) {
+    public Entity createPlayer(PlayerType type, float xPosition, float yPosition, int health, Texture texture, PlayerNetworkData networkData) {
  
         //creates a remote player
         Entity player = new Entity();
@@ -49,10 +50,11 @@ public class EntityFactory {
         player.add(new Renderable());
         player.add(new SpriteComponent(playerSprite));
         player.add(new Remote());
+        player.add(networkData);
         return player;
     }
 
-    public Entity createLocalPlayer(PlayerType type, float xPosition, float yPosition, int health, Texture texture) {
+    public Entity createLocalPlayer(PlayerType type, float xPosition, float yPosition, int health, Texture texture, PlayerNetworkData networkData) {
         //creates local player
 
         Entity player = new Entity();
@@ -66,6 +68,7 @@ public class EntityFactory {
         player.add(new LocalPlayer());
         player.add(new Renderable());
         player.add(new SpriteComponent(playerSprite));
+        player.add(networkData);
         //player.add(new Remote());
         return player;
     }

@@ -13,25 +13,37 @@ import com.tdt4240.jankenmaze.gameecs.components.Position;
 import com.tdt4240.jankenmaze.gameecs.events.RemoteQueue;
 import com.tdt4240.jankenmaze.gameecs.events.RemoteVariable;
 
+import java.lang.reflect.Array;
+
 public class PositionReceiveSystem extends EntitySystem {
-    Signal<RemoteVariable> remotePositionSignal;
-    RemoteQueue remoteQueue;
+    //Signal<RemoteVariable> remotePositionSignal;
+    //RemoteQueue remoteQueue;
     private ImmutableArray<Entity> players;
     private ComponentMapper<BoundsBox> bb= ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.BoundsBox.class);
     private ComponentMapper<com.tdt4240.jankenmaze.gameecs.components.Position> position= ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.Position.class);
     private ComponentMapper<com.tdt4240.jankenmaze.gameecs.components.PlayerNetworkData> playerNetworkData= ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.PlayerNetworkData.class);
 
     public PositionReceiveSystem(Signal<RemoteVariable> remotePositionSignal){
-        this.remotePositionSignal = remotePositionSignal;
-        remoteQueue = new RemoteQueue();
-        remotePositionSignal.add(remoteQueue);
+        //this.remotePositionSignal = remotePositionSignal;
+        //remoteQueue = new RemoteQueue();
+        //remotePositionSignal.add(remoteQueue);
 
     }
     @Override
     public void update(float dt){
-        for(RemoteVariable variable : remoteQueue.getRemoteVariable()){
-            updatePosition(variable);
-        }
+        /*if(!remoteQueue.isEmpty()){
+            RemoteVariable[] variables = remoteQueue.getRemoteVariable();
+            if (variables.length > 0){
+                for(RemoteVariable variable : remoteQueue.getRemoteVariable()){
+                    updatePosition(variable);
+                }
+            }
+        }else{
+            System.out.println("PositionReceivedSystem: remoteQueue is empty");
+        }*/
+
+
+
     }
 
     private void updatePosition(RemoteVariable remoteVariable){

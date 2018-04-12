@@ -13,9 +13,15 @@ public class RemoteQueue implements Listener<RemoteVariable>{
     }
 
     public RemoteVariable[] getRemoteVariable(){
+        System.out.println("RemoteQueue: " );
         RemoteVariable[] variables = remoteQueue.toArray(new RemoteVariable[0]);
         remoteQueue.clear();
         return variables;
+    }
+
+    public boolean isEmpty(){
+        return remoteQueue.isEmpty();
+
     }
 
     public RemoteVariable poll(){

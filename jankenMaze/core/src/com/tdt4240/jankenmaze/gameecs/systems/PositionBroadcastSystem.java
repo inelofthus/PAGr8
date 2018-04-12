@@ -20,6 +20,7 @@ import java.nio.ByteBuffer;
         private ImmutableArray<Entity> localPlayer;
         private com.tdt4240.jankenmaze.gameecs.components.Position playerPosition;
         private static final byte  POSITION = 1;
+        private float timeSincePositionSent = 0.0f;
 
 
 
@@ -41,9 +42,14 @@ import java.nio.ByteBuffer;
         }
 
         public void update(float dt) {
-            for (GameVariable position : variableQueue.getVariables()){
+            // Want to send new postion every x seconds
+            timeSincePositionSent += dt;
+
+            if (timeSincePositionSent > 0.1f){
                 broadcastPosition();
+                timeSincePositionSent = 0.0f;
             }
+
         }
 
         @Override

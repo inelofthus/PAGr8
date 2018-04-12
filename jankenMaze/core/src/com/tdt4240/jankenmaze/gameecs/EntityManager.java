@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.tdt4240.jankenmaze.PlayServices.PlayServices;
 import com.tdt4240.jankenmaze.gameecs.components.LocalPlayer;
+import com.tdt4240.jankenmaze.gameecs.components.PlayerNetworkData;
 import com.tdt4240.jankenmaze.gameecs.components.Position;
 import com.tdt4240.jankenmaze.gameecs.components.Renderable;
 import com.tdt4240.jankenmaze.gameecs.components.SpriteComponent;
@@ -87,21 +88,21 @@ public class EntityManager {
     }
 
     //TODO: Should entityfactory add entities directly? It's currently done in playstate
-    public void createPlayer(PlayerType type) {
+    public void createPlayer(PlayerType type, PlayerNetworkData networkData) {
         System.out.println("Create player " + PlayerTypes.getPlayerTextures().get(type));
         com.tdt4240.jankenmaze.gameecs.components.Position playerPosition
                 = ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.Position.class).get(randomSpawnPosition());
         engine.addEntity(
-                entityFactory.createPlayer(type, playerPosition.x, playerPosition.y, 3, playerTextureMap.get(type))
+                entityFactory.createPlayer(type, playerPosition.x, playerPosition.y, 3, playerTextureMap.get(type), networkData)
         );
     }
 
-    public void createLocalPlayer(PlayerType type) {
+    public void createLocalPlayer(PlayerType type, PlayerNetworkData networkData) {
         System.out.println("Create local player " + PlayerTypes.getPlayerTextures().get(type));
         com.tdt4240.jankenmaze.gameecs.components.Position playerPosition
                 = ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.Position.class).get(randomSpawnPosition());
         engine.addEntity(
-                entityFactory.createLocalPlayer(type, playerPosition.x, playerPosition.y, 3, playerTextureMap.get(type))
+                entityFactory.createLocalPlayer(type, playerPosition.x, playerPosition.y, 3, playerTextureMap.get(type), networkData)
         );
     }
 
@@ -175,7 +176,7 @@ public class EntityManager {
     public void addMPSystemsToEngine(PlayServices playServices, Signal<RemoteVariable> remotePositionSignal){
        PositionBroadcastSystem positionBroadcastSystem = new PositionBroadcastSystem(playerPositionSignal,playServices);
         engine.addSystem(positionBroadcastSystem);
-        PositionReceiveSystem positionReceiveSystem = new PositionReceiveSystem(remotePositionSignal);
-        engine.addSystem(positionReceiveSystem);
+       // PositionReceiveSystem positionReceiveSystem = new PositionReceiveSystem(remotePositionSignal);
+       // engine.addSystem(positionReceiveSystem);
     }
 }
