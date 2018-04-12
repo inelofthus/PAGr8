@@ -36,6 +36,7 @@ public class HealthSystem extends EntitySystem {
     ImmutableArray<Entity> localPlayer;
     Random rand = new Random();
     private ImmutableArray<Entity> spawnPositions;
+    private ImmutableArray<Entity> remotePlayers;
 
 
 
@@ -82,8 +83,6 @@ public class HealthSystem extends EntitySystem {
                     = ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.Position.class).get(player);
             com.tdt4240.jankenmaze.gameecs.components.Position spawnPos
                     = ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.Position.class).get(spawn);
-
-            //TODO the player should loose all velocity when spawns?
             playerPosition.x=spawnPos.x;
             playerPosition.y=spawnPos.y;
 
@@ -97,6 +96,8 @@ public class HealthSystem extends EntitySystem {
         localPlayer = engine.getEntitiesFor(Family.all(com.tdt4240.jankenmaze.gameecs.components.LocalPlayer.class).get());
         //get all spawnPositions
         spawnPositions = engine.getEntitiesFor(Family.all(Unoccupied.class).get());
+        //get remotePlayers
+        remotePlayers=engine.getEntitiesFor(Family.all(com.tdt4240.jankenmaze.gameecs.components.Remote.class).get());
 
     }
 
