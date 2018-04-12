@@ -15,6 +15,7 @@ public class HealthMessage {
     public static final HealthMessage INSTANCE = new HealthMessage();
 
     private HashMap<String, Health> remotePlayerHealth ;
+    public boolean hasChanged = false;
 
     public HealthMessage() {
         List<PlayerNetworkData> players = GameSettings.getInstance().getPlayers();

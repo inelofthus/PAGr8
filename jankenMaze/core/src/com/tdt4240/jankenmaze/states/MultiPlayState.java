@@ -2,8 +2,10 @@ package com.tdt4240.jankenmaze.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.tdt4240.jankenmaze.gameMessages.HealthMessage;
 import com.tdt4240.jankenmaze.gameMessages.MessageCodes;
 import com.tdt4240.jankenmaze.gameMessages.PositionMessage;
+import com.tdt4240.jankenmaze.gameecs.components.Health;
 import com.tdt4240.jankenmaze.gameecs.components.Position;
 import com.tdt4240.jankenmaze.gameecs.events.GameEvent;
 import com.tdt4240.jankenmaze.gamesettings.GameSettings;
@@ -95,6 +97,15 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
                         gsm.push(new GameOverState());
                     }
                 });
+
+                break;
+            case MessageCodes.HEALTH:
+                System.out.println("HEALTH MESSAGE RECEIVED");
+                int hp = buffer.getInt();
+                if (! (GameSettings.getInstance().getPlayers() == null)){
+                    HealthMessage.getInstance().updateRemotePlayerHealth(senderParticipantId, new Health(hp));
+                    HealthMessage.getInstance().hasChanged = true;
+                }
 
                 break;
         }

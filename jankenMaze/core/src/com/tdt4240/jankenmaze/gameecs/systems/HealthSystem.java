@@ -7,6 +7,7 @@ import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.signals.Signal;
 import com.badlogic.ashley.utils.ImmutableArray;
+import com.tdt4240.jankenmaze.gameMessages.HealthMessage;
 import com.tdt4240.jankenmaze.gameecs.EntityManager;
 import com.tdt4240.jankenmaze.gameecs.components.Health;
 import com.tdt4240.jankenmaze.gameecs.components.Position;
@@ -16,6 +17,7 @@ import com.tdt4240.jankenmaze.gameecs.events.EventQueue;
 import com.tdt4240.jankenmaze.gameecs.events.GameEvent;
 import com.tdt4240.jankenmaze.gameecs.events.GameVariable;
 import com.tdt4240.jankenmaze.gameecs.events.VariableQueue;
+import com.tdt4240.jankenmaze.gamesettings.GameSettings;
 
 import java.util.Random;
 
@@ -110,14 +112,21 @@ public class HealthSystem extends EntitySystem {
       // decreases Health when local player has been eaten.
         for (GameEvent event: collisionQueue.getEvents()){
            decreaseHealth(localPlayer.get(0),1);
+        }
 
-
+        if (HealthMessage.getInstance().hasChanged){
+            if (GameSettings.getInstance().isMultplayerGame){
+                updateRemotePlayerHealth();
+            }
         }
 
 
 
 
+    }
 
+    private void updateRemotePlayerHealth() {
+      HealthMessage.getInstance().hasChanged = false;
     }
 }
 
