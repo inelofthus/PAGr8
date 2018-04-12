@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.tdt4240.jankenmaze.gameecs.components.LocalPlayer;
 import com.tdt4240.jankenmaze.gameecs.components.Position;
+import com.tdt4240.jankenmaze.gameecs.components.PowerUpInfo;
 import com.tdt4240.jankenmaze.gameecs.components.Renderable;
 import com.tdt4240.jankenmaze.gameecs.components.SpriteComponent;
 import com.tdt4240.jankenmaze.gameecs.components.Velocity;
