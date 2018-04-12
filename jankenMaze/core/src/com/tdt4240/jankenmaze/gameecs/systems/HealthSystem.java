@@ -10,6 +10,7 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.tdt4240.jankenmaze.gameMessages.HealthMessage;
 import com.tdt4240.jankenmaze.gameecs.EntityManager;
 import com.tdt4240.jankenmaze.gameecs.components.Health;
+import com.tdt4240.jankenmaze.gameecs.components.PlayerNetworkData;
 import com.tdt4240.jankenmaze.gameecs.components.Position;
 import com.tdt4240.jankenmaze.gameecs.components.Unoccupied;
 import com.tdt4240.jankenmaze.gameecs.components.Velocity;
@@ -35,6 +36,7 @@ public class HealthSystem extends EntitySystem {
     private EventQueue healthQueue;
     private ComponentMapper<com.tdt4240.jankenmaze.gameecs.components.Health> healthComponentMapper =ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.Health.class);
     private ComponentMapper<Velocity> velocityComponentMapper = ComponentMapper.getFor(Velocity.class);
+    private ComponentMapper<PlayerNetworkData> playerDataCompMapper = ComponentMapper.getFor(PlayerNetworkData.class);
     ImmutableArray<Entity> localPlayer;
     Random rand = new Random();
     private ImmutableArray<Entity> spawnPositions;
@@ -101,6 +103,8 @@ public class HealthSystem extends EntitySystem {
         //get remotePlayers
         remotePlayers=engine.getEntitiesFor(Family.all(com.tdt4240.jankenmaze.gameecs.components.Remote.class).get());
 
+
+
     }
 
     @Override
@@ -128,6 +132,15 @@ public class HealthSystem extends EntitySystem {
 
     private void updateRemotePlayerHealth() {
       HealthMessage.getInstance().hasChanged = false;
+      for (Entity remotePlayer : remotePlayers){
+          PlayerNetworkData netData = playerDataCompMapper.get(remotePlayer);
+          Health newHealth=HealthMessage.getInstance().getRemotePlayerHealth().get(netData.participantId);
+          Health healthComp = healthComponentMapper.get(remotePlayer);
+          healthComp.health=newHealth.health;
+          System.out.println("Remoteplayers health is : " + healthComp.health);
+
+      }
+
     }
 }
 
