@@ -3,7 +3,7 @@ package com.tdt4240.jankenmaze.states;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.tdt4240.jankenmaze.gameMessages.MessageCodes;
-import com.tdt4240.jankenmaze.gameMessages.positionMessage;
+import com.tdt4240.jankenmaze.gameMessages.PositionMessage;
 import com.tdt4240.jankenmaze.gameecs.components.Position;
 import com.tdt4240.jankenmaze.gameecs.events.GameEvent;
 import com.tdt4240.jankenmaze.gamesettings.GameSettings;
@@ -15,8 +15,6 @@ import com.tdt4240.jankenmaze.gamesettings.PlayerTypes;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.badlogic.ashley.signals.Signal;
 
 /**
  * Created by karim on 09/04/2018.
@@ -116,7 +114,7 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
                 float y=buffer.getFloat();
                 System.out.println("MultiPlayState: x:" + x + "y: " + y );
                 if (! (GameSettings.getInstance().getPlayers() == null)){
-                    positionMessage.getInstance().updateRemotePlayerPostion(senderParticipantId, new Position(x,y));
+                    PositionMessage.getInstance().updateRemotePlayerPostion(senderParticipantId, new Position(x,y));
                 }
                 break;
             case MessageCodes.GAME_OVER:
