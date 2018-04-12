@@ -1,11 +1,16 @@
 package com.tdt4240.jankenmaze.states;
 
+import com.badlogic.ashley.core.ComponentMapper;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.tdt4240.jankenmaze.gameMessages.HealthMessage;
 import com.tdt4240.jankenmaze.gameMessages.MessageCodes;
 import com.tdt4240.jankenmaze.gameMessages.PositionMessage;
 import com.tdt4240.jankenmaze.gameecs.components.Health;
+import com.tdt4240.jankenmaze.gameecs.components.PlayerInfo;
 import com.tdt4240.jankenmaze.gameecs.components.Position;
 import com.tdt4240.jankenmaze.gameecs.events.GameEvent;
 import com.tdt4240.jankenmaze.gamesettings.GameSettings;
@@ -17,6 +22,8 @@ import com.tdt4240.jankenmaze.gamesettings.PlayerTypes;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
+
+import sun.awt.X11.XConstants;
 
 /**
  * Created by karim on 09/04/2018.
@@ -62,6 +69,11 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
             ByteBuffer buffer = ByteBuffer.allocate(1);
             buffer.put(MessageCodes.GAME_OVER);
             gsm.playServices.sendReliableMessageToOthers(buffer.array());
+            ImmutableArray<Entity> players = engine.getEntitiesFor(Family.all(com.tdt4240.jankenmaze.gameecs.components.PlayerInfo.class).get());
+            ComponentMapper<PlayerInfo> info =ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.PlayerInfo.class);
+            for(Entity player:players) {
+                System.out.println(info.get(player).type);
+            }
             gsm.push(new GameOverState());
         }
 
