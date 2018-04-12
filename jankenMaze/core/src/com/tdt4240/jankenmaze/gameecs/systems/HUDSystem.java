@@ -13,13 +13,16 @@ import com.tdt4240.jankenmaze.gameecs.components.HUDItemInfo;
 import com.tdt4240.jankenmaze.gameecs.components.Health;
 import com.tdt4240.jankenmaze.gameecs.components.LocalPlayer;
 import com.tdt4240.jankenmaze.gameecs.components.PlayerInfo;
+import com.tdt4240.jankenmaze.gameecs.components.PlayerNetworkData;
 import com.tdt4240.jankenmaze.gameecs.components.Position;
 import com.tdt4240.jankenmaze.gameecs.components.Remote;
 import com.tdt4240.jankenmaze.gameecs.components.Renderable;
 import com.tdt4240.jankenmaze.gameecs.components.SpriteComponent;
 import com.tdt4240.jankenmaze.gamesettings.GameSettings;
+import com.tdt4240.jankenmaze.gamesettings.PlayerType;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by jonas on 18/03/2018.
@@ -30,17 +33,21 @@ public class HUDSystem extends EntitySystem {
     GameSettings gameSettings;
     ImmutableArray<Entity> hudEntities;
     ImmutableArray<Entity> localPlayerEntities;
+    ImmutableArray<Entity> remoteEntities;
     ComponentMapper<Health> healthComponentMapper;
     ComponentMapper<HUDItemInfo> hudItemInfoComponentMapper;
     ComponentMapper<SpriteComponent> spriteComponentMapper;
     ComponentMapper<Position> positionComponentMapper;
     ComponentMapper<PlayerInfo> playerInfoMapper;
+    ComponentMapper<PlayerNetworkData> netDataComponentMapper;
     private int numOfHealthSprites;
     private int maxHealthSpriteX;
     private boolean typeSpritesNotMade;
 
     private int typeSpriteWidth;
     private int typepriteHeight;
+
+    HashMap<String, ArrayList<Entity>> remoteHP;
 
     int playerHealth;
     ArrayList<Entity> playerHearts;
@@ -51,6 +58,7 @@ public class HUDSystem extends EntitySystem {
         spriteComponentMapper = ComponentMapper.getFor(SpriteComponent.class);
         positionComponentMapper = ComponentMapper.getFor(Position.class);
         playerInfoMapper = ComponentMapper.getFor(PlayerInfo.class);
+        netDataComponentMapper = ComponentMapper.getFor(PlayerNetworkData.class);
 
         gameSettings = GameSettings.getInstance();
         typepriteHeight = 160;
@@ -60,6 +68,8 @@ public class HUDSystem extends EntitySystem {
         numOfHealthSprites = 0;
         typeSpritesNotMade = true;
         maxHealthSpriteX = gameSettings.viewPortWidth - typeSpriteWidth;
+
+        remoteHP = new HashMap<String, ArrayList<Entity>>();
     }
 
     @Override
@@ -67,6 +77,7 @@ public class HUDSystem extends EntitySystem {
         hudEntities = engine.getEntitiesFor(Family.all(
                 HUDItemInfo.class, Renderable.class, Position.class).get());
         localPlayerEntities = engine.getEntitiesFor(Family.one(LocalPlayer.class).get());
+        remoteEntities = engine.getEntitiesFor(Family.all(Remote.class).get());
     }
 
     @Override
@@ -80,9 +91,8 @@ public class HUDSystem extends EntitySystem {
     public void update(float deltaTime) {
         //Health-display
         Entity localPlayer = localPlayerEntities.first();
-
+        int remoteHpSize = 12;
         int localPlayerHealth = healthComponentMapper.get(localPlayer).health;
-
         if (numOfHealthSprites != localPlayerHealth) {
             //Gets the texture of the local player with a long-ass line of code
             Texture healthTexture = new Texture("greenSquare.png");
@@ -113,6 +123,45 @@ public class HUDSystem extends EntitySystem {
                 }
                 numOfHealthSprites --;
             }
+        }
+
+        //Check HP for remotes, then maybe add/remove sprites
+        for(Entity remote: remoteEntities){
+            String remoteID = netDataComponentMapper.get(remote).participantId;
+            int remoteHealth = healthComponentMapper.get(remote).health;
+            if(! remoteHP.containsKey(remoteID)){
+                remoteHP.put(remoteID, new ArrayList<Entity>());
+            }
+            ArrayList<Entity> displayedHPSprites = remoteHP.get(remoteID);
+            while (displayedHPSprites.size() > remoteHealth){
+                //Too much HP is displayed
+                Entity remoteHpSprite = displayedHPSprites.get(displayedHPSprites.size()-1);
+                getEngine().removeEntity(remoteHpSprite);
+                displayedHPSprites.remove(displayedHPSprites);
+            }
+            while (displayedHPSprites.size() < remoteHealth){
+                Entity remoteHpSprite = new Entity();
+                remoteHpSprite.add(new SpriteComponent(new Texture("greenSquare.png"), remoteHpSize, remoteHpSize))
+                    .add(new Renderable())
+                    .add(new Position(0,0))
+                    .add(new HUDItemInfo("remoteHealth"));
+                displayedHPSprites.add(remoteHpSprite);
+            }
+
+            //Position stuff:
+            Position pos = positionComponentMapper.get(remote);
+            Sprite sprite = spriteComponentMapper.get(remote).sprite;
+            int margin = 4;
+            //X = half the size of how total width of all the HP-sprites off the center of the player-sprite
+            int anchorX = (int) (pos.x + (sprite.getWidth() / 2) - (remoteHP.get(remoteID).size() * (remoteHpSize + margin)) / 2);
+            int anchorY = (int) (pos.y - (remoteHpSize + margin));
+
+            for(int i = 0; i > displayedHPSprites.size(); i++){
+                Position hpPos = positionComponentMapper.get(displayedHPSprites.get(i));
+                hpPos.x = anchorX + i*(remoteHpSize + margin);
+                hpPos.y = anchorY;
+            }
+
         }
 
         //Type display. Wrapped in if-clause to only run once (uses created sprites so shouldn't be in constructor)
