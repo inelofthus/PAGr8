@@ -11,10 +11,12 @@ import java.util.List;
  * Created by karim on 12/04/2018.
  */
 
-public class positionMessage {
-    private static final positionMessage INSTANCE = new positionMessage();
+public class PositionMessage {
+    private static final PositionMessage INSTANCE = new PositionMessage();
+    private HashMap<String, Position> remotePlayerPositions ;
 
-    public positionMessage() {
+
+    public PositionMessage() {
         List<PlayerNetworkData> players = GameSettings.getInstance().getPlayers();
         this.remotePlayerPositions= new HashMap<String, Position>();
         for (PlayerNetworkData player : players){
@@ -24,12 +26,9 @@ public class positionMessage {
     }
 
 
-    public static positionMessage getInstance(){
+    public static PositionMessage getInstance(){
         return INSTANCE;
     }
-
-
-    private HashMap<String, Position> remotePlayerPositions ;
 
     public void updateRemotePlayerPostion(String playerId, Position position) {
         remotePlayerPositions.put(playerId,position);

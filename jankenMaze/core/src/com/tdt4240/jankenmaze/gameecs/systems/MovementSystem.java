@@ -2,7 +2,7 @@ package com.tdt4240.jankenmaze.gameecs.systems;
 
 import com.badlogic.ashley.signals.Signal;
 import com.badlogic.gdx.math.Rectangle;
-import com.tdt4240.jankenmaze.gameMessages.positionMessage;
+import com.tdt4240.jankenmaze.gameMessages.PositionMessage;
 import com.tdt4240.jankenmaze.gameecs.components.*;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Engine;
@@ -110,7 +110,7 @@ public class MovementSystem extends EntitySystem {
             //Update the positions of the remote players
             for (Entity remotePlayer: remotePlayers){
                 PlayerNetworkData netData = playerDataCompMapper.get(remotePlayer);
-                Position newPos = positionMessage.getInstance().getRemotePlayerPositions().get(netData.participantId);
+                Position newPos = PositionMessage.getInstance().getRemotePlayerPositions().get(netData.participantId);
                 Position posComp = positionMapper.get(remotePlayer);
 
                 posComp.x = newPos.x;
