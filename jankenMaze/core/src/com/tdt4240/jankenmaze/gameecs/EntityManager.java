@@ -68,7 +68,9 @@ public class EntityManager {
     private Signal<GameEvent> gameEventSignal;
     private Signal<GameEvent> gameOverSignal;
     private Signal<GameEvent> playerCollisionSignal;
+    private Signal<GameEvent> decreaseHealthSignal;
     private Signal<GameVariable> playerPositionSignal;
+
     Random rand = new Random();
     private ImmutableArray<Entity> spawnPositions;
     private HashMap<PlayerType, Texture> playerTextureMap;
@@ -79,6 +81,7 @@ public class EntityManager {
         entityFactory = new EntityFactory(engine, batch);
         gameEventSignal = new Signal<GameEvent>();
         playerCollisionSignal = new Signal<GameEvent>();
+        decreaseHealthSignal = new Signal<GameEvent>();
         playerPositionSignal = new Signal<GameVariable>();
         playerTextureMap = PlayerTypes.getPlayerTextures();
 
@@ -164,7 +167,7 @@ public class EntityManager {
         CollisionSystem cs = new CollisionSystem(playerCollisionSignal, playerPositionSignal);
         engine.addSystem(cs);
 
-        HealthSystem hs=new HealthSystem(playerCollisionSignal, gameOverSignal);
+        HealthSystem hs=new HealthSystem(playerCollisionSignal, gameOverSignal, decreaseHealthSignal);
         engine.addSystem(hs);
 
         SendSignalSystemExample sendEx = new SendSignalSystemExample(gameEventSignal);

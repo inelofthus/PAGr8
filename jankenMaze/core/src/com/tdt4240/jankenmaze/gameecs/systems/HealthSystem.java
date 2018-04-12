@@ -14,6 +14,8 @@ import com.tdt4240.jankenmaze.gameecs.components.Unoccupied;
 import com.tdt4240.jankenmaze.gameecs.components.Velocity;
 import com.tdt4240.jankenmaze.gameecs.events.EventQueue;
 import com.tdt4240.jankenmaze.gameecs.events.GameEvent;
+import com.tdt4240.jankenmaze.gameecs.events.GameVariable;
+import com.tdt4240.jankenmaze.gameecs.events.VariableQueue;
 
 import java.util.Random;
 
@@ -27,6 +29,8 @@ public class HealthSystem extends EntitySystem {
     private EventQueue collisionQueue;
     private Signal<GameEvent> gameOverSignal;
     private EventQueue gameOverQueue;
+    private Signal<GameEvent> decreaseHealthSignal;
+    private EventQueue healthQueue;
     private ComponentMapper<com.tdt4240.jankenmaze.gameecs.components.Health> healthComponentMapper =ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.Health.class);
     private ComponentMapper<Velocity> velocityComponentMapper = ComponentMapper.getFor(Velocity.class);
     ImmutableArray<Entity> localPlayer;
@@ -36,7 +40,7 @@ public class HealthSystem extends EntitySystem {
 
 
 
-    public HealthSystem(Signal<GameEvent> playerCollisionSignal, Signal<GameEvent> gameOverSignal) {
+    public HealthSystem(Signal<GameEvent> playerCollisionSignal, Signal<GameEvent> gameOverSignal, Signal<GameEvent> decreaseHealthSignal) {
         //creates the CollisionSignal
         this.playerCollisionSignal = playerCollisionSignal;
         collisionQueue = new EventQueue();
@@ -45,6 +49,9 @@ public class HealthSystem extends EntitySystem {
         this.gameOverSignal=gameOverSignal;
         gameOverQueue= new EventQueue();
         this.gameOverSignal.add(gameOverQueue);
+        this.decreaseHealthSignal=decreaseHealthSignal;
+        healthQueue=new EventQueue();
+        this.decreaseHealthSignal.add(healthQueue);
     }
 
     public void increaseHealth(Entity entity, int delta){
@@ -60,10 +67,9 @@ public class HealthSystem extends EntitySystem {
         velocity.currentY = 0;
         velocity.futureX = 0;
         velocity.futureY = 0;
-        System.out.println(health.health);
         //decrease health
         health.health=health.health-Math.abs(delta);
-      System.out.println(health.health);
+        decreaseHealthSignal.dispatch(GameEvent.DECREASE_HEALTH);
         if (health.health<=0){
             // GAME OVER
             gameOverSignal.dispatch(GameEvent.GAME_OVER);

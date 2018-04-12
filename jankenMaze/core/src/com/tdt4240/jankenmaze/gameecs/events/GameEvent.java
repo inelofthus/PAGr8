@@ -6,10 +6,9 @@ package com.tdt4240.jankenmaze.gameecs.events;
 
 public enum GameEvent {
     GAME_OVER,
-
     WALL_COLLISION,
     PLAYER_COLLISION,
     POWERUP_COLLISION,
-
+    DECREASE_HEALTH,
     PLAYER_DEATH
 }
