@@ -27,7 +27,6 @@ import java.util.ArrayList;
 
 public class HUDSystem extends EntitySystem {
     ImmutableArray<Entity> hudEntities;
-    ImmutableArray<Entity> remotePlayerEntities;
     ImmutableArray<Entity> localPlayerEntities;
     ComponentMapper<Health> healthComponentMapper;
     ComponentMapper<HUDItemInfo> hudItemInfoComponentMapper;
@@ -50,17 +49,17 @@ public class HUDSystem extends EntitySystem {
 
         playerHearts = new ArrayList<Entity>();
         numOfHealthSprites = 0;
-        maxHealthSpriteX = 0;
+        maxHealthSpriteX = 800-160;
 
         typeSpritesNotMade = true;
+
+
     }
 
     @Override
     public void addedToEngine(Engine engine) {
         hudEntities = engine.getEntitiesFor(Family.all(
                 HUDItemInfo.class, Renderable.class, Position.class).get());
-        remotePlayerEntities = engine.getEntitiesFor(Family.all(
-                Health.class, PlayerInfo.class, Remote.class).get());
         localPlayerEntities = engine.getEntitiesFor(Family.one(LocalPlayer.class).get());
     }
 
@@ -68,22 +67,26 @@ public class HUDSystem extends EntitySystem {
     public void removedFromEngine(Engine engine) {
         hudEntities = engine.getEntitiesFor(Family.all(
                 HUDItemInfo.class, Renderable.class, Position.class).get());
+        localPlayerEntities = engine.getEntitiesFor(Family.one(LocalPlayer.class).get());
     }
 
     @Override
     public void update(float deltaTime) {
         //Health-display
+        Entity localPlayer = localPlayerEntities.first();
 
-        int localPlayerHealth = healthComponentMapper.get(localPlayerEntities.get(0)).health;
+        int localPlayerHealth = healthComponentMapper.get(localPlayer).health;
 
         if (numOfHealthSprites != localPlayerHealth) {
-            Texture healthTexture = new Texture("testHeart.png");
+            //Gets the texture of the local player with a long-ass line of code
+            Texture healthTexture = spriteComponentMapper.get(localPlayer).sprite.getTexture();
             //  Adding healthsprites:
+
             while (numOfHealthSprites < localPlayerHealth) {
                 Entity heartEntity = new Entity()
                         .add(new HUDItemInfo("playerHealth"))
                         .add(new SpriteComponent(healthTexture))
-                        .add(new Position(maxHealthSpriteX, Gdx.graphics.getHeight()-healthTexture.getHeight()))
+                        .add(new Position(maxHealthSpriteX, 480-healthTexture.getHeight()))
                         .add(new Renderable());
 
                 getEngine().addEntity(heartEntity);
@@ -107,70 +110,28 @@ public class HUDSystem extends EntitySystem {
 
         //Type display. Wrapped in if-clause to only run once (uses created sprites so shouldn't be in constructor)
         if(typeSpritesNotMade) {
-            //Check who eats who:
-            Sprite localPlayerSprite = spriteComponentMapper.get(localPlayerEntities.get(0)).sprite;
-            ArrayList<Sprite> targetSprites = new ArrayList<Sprite>();
-            ArrayList<Sprite> targetedBySprites = new ArrayList<Sprite>();
+            Engine engine = getEngine();
 
-            String localPlayerType = playerInfoMapper.get(localPlayerEntities.get(0)).type;
-            for (Entity player : remotePlayerEntities) {
-                String playerTarget = playerInfoMapper.get(player).target;
-                String playerTargetedBy = playerInfoMapper.get(player).targetetBy;
-                if (playerTarget.equals(localPlayerType)) {
-                    targetedBySprites.add(spriteComponentMapper.get(player).sprite);
-                } else if (playerTargetedBy.equals("localPlayerType")) {
-                    targetSprites.add(spriteComponentMapper.get(player).sprite);
-                }
-            }
+            //Make big localplayer-sprite
+            Texture playerTexture = spriteComponentMapper.get(localPlayer).sprite.getTexture();
+            String playerType = playerInfoMapper.get(localPlayer).type;
+            /*f (playerType.equals("Rock")) { //TODO: This shouldn't be hardcoded
+                playerTexture = new Texture("bigRock.png");
+            } else if (playerType.equals("Paper")) {
+                playerTexture = new Texture("bigPaper.png");
+            } else if (playerType.equals("Scissors")) {
+                playerTexture = new Texture("bigScissors.png");
+            } else {
+                playerTexture = new Texture("testHeart.png"); //In case if-loop fail otherwise
+            }*/
+            float bigPlayerSpriteX = (800 - 160);
+            float bigPlayerSpriteY = (480 - 160);
 
-            //Create the sprites:
-            int leftMostX = Math.round((
-                    Gdx.graphics.getWidth() / 2) - (localPlayerSprite.getWidth() / 2));
-            int rightMostX = Math.round((
-                    Gdx.graphics.getWidth() / 2) + (localPlayerSprite.getWidth() / 2));
-
-            getEngine().addEntity(new Entity()
-                    .add(new HUDItemInfo("playerType"))
-                    .add(new SpriteComponent(localPlayerSprite.getTexture()))
-                    .add(new Position(leftMostX, 0))
-                    .add(new Renderable()));
-
-            Texture eats = new Texture("eatsToRight.png");
-            leftMostX -= eats.getWidth();
-            getEngine().addEntity(new Entity()
-                    .add(new HUDItemInfo("eats"))
-                    .add(new SpriteComponent(eats))
-                    .add(new Position(leftMostX, 0))
-                    .add(new Renderable()));
-            getEngine().addEntity(new Entity()
-                    .add(new HUDItemInfo("eats"))
-                    .add(new SpriteComponent(eats))
-                    .add(new Position(rightMostX, 0))
-                    .add(new Renderable()));
-            rightMostX += eats.getWidth();
-            leftMostX -= eats.getWidth();
-
-            int highestY = 0;
-            for (Sprite playerSprite : targetedBySprites) {
-                getEngine().addEntity(new Entity()
-                        .add(new HUDItemInfo("targetedBy"))
-                        .add(new SpriteComponent(playerSprite))
-                        .add(new Position(leftMostX, highestY))
-                        .add(new Renderable())
-                );
-                highestY += playerSprite.getHeight();
-            }
-            highestY = 0;
-            for (Sprite playerSprite : targetSprites) {
-                getEngine().addEntity(new Entity()
-                        .add(new HUDItemInfo("target"))
-                        .add(new SpriteComponent(playerSprite))
-                        .add(new Position(rightMostX, highestY))
-                        .add(new Renderable())
-                );
-                highestY += playerSprite.getHeight();
-            }
-            typeSpritesNotMade = false;
+            engine.addEntity(new Entity()
+                    .add(new SpriteComponent(playerTexture, 160, 160))
+                    .add(new Position(bigPlayerSpriteX, bigPlayerSpriteY))
+                    .add(new Renderable())
+                    .add(new HUDItemInfo("playerType")));
         }
     }
 }

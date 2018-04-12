@@ -50,7 +50,14 @@ public class RenderSystem extends EntitySystem {
         for(Entity e: entities){
             SpriteComponent sCom = e.getComponent(SpriteComponent.class);
             Position pCom = e.getComponent(Position.class);
-            batch.draw(sCom.sprite.getTexture(), pCom.x, pCom.y);
+
+            //Sees if spritecomp. has been resized, in which case it's drawn to scale
+            if(sCom.height != null && sCom.width != null){
+                batch.draw(sCom.sprite, pCom.x, pCom.y, sCom.width, sCom.height);
+            }
+            else{
+                batch.draw(sCom.sprite.getTexture(), pCom.x, pCom.y);
+            }
         }
         batch.end();
     }
