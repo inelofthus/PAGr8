@@ -2,12 +2,15 @@ package com.tdt4240.jankenmaze.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.tdt4240.jankenmaze.gameecs.events.GameEvent;
+import com.tdt4240.jankenmaze.gamesettings.GameSettings;
 import com.tdt4240.jankenmaze.PlayServices.PlayServices;
 import com.tdt4240.jankenmaze.gameecs.components.PlayerNetworkData;
+import com.tdt4240.jankenmaze.gamesettings.PlayerType;
+import com.tdt4240.jankenmaze.gamesettings.PlayerTypes;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -16,10 +19,16 @@ import java.util.List;
 
 public class MultiPlayState extends PlayState implements PlayServices.NetworkListener {
     private static final byte  POSITION = 1;
+    private static final byte  GAME_OVER = 2;
 
     public MultiPlayState(SpriteBatch batch) {
         super(batch);
         gsm.playServices.setNetworkListener(this);
+        GameSettings.getInstance().isMultplayerGame = true;
+
+        if (!(GameSettings.getInstance().getPlayers() == null)){
+            onRoomReady(GameSettings.getInstance().getPlayers());
+        }
     }
 
     @Override
@@ -27,20 +36,29 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
         super.handleInput();
         if (Gdx.input.isTouched()){
 
-            // will send a byte code for touched
+           /* // will send a byte code for touched
             ByteBuffer buffer = ByteBuffer.allocate(2 * 4 + 1);
             int x = 1;
             int y = 2;
             buffer.put(POSITION);
             buffer.putInt(x);
             buffer.putInt(y);
-            gsm.playServices.sendUnreliableMessageToOthers(buffer.array());
+            gsm.playServices.sendUnreliableMessageToOthers(buffer.array());*/
         }
     }
 
     @Override
     public void update(float dt) {
         super.update(dt);
+
+        for(GameEvent gameOver: gameOverQueue.getEvents()){
+            System.out.println("GameOverEvent");
+            ByteBuffer buffer = ByteBuffer.allocate(1);
+            buffer.put(GAME_OVER);
+            gsm.playServices.sendReliableMessageToOthers(buffer.array());
+            gsm.push(new GameOverState());
+        }
+
         handleInput();
     }
 
@@ -57,6 +75,23 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
     ///////////NETWORK LISTENER METHODS //////////////////////
     @Override
     public void onReliableMessageReceived(String senderParticipantId, int describeContents, byte[] messageData) {
+        System.out.println("MultiPlayState:    onReliableMessageReceived: " + senderParticipantId + "," + describeContents);
+
+        ByteBuffer buffer = ByteBuffer.wrap(messageData);
+        byte messageType = buffer.get();
+
+        switch (messageType){
+            case GAME_OVER:
+                System.out.println("GAME OVER MESSAGE RECEIVED");
+                Gdx.app.postRunnable(new Runnable() {
+                    @Override
+                    public void run() {
+                        gsm.push(new GameOverState());
+                    }
+                });
+
+                break;
+        }
     }
 
     @Override
@@ -66,28 +101,44 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
 
         ByteBuffer buffer = ByteBuffer.wrap(messageData);
         byte messageType = buffer.get();
-        int x = buffer.getInt();
-        int y = buffer.getInt();
 
-        System.out.println("POSITION UPDATED: MessageType: " + messageType + ", x: " + x + ", y:" + y);
+        switch (messageType){
+            case POSITION:
+                int x = buffer.getInt();
+                int y = buffer.getInt();
+                System.out.println("POSITION UPDATED: MessageType: " + messageType + ", x: " + x + ", y:" + y);
+                break;
+            case GAME_OVER:
+                System.out.println("GAME OVER MESSAGE RECEIVED");
+                Gdx.app.postRunnable(new Runnable() {
+                    @Override
+                    public void run() {
+                        gsm.push(new GameOverState());
+                    }
+                });
+
+                break;
+        }
+
 
     }
 
     @Override
     public void onRoomReady(List<PlayerNetworkData> players) {
         System.out.println("Player1 " + players.get(0).displayName);
+        if (GameSettings.getInstance().getPlayers()== null){
+            GameSettings.getInstance().setPlayers(players);
+        }
         //TODO: Initialize the world with all systems and components. Among other things create a player entity for each PlayerNetworkData
 
-
-        ArrayList<String> playerTypes = new ArrayList<String>();
-        playerTypes.addAll(Arrays.asList("Rock", "Paper", "Scissors"));
+        ArrayList<PlayerType> playerTypes = PlayerTypes.getPlayerTypes();
 
         for(int i = 0; i < players.size(); i++){
             if (players.get(i).isLocalPlayer) {
-                entityManager.createLocalPlayer(playerTypes.get(i)); //Players have to be created after map.
+                entityManager.createLocalPlayer(playerTypes.get(i % 3)); //Players have to be created after map.
             }
             else{
-                entityManager.createPlayer(playerTypes.get(i));
+                entityManager.createPlayer(playerTypes.get(i % 3));
             }
         }
     }

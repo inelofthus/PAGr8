@@ -9,12 +9,14 @@ import android.widget.Toast;
 
 import com.badlogic.gdx.Gdx;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.RealTimeMultiplayerClient;
 import com.google.android.gms.games.multiplayer.Invitation;
 import com.google.android.gms.games.multiplayer.Multiplayer;
 import com.google.android.gms.games.multiplayer.OnInvitationReceivedListener;
 import com.google.android.gms.games.multiplayer.Participant;
 import com.google.android.gms.games.multiplayer.realtime.RealTimeMessage;
 import com.google.android.gms.games.multiplayer.realtime.RealTimeMessageReceivedListener;
+import com.google.android.gms.games.multiplayer.realtime.RealTimeMultiplayer;
 import com.google.android.gms.games.multiplayer.realtime.Room;
 import com.google.android.gms.games.multiplayer.realtime.RoomConfig;
 import com.google.android.gms.games.multiplayer.realtime.RoomStatusUpdateListener;
@@ -23,6 +25,7 @@ import com.google.example.games.basegameutils.BaseGameUtils;
 import com.google.example.games.basegameutils.GameHelper;
 import com.tdt4240.jankenmaze.PlayServices.PlayServices;
 import com.tdt4240.jankenmaze.gameecs.components.PlayerNetworkData;
+import com.tdt4240.jankenmaze.gamesettings.GameSettings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +54,7 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
     private GameListener gameListener;
     private NetworkListener networkListener;
     private String incomingInvitationId;
+    private RealTimeMultiplayer.ReliableMessageSentCallback reliableMessageSentCallback = null;
 
     public PlayServiceLauncher(AndroidLauncher activity) {
         this.activity = activity;
@@ -154,7 +158,10 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
     public void sendUnreliableMessageToOthers(byte[] messageData) {
         if (currentRoomId == null){
             System.out.println("RoomID is null!");
-            return;
+            if (! (GameSettings.getInstance().roomID == null)){
+                System.out.println("Setting RoomId:" + GameSettings.getInstance().roomID);
+                currentRoomId = GameSettings.getInstance().roomID;
+            }
         }
         if (!gameHelper.isSignedIn()){
             System.out.println("not signed in");
@@ -165,6 +172,65 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
         Log.d(TAG, "sendUnreliableMessageToOthers: ");
 
     }
+
+    @Override
+    public void sendReliableMessageToOthers(byte[] messageData) {
+        if (currentRoomId == null){
+            if (! (GameSettings.getInstance().roomID == null)){
+                System.out.println("Setting RoomId:" + GameSettings.getInstance().roomID);
+                currentRoomId = GameSettings.getInstance().roomID;
+            }
+        }
+        if (!gameHelper.isSignedIn()){
+            System.out.println("not signed in");
+            return;
+        }
+
+        if (reliableMessageSentCallback == null){
+            this.reliableMessageSentCallback = new RealTimeMultiplayerClient.ReliableMessageSentCallback() {
+                @Override
+                public void onRealTimeMessageSent(int i, int i1, String s) {
+                    Log.d(TAG, "onRealTimeMessageSent: ");
+                }
+            };
+        }
+
+        for (PlayerNetworkData player: GameSettings.getInstance().getPlayers()){
+            if (!player.isLocalPlayer){
+                Games.RealTimeMultiplayer.sendReliableMessage(gameHelper.getApiClient(),reliableMessageSentCallback, messageData, currentRoomId, player.participantId);
+                Log.d(TAG, "sendReliableMessage: ");
+            }
+
+        }
+
+    }
+
+    @Override
+    // Sends reliable Message to one specific other player
+    public void sendReliableMessageTo(String participantId, byte[] messageData) {
+        if (currentRoomId == null){
+            if (! (GameSettings.getInstance().roomID == null)){
+                System.out.println("Setting RoomId:" + GameSettings.getInstance().roomID);
+                currentRoomId = GameSettings.getInstance().roomID;
+            }
+        }
+        if (!gameHelper.isSignedIn()){
+            System.out.println("not signed in");
+            return;
+        }
+
+        if (reliableMessageSentCallback == null){
+            this.reliableMessageSentCallback = new RealTimeMultiplayerClient.ReliableMessageSentCallback() {
+                @Override
+                public void onRealTimeMessageSent(int i, int i1, String s) {
+                    Log.d(TAG, "onRealTimeMessageSent: ");
+                }
+            };
+        }
+
+        Games.RealTimeMultiplayer.sendReliableMessage(gameHelper.getApiClient(),reliableMessageSentCallback, messageData, currentRoomId, participantId);
+        Log.d(TAG, "sendReliableMessageTo: ");
+        }
 
 
     public void onStart() {
@@ -276,6 +342,7 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
         switch (status) {
             case STATUS_OK:
                 currentRoomId = room.getRoomId();
+                GameSettings.getInstance().roomID = currentRoomId;
                 showWaitingRoom(room);
                 break;
             case STATUS_CLIENT_RECONNECT_REQUIRED:
@@ -388,13 +455,14 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
     @Override
     public void onConnectedToRoom(Room room) {
         Log.d(TAG, "onConnectedToRoom: ");
-        stopKeepingScreenOn();
+
         if (currentRoomId == null) currentRoomId = room.getRoomId();
     }
 
     @Override
     public void onDisconnectedFromRoom(Room room) {
         Log.d(TAG, "onDisconnectedFromRoom: ");
+        stopKeepingScreenOn();
         currentRoomId = null;
     }
 

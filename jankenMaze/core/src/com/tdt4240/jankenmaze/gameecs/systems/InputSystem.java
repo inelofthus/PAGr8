@@ -56,25 +56,25 @@ public class InputSystem extends EntitySystem{
             Velocity velocity = velocityMapper.get(entities.get(0));
             if (pointInTriangle(touchX, touchY, maxX, 0, centerX, centerY, 0, 0)) {
                 //player moves up,
-                if (velocity.currentY == 0) {
+                if (velocity.currentY != vel) {
                     velocity.futureX = 0;
                     velocity.futureY = vel;
                 }
             } else if (pointInTriangle(touchX, touchY, maxX, maxY, centerX, centerY, maxX, 0)) {
                 //player moves right
-                if (velocity.currentX == 0) {
+                if (velocity.currentX != vel) {
                     velocity.futureX = vel;
                     velocity.futureY = 0;
                 }
             } else if (pointInTriangle(touchX, touchY, 0, maxY, centerX, centerY, maxX, maxY)) {
                 //player moves down
-                if (velocity.currentY == 0) {
+                if (velocity.currentY != -vel) {
                     velocity.futureX = 0;
                     velocity.futureY = -vel;
                 }
             } else if (pointInTriangle(touchX, touchY, 0, 0, centerX, centerY, 0, maxY)) {
                 //player moves to the left
-                if (velocity.currentX == 0) {
+                if (velocity.currentX != -vel) {
                     velocity.futureX = -vel;
                     velocity.futureY = 0;
                 }

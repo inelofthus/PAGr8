@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.ashley.signals.Signal;
 import com.tdt4240.jankenmaze.gameecs.events.EventQueue;
 import com.tdt4240.jankenmaze.gameecs.events.GameEvent;
+import com.tdt4240.jankenmaze.gamesettings.GameSettings;
+import com.tdt4240.jankenmaze.gamesettings.PlayerType;
 
 /**
  * Created by jonas on 07/03/2018.
@@ -17,8 +19,8 @@ import com.tdt4240.jankenmaze.gameecs.events.GameEvent;
 
 public class PlayState extends State {
     Engine engine;
-    private Signal<GameEvent> gameOverSignal;
-    private EventQueue gameOverQueue;
+    protected Signal<GameEvent> gameOverSignal;
+    protected EventQueue gameOverQueue;
     com.tdt4240.jankenmaze.gameecs.EntityManager entityManager;
     SpriteBatch batch;
     int[][] binaryMap = {{1 ,1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
@@ -51,9 +53,7 @@ public class PlayState extends State {
         this.gameOverSignal.add(gameOverQueue);
         entityManager = new com.tdt4240.jankenmaze.gameecs.EntityManager(engine, batch, gameOverSignal);
         entityManager.createMap(binaryMap, new Texture("redAndWhiteWall.png"));
-        entityManager.createLocalPlayer("Rock");
-        entityManager.createPlayer("Paper");//Players have to be created after map.
-        entityManager.createPlayer("Scissors");
+        entityManager.createPlayer(PlayerType.SCISSORS);
         entityManager.createHUDItem();
     }
     @Override
@@ -66,9 +66,8 @@ public class PlayState extends State {
         handleInput();
         entityManager.update();
 
-        for(GameEvent gameOver: gameOverQueue.getEvents()){
-            gsm.push(new GameOverState());
-        }
+
+
     }
 
     @Override
