@@ -45,7 +45,7 @@ import java.nio.ByteBuffer;
             // Want to send new postion every x seconds
             timeSincePositionSent += dt;
 
-            if (timeSincePositionSent > 0.1f){
+            if (timeSincePositionSent > 0.025f){
                 broadcastPosition();
                 timeSincePositionSent = 0.0f;
             }

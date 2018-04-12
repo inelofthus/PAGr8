@@ -14,6 +14,7 @@ import com.tdt4240.jankenmaze.gameecs.components.Position;
 import com.tdt4240.jankenmaze.gameecs.components.Velocity;
 import com.tdt4240.jankenmaze.gameecs.events.EventQueue;
 import com.tdt4240.jankenmaze.gameecs.events.GameEvent;
+import com.tdt4240.jankenmaze.gamesettings.GameSettings;
 
 /**
  * Created by jonas on 07/03/2018.
@@ -104,14 +105,19 @@ public class MovementSystem extends EntitySystem {
             }
         }
 
-        for (Entity remotePlayer: remotePlayers){
-            PlayerNetworkData netData = playerDataCompMapper.get(remotePlayer);
-            Position newPos = positionMessage.getInstance().getRemotePlayerPositions().get(netData.participantId);
-            Position posComp = positionMapper.get(remotePlayer);
+        if (GameSettings.getInstance().isMultplayerGame){
+            //Update the positions of the remote players
+            for (Entity remotePlayer: remotePlayers){
+                PlayerNetworkData netData = playerDataCompMapper.get(remotePlayer);
+                Position newPos = positionMessage.getInstance().getRemotePlayerPositions().get(netData.participantId);
+                Position posComp = positionMapper.get(remotePlayer);
 
-            posComp.x = newPos.x;
-            posComp.y = newPos.y;
+                posComp.x = newPos.x;
+                posComp.y = newPos.y;
+            }
         }
+
+
 
     }
 }
