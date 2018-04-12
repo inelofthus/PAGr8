@@ -2,6 +2,7 @@ package com.tdt4240.jankenmaze.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.tdt4240.jankenmaze.gameMessages.MessageCodes;
 import com.tdt4240.jankenmaze.gameMessages.positionMessage;
 import com.tdt4240.jankenmaze.gameecs.components.Position;
 import com.tdt4240.jankenmaze.gameecs.events.GameEvent;
@@ -22,8 +23,6 @@ import com.badlogic.ashley.signals.Signal;
  */
 
 public class MultiPlayState extends PlayState implements PlayServices.NetworkListener {
-    private static final byte  POSITION = 1;
-    private static final byte  GAME_OVER = 2;
 
 
     public MultiPlayState(SpriteBatch batch) {
@@ -61,7 +60,7 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
         for(GameEvent gameOver: gameOverQueue.getEvents()){
             System.out.println("GameOverEvent");
             ByteBuffer buffer = ByteBuffer.allocate(1);
-            buffer.put(GAME_OVER);
+            buffer.put(MessageCodes.GAME_OVER);
             gsm.playServices.sendReliableMessageToOthers(buffer.array());
             gsm.push(new GameOverState());
         }
@@ -90,7 +89,7 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
         switch (messageType){
 
 
-            case GAME_OVER:
+            case MessageCodes.GAME_OVER:
                 System.out.println("GAME OVER MESSAGE RECEIVED");
                 Gdx.app.postRunnable(new Runnable() {
                     @Override
@@ -112,7 +111,7 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
         byte messageType = buffer.get();
 
         switch (messageType){
-            case POSITION:
+            case MessageCodes.POSITION:
                 float x=buffer.getFloat();
                 float y=buffer.getFloat();
                 System.out.println("MultiPlayState: x:" + x + "y: " + y );
@@ -120,7 +119,7 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
                     positionMessage.getInstance().updateRemotePlayerPostion(senderParticipantId, new Position(x,y));
                 }
                 break;
-            case GAME_OVER:
+            case MessageCodes.GAME_OVER:
                 System.out.println("GAME OVER MESSAGE RECEIVED");
                 Gdx.app.postRunnable(new Runnable() {
                     @Override

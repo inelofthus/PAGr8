@@ -13,6 +13,8 @@ import java.util.List;
 
 public class positionMessage {
     private static final positionMessage INSTANCE = new positionMessage();
+    private HashMap<String, Position> remotePlayerPositions ;
+
 
     public positionMessage() {
         List<PlayerNetworkData> players = GameSettings.getInstance().getPlayers();
@@ -27,9 +29,6 @@ public class positionMessage {
     public static positionMessage getInstance(){
         return INSTANCE;
     }
-
-
-    private HashMap<String, Position> remotePlayerPositions ;
 
     public void updateRemotePlayerPostion(String playerId, Position position) {
         remotePlayerPositions.put(playerId,position);
