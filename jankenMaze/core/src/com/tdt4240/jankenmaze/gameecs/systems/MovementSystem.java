@@ -2,6 +2,7 @@ package com.tdt4240.jankenmaze.gameecs.systems;
 
 import com.badlogic.ashley.signals.Signal;
 import com.badlogic.gdx.math.Rectangle;
+import com.tdt4240.jankenmaze.gameMessages.positionMessage;
 import com.tdt4240.jankenmaze.gameecs.components.*;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Engine;
@@ -31,9 +32,10 @@ import com.tdt4240.jankenmaze.gameecs.events.GameEvent;
 public class MovementSystem extends EntitySystem {
     private ImmutableArray<Entity> entities;
     private ImmutableArray<Entity> localPlayers;
+    private ImmutableArray<Entity> remotePlayers;
     private ImmutableArray<Entity> walls;
 
-
+    private ComponentMapper<PlayerNetworkData> playerDataCompMapper = ComponentMapper.getFor(PlayerNetworkData.class);
     private ComponentMapper<Position> positionMapper = ComponentMapper.getFor(Position.class);
     private ComponentMapper<Velocity> velocityMapper = ComponentMapper.getFor(Velocity.class);
     private ComponentMapper<BoundsBox> boundsBoxMapper =ComponentMapper.getFor(BoundsBox.class);
@@ -50,6 +52,7 @@ public class MovementSystem extends EntitySystem {
     public void addedToEngine(Engine engine){
         entities = engine.getEntitiesFor(Family.all(Position.class, Velocity.class).get());
         localPlayers = engine.getEntitiesFor(Family.all(LocalPlayer.class).get());
+        remotePlayers = engine.getEntitiesFor(Family.all(Remote.class).get());
         walls = engine.getEntitiesFor(Family.all(com.tdt4240.jankenmaze.gameecs.components.BoundsBox.class).exclude(com.tdt4240.jankenmaze.gameecs.components.PlayerInfo.class, com.tdt4240.jankenmaze.gameecs.components.PowerUpInfo.class).get());
 
     }
@@ -101,5 +104,15 @@ public class MovementSystem extends EntitySystem {
                 }
             }
         }
+
+        for (Entity remotePlayer: remotePlayers){
+            PlayerNetworkData netData = playerDataCompMapper.get(remotePlayer);
+            Position newPos = positionMessage.getInstance().getRemotePlayerPositions().get(netData.participantId);
+            Position posComp = positionMapper.get(remotePlayer);
+
+            posComp.x = newPos.x;
+            posComp.y = newPos.y;
+        }
+
     }
 }
