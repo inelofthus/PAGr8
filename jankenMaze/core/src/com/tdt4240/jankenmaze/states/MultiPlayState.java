@@ -116,7 +116,9 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
                 float x=buffer.getFloat();
                 float y=buffer.getFloat();
                 System.out.println("MultiPlayState: x:" + x + "y: " + y );
-                positionMessage.getInstance().updateRemotePlayerPostion(senderParticipantId, new Position(x,y));
+                if (! (GameSettings.getInstance().getPlayers() == null)){
+                    positionMessage.getInstance().updateRemotePlayerPostion(senderParticipantId, new Position(x,y));
+                }
                 break;
             case GAME_OVER:
                 System.out.println("GAME OVER MESSAGE RECEIVED");
