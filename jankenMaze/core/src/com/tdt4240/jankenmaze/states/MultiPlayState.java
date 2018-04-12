@@ -5,8 +5,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.tdt4240.jankenmaze.gameMessages.positionMessage;
 import com.tdt4240.jankenmaze.gameecs.components.Position;
 import com.tdt4240.jankenmaze.gameecs.events.GameEvent;
-import com.tdt4240.jankenmaze.gameecs.events.RemoteQueue;
-import com.tdt4240.jankenmaze.gameecs.events.RemoteVariable;
 import com.tdt4240.jankenmaze.gamesettings.GameSettings;
 import com.tdt4240.jankenmaze.PlayServices.PlayServices;
 import com.tdt4240.jankenmaze.gameecs.components.PlayerNetworkData;
@@ -26,16 +24,12 @@ import com.badlogic.ashley.signals.Signal;
 public class MultiPlayState extends PlayState implements PlayServices.NetworkListener {
     private static final byte  POSITION = 1;
     private static final byte  GAME_OVER = 2;
-    private Signal<RemoteVariable> remotePositionSignal;
-    private RemoteQueue remoteQueue;
+
 
     public MultiPlayState(SpriteBatch batch) {
         super(batch);
         gsm.playServices.setNetworkListener(this);
         GameSettings.getInstance().isMultplayerGame = true;
-        this.remotePositionSignal = new Signal<RemoteVariable>();
-        this.remoteQueue = new RemoteQueue();
-        remotePositionSignal.add(remoteQueue);
 
 
         if (!(GameSettings.getInstance().getPlayers() == null)){
@@ -123,7 +117,6 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
                 float y=buffer.getFloat();
                 System.out.println("MultiPlayState: x:" + x + "y: " + y );
                 positionMessage.getInstance().updateRemotePlayerPostion(senderParticipantId, new Position(x,y));
-                //remotePositionSignal.dispatch(new RemoteVariable(x,y, senderParticipantId));
                 break;
             case GAME_OVER:
                 System.out.println("GAME OVER MESSAGE RECEIVED");
@@ -160,7 +153,7 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
             }
         }
 
-        entityManager.addMPSystemsToEngine(gsm.playServices, remotePositionSignal);
+        entityManager.addMPSystemsToEngine(gsm.playServices);
     }
 
     ////////////// END NETWORK LISTENER METHODS //////////////

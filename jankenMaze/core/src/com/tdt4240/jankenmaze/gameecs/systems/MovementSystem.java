@@ -62,6 +62,7 @@ public class MovementSystem extends EntitySystem {
         if(entities != null){
             for (int i = 0; i < entities.size(); i++){
                 Entity entity = entities.get(i);
+
                 Position position = positionMapper.get(entity);
                 Velocity velocity = velocityMapper.get(entity);
                 BoundsBox bounds = boundsBoxMapper.get(entity);
