@@ -24,6 +24,7 @@ import com.tdt4240.jankenmaze.gameecs.systems.CollisionSystem;
 import com.tdt4240.jankenmaze.gameecs.events.GameEvent;
 import com.tdt4240.jankenmaze.gameecs.systems.EntityFactory;
 import com.tdt4240.jankenmaze.gameecs.systems.HUDSystem;
+import com.tdt4240.jankenmaze.gameecs.systems.HealthBroadcastSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.HealthSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.InputSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.MovementSystem;
@@ -179,5 +180,7 @@ public class EntityManager {
     public void addMPSystemsToEngine(PlayServices playServices){
        PositionBroadcastSystem positionBroadcastSystem = new PositionBroadcastSystem(playerPositionSignal,playServices);
         engine.addSystem(positionBroadcastSystem);
+        HealthBroadcastSystem healthBroadcastSystem= new HealthBroadcastSystem(playServices,decreaseHealthSignal);
+        engine.addSystem(healthBroadcastSystem);
     }
 }
