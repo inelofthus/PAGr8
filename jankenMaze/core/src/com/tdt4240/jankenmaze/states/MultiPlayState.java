@@ -160,7 +160,7 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
             }
         }
 
-        entityManager.addMPSystemsToEngine(gsm.playServices, remotePositionSignal);
+        entityManager.addMPSystemsToEngine(gsm.playServices);
     }
 
     ////////////// END NETWORK LISTENER METHODS //////////////
