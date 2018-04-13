@@ -79,6 +79,12 @@ public class HealthSystem extends EntitySystem {
 
       if (health.health<=0){
             // GAME OVER
+          try {
+              Thread.sleep(20);
+          }catch (Exception e){
+
+          }
+
             gameOverSignal.dispatch(GameEvent.GAME_OVER);
         }else{
             //Go to fucking spawn.
