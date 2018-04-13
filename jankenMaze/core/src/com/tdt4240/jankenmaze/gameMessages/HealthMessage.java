@@ -11,7 +11,10 @@ import com.tdt4240.jankenmaze.gamesettings.GameSettings;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -50,21 +53,44 @@ public class HealthMessage {
 
 
     public void gameOver(Engine engine){
-        SortedMap<Integer,String> map = Collections.synchronizedSortedMap(new TreeMap<Integer, String>(Collections.<Integer>reverseOrder()));
+        SortedMap<String,Integer> unsortMap = Collections.synchronizedSortedMap(new TreeMap< String,Integer>(Collections.reverseOrder()));
         ImmutableArray<Entity> players = engine.getEntitiesFor(Family.all(PlayerNetworkData.class).get());
         ComponentMapper<PlayerNetworkData> playerNetworkDataMapper=ComponentMapper.getFor(PlayerNetworkData.class);
+        TreeMap<Object,Object> map = sortByComparator(unsortMap);
         for(Entity player: players){
             PlayerNetworkData playerNetworkData=playerNetworkDataMapper.get(player);
-            map.put(playerHealth.get(playerNetworkData.participantId).health,playerNetworkData.displayName);
+            map.put(playerNetworkData.displayName,playerHealth.get(playerNetworkData.participantId).health);
         }
         results="";
-        for(Map.Entry<Integer,String> entry : map.entrySet()){
-          results=results+entry.getValue()+" has " + entry.getKey()+" lives.\n";
+        for(Map.Entry<Object,Object> entry : map.entrySet()){
+          results=results+entry.getKey()+" has " + entry.getValue()+" lives.\n";
 
         }
     }
 
     public String getResults() {
         return results;
+    }
+
+    private static TreeMap<Object, Object> sortByComparator(Map unsortMap) {
+
+        List list = new LinkedList(unsortMap.entrySet());
+
+        // sort list based on comparator
+        Collections.sort(list, new Comparator() {
+
+            public int compare(Object o1, Object o2) {
+                return ((Comparable) ((Map.Entry) (o1)).getValue())
+                        .compareTo(((Map.Entry) (o2)).getValue());
+            }
+        });
+
+
+        TreeMap<Object,Object> sortedMap = new TreeMap<Object, Object>();
+        for (Iterator it = list.iterator(); it.hasNext();) {
+            Map.Entry entry = (Map.Entry) it.next();
+            sortedMap.put(entry.getKey(), entry.getValue());
+        }
+        return sortedMap;
     }
 }
