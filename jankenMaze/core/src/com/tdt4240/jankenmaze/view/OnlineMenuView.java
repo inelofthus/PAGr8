@@ -63,5 +63,10 @@ public class OnlineMenuView extends MenuView {
     @Override
     public void dispose() {
         super.dispose();
+        btn_invite.remove();
+        btn_PlaySingle.remove();
+        btn_signout.remove();
+        btn_tutorial.remove();
+        heading.remove();
     }
 }

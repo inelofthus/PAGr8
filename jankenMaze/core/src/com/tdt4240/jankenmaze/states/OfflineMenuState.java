@@ -1,6 +1,7 @@
 package com.tdt4240.jankenmaze.states;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.tdt4240.jankenmaze.gamesettings.GameSettings;
 import com.tdt4240.jankenmaze.view.OfflineMenuView;
@@ -21,14 +22,29 @@ public class OfflineMenuState extends State {
         gsm = GameStateManager.getGsm();
         this.offlineMenuView = new OfflineMenuView();
 
-        listenerBtn_playSingle = new ClickListener();
-        offlineMenuView.btn_PlaySingle.addListener(listenerBtn_playSingle);
+        offlineMenuView.btn_PlaySingle.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                gsm.set(new SinglePlayState(batch));
+            }
+        });
 
-        listenerBtn_signIn = new ClickListener();
-        offlineMenuView.btn_signin.addListener(listenerBtn_signIn);
+        offlineMenuView.btn_signin.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                gsm.playServices.signIn();
+                if (gsm.playServices.isSignedIn()){
+                    gsm.push(new OnlineMenuState());
+                }
+            }
+        });
 
-        listenerBtn_tutorial = new ClickListener();
-        offlineMenuView.btn_tutoial.addListener(listenerBtn_tutorial);
+        offlineMenuView.btn_tutorial.addListener( new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                gsm.set(new TutorialState());
+            };
+        });
 
 
         cam.setToOrtho(false);
@@ -36,20 +52,6 @@ public class OfflineMenuState extends State {
 
     @Override
     protected void handleInput() {
-        if (offlineMenuView.btn_PlaySingle.isPressed()){
-            GameSettings.getInstance().isMultplayerGame = false;
-            gsm.push(new SinglePlayState(batch));
-        }
-        if (offlineMenuView.btn_signin.isPressed()){
-            gsm.playServices.signIn();
-            if (gsm.playServices.isSignedIn()){
-                gsm.push(new OnlineMenuState());
-            }
-        }
-        if (offlineMenuView.btn_tutoial.isPressed()){
-            offlineMenuView.btn_tutoial.reset();
-            gsm.push(new TutorialState());
-        }
 
     }
 
@@ -70,6 +72,6 @@ public class OfflineMenuState extends State {
 
     @Override
     public void dispose() {
-
+        offlineMenuView.dispose();
     }
 }

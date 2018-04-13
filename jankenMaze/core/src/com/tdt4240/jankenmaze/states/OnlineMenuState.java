@@ -30,17 +30,17 @@ public class OnlineMenuState extends State {
         onlineMenuView.btn_signout.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                gsm.set(new SinglePlayState(batch));
+                gsm.playServices.signOut();
+                if (!gsm.playServices.isSignedIn()){
+                    gsm.set(new OfflineMenuState());
+                }
             }
         });
 
         onlineMenuView.btn_PlaySingle.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                gsm.playServices.signOut();
-                if (!gsm.playServices.isSignedIn()){
-                    gsm.set(new OfflineMenuState());
-                }
+                gsm.set(new SinglePlayState(batch));
             }
         });
 
@@ -50,7 +50,6 @@ public class OnlineMenuState extends State {
                 gsm.set(new TutorialState());
             };
         });
-        //onlineMenuView.btn_tutorial.addListener(listenerBtn_tutorial);
 
         cam.setToOrtho(false);
     }
@@ -76,6 +75,6 @@ public class OnlineMenuState extends State {
 
     @Override
     public void dispose() {
-
+        onlineMenuView.dispose();
     }
 }
