@@ -46,6 +46,10 @@ public class MenuState extends State {
             //TODO: Push correct state
             //gsm.push(new com.tdt4240.jankenmaze.states.PlayState(batch));
         }
+        //Tutorial
+        if(mainMenuView.btn_tutorial.isPressed()){
+            gsm.push(new TutorialState());
+        }
 
     }
 

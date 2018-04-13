@@ -13,7 +13,7 @@ public class OfflineMenuState extends State {
 
     OfflineMenuView offlineMenuView;
     private SpriteBatch batch;
-    private ClickListener listenerBtn_playSingle, listenerBtn_signIn;
+    private ClickListener listenerBtn_playSingle, listenerBtn_signIn, listenerBtn_tutorial;
 
 
     public OfflineMenuState() {
@@ -26,6 +26,10 @@ public class OfflineMenuState extends State {
 
         listenerBtn_signIn = new ClickListener();
         offlineMenuView.btn_signin.addListener(listenerBtn_signIn);
+
+        listenerBtn_tutorial = new ClickListener();
+        offlineMenuView.btn_tutoial.addListener(listenerBtn_tutorial);
+
 
         cam.setToOrtho(false);
     }
@@ -41,6 +45,10 @@ public class OfflineMenuState extends State {
             if (gsm.playServices.isSignedIn()){
                 gsm.push(new OnlineMenuState());
             }
+        }
+        if (offlineMenuView.btn_tutoial.isPressed()){
+            offlineMenuView.btn_tutoial.reset();
+            gsm.push(new TutorialState());
         }
 
     }
