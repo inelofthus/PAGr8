@@ -53,17 +53,16 @@ public class HealthMessage {
 
 
     public void gameOver(Engine engine){
-        SortedMap<String,Integer> unsortMap = Collections.synchronizedSortedMap(new TreeMap< String,Integer>(Collections.reverseOrder()));
+        SortedMap<String,Integer> map = Collections.synchronizedSortedMap(new TreeMap< String,Integer>(Collections.reverseOrder()));
         ImmutableArray<Entity> players = engine.getEntitiesFor(Family.all(PlayerNetworkData.class).get());
         ComponentMapper<PlayerNetworkData> playerNetworkDataMapper=ComponentMapper.getFor(PlayerNetworkData.class);
-        TreeMap<Object,Object> map = sortByComparator(unsortMap);
         for(Entity player: players){
             PlayerNetworkData playerNetworkData=playerNetworkDataMapper.get(player);
             map.put(playerNetworkData.displayName,playerHealth.get(playerNetworkData.participantId).health);
         }
         results="";
-        for(Map.Entry<Object,Object> entry : map.entrySet()){
-          results=results+entry.getKey()+" has " + entry.getValue()+" lives.\n";
+        for(Map.Entry<String,Integer> entry : map.entrySet()){
+          results=results+entry.getValue()+" has " + entry.getKey()+" lives.\n";
 
         }
     }
@@ -72,25 +71,5 @@ public class HealthMessage {
         return results;
     }
 
-    private static TreeMap<Object, Object> sortByComparator(Map unsortMap) {
-
-        List list = new LinkedList(unsortMap.entrySet());
-
-        // sort list based on comparator
-        Collections.sort(list, new Comparator() {
-
-            public int compare(Object o1, Object o2) {
-                return ((Comparable) ((Map.Entry) (o1)).getValue())
-                        .compareTo(((Map.Entry) (o2)).getValue());
-            }
-        });
-
-
-        TreeMap<Object,Object> sortedMap = new TreeMap<Object, Object>();
-        for (Iterator it = list.iterator(); it.hasNext();) {
-            Map.Entry entry = (Map.Entry) it.next();
-            sortedMap.put(entry.getKey(), entry.getValue());
-        }
-        return sortedMap;
-    }
+   
 }
