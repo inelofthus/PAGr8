@@ -75,8 +75,16 @@ public class HealthSystem extends EntitySystem {
         //decrease health
         health.health=health.health-Math.abs(delta);
         decreaseHealthSignal.dispatch(GameEvent.DECREASE_HEALTH);
-        if (health.health<=0){
+        HealthMessage.getInstance().updatePlayerHealth(ComponentMapper.getFor(PlayerNetworkData.class).get(localPlayer.first()).participantId, new Health(health.health));
+
+      if (health.health<=0){
             // GAME OVER
+          try {
+              Thread.sleep(20);
+          }catch (Exception e){
+
+          }
+
             gameOverSignal.dispatch(GameEvent.GAME_OVER);
         }else{
             //Go to fucking spawn.
@@ -134,7 +142,7 @@ public class HealthSystem extends EntitySystem {
       HealthMessage.getInstance().hasChanged = false;
       for (Entity remotePlayer : remotePlayers){
           PlayerNetworkData netData = playerDataCompMapper.get(remotePlayer);
-          Health newHealth=HealthMessage.getInstance().getRemotePlayerHealth().get(netData.participantId);
+          Health newHealth=HealthMessage.getInstance().getPlayerHealth().get(netData.participantId);
           Health healthComp = healthComponentMapper.get(remotePlayer);
           healthComp.health=newHealth.health;
 

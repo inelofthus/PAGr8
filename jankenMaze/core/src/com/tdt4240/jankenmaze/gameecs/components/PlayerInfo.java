@@ -8,6 +8,8 @@ import java.util.HashMap;
 
 /**
  * Created by jonas on 07/03/2018.
+ * This component consists of two PlayerTypes that provide the info what type of
+ * playable character a player is and by what type of playable character he is targeted by.
  */
 
 public class PlayerInfo implements Component {
