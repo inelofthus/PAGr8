@@ -22,16 +22,20 @@ public class GameOverView extends View {
     protected Stage stage;
     private TextureAtlas atlas;
     protected Skin skin;
+    protected Table table;
 
     public TextButton btn_playAgain, btn_toMainMenu, btn_quitGame;
-    protected Label heading1;
+    protected Label heading1, resultLabel;
     private BitmapFont font;
 
     public GameOverView(){
         stage = new Stage();
+
         Gdx.input.setInputProcessor(stage);
         atlas = new TextureAtlas("button.pack");
         skin = new Skin(atlas);
+        table = new Table(skin);
+        table.setBounds(0,0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         textButtonStyle = new TextButton.TextButtonStyle();
         textButtonStyle.up = skin.getDrawable("btnUp");
@@ -52,12 +56,23 @@ public class GameOverView extends View {
         //creating heading
         Label.LabelStyle headingStyle = new Label.LabelStyle(font, Color.YELLOW);
         heading1 = new Label("   Game Over \n", headingStyle);
-        heading1.setFontScale(2);
+        heading1.setFontScale(4);
 
+        Label.LabelStyle messageStyle = new Label.LabelStyle(font, Color.WHITE);
+        resultLabel = new Label("The Message", messageStyle);
+        resultLabel.setFontScale(1.5f);
 
         // putting stuff together
+        float scale = 0.8f;
+        table.add(heading1).colspan(3);
+        table.row();
+        table.add(resultLabel).colspan(3);
+        table.row();
+        table.add(btn_playAgain).width(btn_playAgain.getWidth()*scale);
+        table.add(btn_toMainMenu).width(btn_playAgain.getWidth()*scale);
+        table.add(btn_quitGame).width(btn_playAgain.getWidth()*scale);
 
-
+        stage.addActor(table);
     }
 
     @Override
@@ -79,5 +94,9 @@ public class GameOverView extends View {
     @Override
     public void dispose() {
 
+    }
+
+    public void setResultLabel(String resultMessage){
+        resultLabel.setText(resultMessage);
     }
 }

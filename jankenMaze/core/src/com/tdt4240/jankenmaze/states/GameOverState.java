@@ -33,7 +33,7 @@ public class GameOverState extends State implements PlayServices.NetworkListener
     public GameOverState(){
         super();
 
-        this.gameOverView = new YouWinView();
+        this.gameOverView = new GameOverView();
         gsm.playServices.setNetworkListener(this);
 
         listenerBtn_playAgain = new ClickListener();
@@ -45,9 +45,7 @@ public class GameOverState extends State implements PlayServices.NetworkListener
         listenerBtn_quitGame = new ClickListener();
         gameOverView.btn_quitGame.addListener(listenerBtn_quitGame);
 
-        System.out.println(HealthMessage.getInstance().getResults());
-
-
+        gameOverView.setResultLabel(HealthMessage.getInstance().getResults());
 
         cam.setToOrtho(false);
 
