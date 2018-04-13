@@ -9,6 +9,7 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.signals.Signal;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.tdt4240.jankenmaze.PlayServices.PlayServices;
+import com.tdt4240.jankenmaze.gameMessages.MessageCodes;
 import com.tdt4240.jankenmaze.gameecs.events.GameVariable;
 import com.tdt4240.jankenmaze.gameecs.events.VariableQueue;
 import java.nio.ByteBuffer;
@@ -19,7 +20,6 @@ import java.nio.ByteBuffer;
         private VariableQueue variableQueue;
         private ImmutableArray<Entity> localPlayer;
         private com.tdt4240.jankenmaze.gameecs.components.Position playerPosition;
-        private static final byte  POSITION = 1;
         private float timeSincePositionSent = 0.0f;
 
 
@@ -34,7 +34,7 @@ import java.nio.ByteBuffer;
 
         private void broadcastPosition(){
             ByteBuffer buffer = ByteBuffer.allocate(2 * 4 + 1);
-            buffer.put(POSITION);
+            buffer.put(MessageCodes.POSITION);
             buffer.putFloat(playerPosition.x);
             buffer.putFloat(playerPosition.y);
             playServices.sendUnreliableMessageToOthers(buffer.array());

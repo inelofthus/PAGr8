@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Rectangle;
 
 /**
  * Created by jonas on 07/03/2018.
+ * This component consists of a Rectangle that defines the bounds of the player Entity
  */
 
 public class BoundsBox implements Component {
