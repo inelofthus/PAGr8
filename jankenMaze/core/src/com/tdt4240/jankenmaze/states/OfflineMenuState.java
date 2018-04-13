@@ -34,7 +34,7 @@ public class OfflineMenuState extends State {
             public void clicked(InputEvent event, float x, float y) {
                 gsm.playServices.signIn();
                 if (gsm.playServices.isSignedIn()){
-                    gsm.push(new OnlineMenuState());
+                    gsm.set(new OnlineMenuState());
                 }
             }
         });
@@ -59,7 +59,7 @@ public class OfflineMenuState extends State {
     public void update(float dt) {
         handleInput();
         if (gsm.playServices.isSignedIn()){
-            gsm.push(new OnlineMenuState());
+            gsm.set(new OnlineMenuState());
         }
 
     }

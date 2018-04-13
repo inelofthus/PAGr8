@@ -34,7 +34,7 @@ public class MenuState extends State {
     @Override
     protected void handleInput() {
         if (mainMenuView.btn_joinGame.isPressed()){
-            gsm.push(new SinglePlayState(batch));
+            gsm.set(new SinglePlayState(batch));
         }
         if (mainMenuView.btn_createGame.isPressed()){
             //TODO: Push correct state
