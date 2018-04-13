@@ -88,7 +88,6 @@ public class GameOverView extends View {
 
     @Override
     public void update(float dt) {
-
     }
 
     @Override
@@ -104,7 +103,12 @@ public class GameOverView extends View {
 
     @Override
     public void dispose() {
-
+        btn_playAgain.remove();
+        btn_quitGame.remove();
+        btn_quitGame.remove();
+        heading1.remove();
+        resultLabel.remove();
+        stage.dispose();
     }
 
     public void setResultLabel(String resultMessage){

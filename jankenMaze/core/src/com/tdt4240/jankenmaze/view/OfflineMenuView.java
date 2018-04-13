@@ -60,5 +60,6 @@ public class OfflineMenuView extends MenuView {
         btn_signin.remove();
         btn_tutorial.remove();
         heading.remove();
+        stage.dispose();
     }
 }

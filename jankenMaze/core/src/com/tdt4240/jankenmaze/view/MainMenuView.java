@@ -111,6 +111,6 @@ public class MainMenuView extends View {
     public void dispose() {
         font.dispose();
         skin.dispose();
-
+        stage.dispose();
     }
 }

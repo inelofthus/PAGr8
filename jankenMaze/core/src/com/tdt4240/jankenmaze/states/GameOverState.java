@@ -99,7 +99,7 @@ public class GameOverState extends State implements PlayServices.NetworkListener
 
     @Override
     public void dispose() {
-
+        gameOverView.dispose();
     }
 
     @Override
