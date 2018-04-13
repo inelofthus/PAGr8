@@ -62,7 +62,7 @@ public class HealthMessage {
         }
         results="";
         for(Map.Entry<String,Integer> entry : map.entrySet()){
-          results=results+entry.getValue()+" has " + entry.getKey()+" lives.\n";
+          results=results+entry.getKey()+" has " + entry.getValue()+" lives.\n";
 
         }
     }
