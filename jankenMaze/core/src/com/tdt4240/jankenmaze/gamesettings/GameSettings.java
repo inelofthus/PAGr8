@@ -34,4 +34,9 @@ public class GameSettings {
     public List<PlayerNetworkData> getPlayers() {
         return players;
     }
+
+    public void reset(){
+        players = null;
+    }
+
 }

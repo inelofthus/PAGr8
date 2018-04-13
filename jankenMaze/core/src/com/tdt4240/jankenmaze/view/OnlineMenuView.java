@@ -10,7 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
  */
 
 public class OnlineMenuView extends MenuView {
-
     public TextButton btn_invite, btn_signout, btn_PlaySingle, btn_tutorial;
     private Label heading;
 

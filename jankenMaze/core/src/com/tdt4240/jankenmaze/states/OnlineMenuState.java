@@ -17,6 +17,11 @@ public class OnlineMenuState extends State {
 
     public OnlineMenuState() {
         super();
+        initializeMenuState();
+    }
+
+    private void initializeMenuState(){
+
         gsm = GameStateManager.getGsm();
         this.onlineMenuView = new OnlineMenuView();
 
@@ -52,6 +57,12 @@ public class OnlineMenuState extends State {
         });
 
         cam.setToOrtho(false);
+    }
+
+    public OnlineMenuState(String message) {
+        super();
+        initializeMenuState();
+        onlineMenuView.heading.setText(message);
     }
 
     @Override

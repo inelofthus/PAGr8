@@ -139,6 +139,7 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
     @Override
     public void startSelectOpponents(boolean autoMatch) {
         Intent intent = Games.RealTimeMultiplayer.getSelectOpponentsIntent(gameHelper.getApiClient(), MIN_PLAYERS, MAX_PLAYERS, autoMatch);
+        gameListener.resetGameVariables();
         activity.startActivityForResult(intent, RC_SELECT_PLAYERS);
     }
 
@@ -158,10 +159,7 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
     public void sendUnreliableMessageToOthers(byte[] messageData) {
         if (currentRoomId == null){
             System.out.println("RoomID is null!");
-            if (! (GameSettings.getInstance().roomID == null)){
-                System.out.println("Setting RoomId:" + GameSettings.getInstance().roomID);
-                currentRoomId = GameSettings.getInstance().roomID;
-            }
+            return;
         }
         if (!gameHelper.isSignedIn()){
             System.out.println("not signed in");
@@ -169,8 +167,6 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
         }
 
         Games.RealTimeMultiplayer.sendUnreliableMessageToOthers(gameHelper.getApiClient(), messageData, currentRoomId);
-       // Log.d(TAG, "sendUnreliableMessageToOthers: ");
-
     }
 
     @Override
@@ -234,10 +230,12 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
 
 
     public void onStart() {
+        Log.d(TAG, "onStart: ");
         gameHelper.onStart(activity);
     }
 
     public void onStop() {
+        Log.d(TAG, "onStop: ");
         gameHelper.onStop();
     }
 
@@ -251,6 +249,10 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
                 break;
             case RC_WAITING_ROOM:
                 Log.d(TAG, "onActivityResult: RC_WAITING_ROOM");
+
+
+
+
                 handleWaitingRoomResult(resultCode, data);
                 break;
             default:
@@ -461,8 +463,15 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
 
     @Override
     public void onDisconnectedFromRoom(Room room) {
-        Log.d(TAG, "onDisconnectedFromRoom: ");
         stopKeepingScreenOn();
+        Log.d(TAG, "onDisconnectedFromRoom: ");
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                gameListener.onDisconnectedFromRoom();
+            }
+        });
+
         currentRoomId = null;
     }
 
@@ -497,18 +506,24 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
     ////////////////RealTimeMessageReceivedListener/////////////////////////
     @Override
     public void onRealTimeMessageReceived(RealTimeMessage realTimeMessage) {
-        if (networkListener == null) {
-            Gdx.app.debug(TAG, "onRealTimeMessageReceived: NetworkListener is null");
-            return;
+        try {
+            if (networkListener == null) {
+                Gdx.app.debug(TAG, "onRealTimeMessageReceived: NetworkListener is null");
+                return;
+            }
+            byte[] messageData = realTimeMessage.getMessageData();
+            String senderParticipantId = realTimeMessage.getSenderParticipantId();
+            int describeContents = realTimeMessage.describeContents();
+            if (realTimeMessage.isReliable()) {
+                networkListener.onReliableMessageReceived(senderParticipantId, describeContents, messageData);
+            } else {
+                networkListener.onUnreliableMessageReceived(senderParticipantId, describeContents, messageData);
+            }
+        }catch (Exception e){
+            System.out.println("PlayServiceLauncher: ErrorOnRealTimeMessage");
         }
-        byte[] messageData = realTimeMessage.getMessageData();
-        String senderParticipantId = realTimeMessage.getSenderParticipantId();
-        int describeContents = realTimeMessage.describeContents();
-        if (realTimeMessage.isReliable()) {
-            networkListener.onReliableMessageReceived(senderParticipantId, describeContents, messageData);
-        } else {
-            networkListener.onUnreliableMessageReceived(senderParticipantId, describeContents, messageData);
-        }
+
+
     }
 
     ////////////////END RealTimeMessageReceivedListener/////////////////////////
