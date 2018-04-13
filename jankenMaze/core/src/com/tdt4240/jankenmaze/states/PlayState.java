@@ -7,6 +7,7 @@ import com.badlogic.ashley.signals.Signal;
 import com.tdt4240.jankenmaze.gameecs.events.EventQueue;
 import com.tdt4240.jankenmaze.gameecs.events.GameEvent;
 import com.tdt4240.jankenmaze.gamesettings.GameSettings;
+import com.tdt4240.jankenmaze.gamesettings.Maps;
 import com.tdt4240.jankenmaze.gamesettings.PlayerType;
 
 /**
@@ -23,26 +24,6 @@ public class PlayState extends State {
     protected EventQueue gameOverQueue;
     com.tdt4240.jankenmaze.gameecs.EntityManager entityManager;
     SpriteBatch batch;
-    int[][] binaryMap = {{1 ,1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1},
-            {1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1},
-            {1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1},
-            {1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1},
-            {1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1},
-            {1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1},
-            {1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1},
-            {1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1},
-            {1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1},
-            {1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1},
-            {1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1},
-            {1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1 ,1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}}; //Map is instatiated from a binary matrix (A list of columns)
 
     public PlayState(SpriteBatch batch){
         super();
@@ -52,7 +33,7 @@ public class PlayState extends State {
         gameOverQueue= new EventQueue();
         this.gameOverSignal.add(gameOverQueue);
         entityManager = new com.tdt4240.jankenmaze.gameecs.EntityManager(engine, batch, gameOverSignal);
-        entityManager.createMap(binaryMap, new Texture("redAndWhiteWall.png"));
+        entityManager.createMap(Maps.getINSTANCE().getMap(), new Texture("redAndWhiteWall.png"));
         //entityManager.createPlayer(PlayerType.SCISSORS);
         entityManager.createHUDItem();
     }

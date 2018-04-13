@@ -49,7 +49,7 @@ public class JankenMaze extends ApplicationAdapter implements PlayServices.GameL
 
 		//socket.connectSocket();
 		//socket.configSocketEvents();
-
+		System.out.println("create is accessed");
 		gsm = GameStateManager.getGsm();
 		gsm.setPlayServices(playServices);
 		playServices.setGameListener(this);
