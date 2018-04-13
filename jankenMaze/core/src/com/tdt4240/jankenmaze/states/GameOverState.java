@@ -61,18 +61,18 @@ public class GameOverState extends State implements PlayServices.NetworkListener
                 ByteBuffer buffer = ByteBuffer.allocate(1);
                 buffer.put(MessageCodes.PLAY_AGAIN);
                 gsm.playServices.sendReliableMessageToOthers(buffer.array());
-                gsm.push(new MultiPlayState(batch));
+                gsm.set(new MultiPlayState(batch));
             }else {
-                gsm.push(new SinglePlayState(batch));
+                gsm.set(new SinglePlayState(batch));
             }
 
         }
         if (gameOverView.btn_toMainMenu.isPressed()){
             Maps.getINSTANCE().zeroMaps();
             if(gsm.playServices.isSignedIn()){
-                gsm.push(new OnlineMenuState());
+                gsm.set(new OnlineMenuState());
             }else {
-                gsm.push(new OfflineMenuState());
+                gsm.set(new OfflineMenuState());
             }
         }
         if (gameOverView.btn_quitGame.isPressed()){
@@ -102,7 +102,7 @@ public class GameOverState extends State implements PlayServices.NetworkListener
 
     @Override
     public void dispose() {
-
+        gameOverView.dispose();
     }
 
     @Override
@@ -118,7 +118,7 @@ public class GameOverState extends State implements PlayServices.NetworkListener
                 System.out.println("PLAY AGAIN MESSAGE RECEIVED");
                 Gdx.app.postRunnable(new Runnable() {
                     @Override
-                    public void run() {gsm.push(new MultiPlayState(batch));
+                    public void run() {gsm.set(new MultiPlayState(batch));
                     }
                 });
 

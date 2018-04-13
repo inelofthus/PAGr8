@@ -68,7 +68,7 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
             buffer.put(MessageCodes.GAME_OVER);
             gsm.playServices.sendReliableMessageToOthers(buffer.array());
             HealthMessage.getInstance().gameOver(engine);
-            gsm.push(new GameOverState());
+            gsm.set(new GameOverState());
         }
 
         handleInput();
@@ -101,7 +101,7 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
                 Gdx.app.postRunnable(new Runnable() {
                     @Override
                     public void run() {
-                        gsm.push(new GameOverState());
+                        gsm.set(new GameOverState());
                     }
                 });
 
@@ -140,7 +140,7 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
                 Gdx.app.postRunnable(new Runnable() {
                     @Override
                     public void run() {
-                        gsm.push(new GameOverState());
+                        gsm.set(new GameOverState());
                     }
                 });
 

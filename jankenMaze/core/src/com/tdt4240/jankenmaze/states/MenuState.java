@@ -34,7 +34,7 @@ public class MenuState extends State {
     @Override
     protected void handleInput() {
         if (mainMenuView.btn_joinGame.isPressed()){
-            gsm.push(new SinglePlayState(batch));
+            gsm.set(new SinglePlayState(batch));
         }
         if (mainMenuView.btn_createGame.isPressed()){
             //TODO: Push correct state
@@ -45,6 +45,10 @@ public class MenuState extends State {
             gsm.playServices.startSelectOpponents(false);
             //TODO: Push correct state
             //gsm.push(new com.tdt4240.jankenmaze.states.PlayState(batch));
+        }
+        //Tutorial
+        if(mainMenuView.btn_tutorial.isPressed()){
+            gsm.push(new TutorialState());
         }
 
     }
