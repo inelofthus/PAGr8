@@ -10,9 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
  */
 
 public class OnlineMenuView extends MenuView {
-
-    public TextButton btn_invite, btn_signout, btn_PlaySingle;
-    public Label heading;
+    public TextButton btn_invite, btn_signout, btn_PlaySingle, btn_tutorial;
+    private Label heading;
 
     public OnlineMenuView() {
         super();
@@ -25,6 +24,9 @@ public class OnlineMenuView extends MenuView {
 
         btn_signout = new TextButton("Sign Out", textButtonStyle);
         btn_signout.pad(20);
+
+        btn_tutorial = new TextButton("Tutorial", textButtonStyle);
+        btn_tutorial.pad(20);
 
 
 
@@ -41,6 +43,8 @@ public class OnlineMenuView extends MenuView {
         table.add(btn_PlaySingle);
         table.row();
         table.add(btn_signout);
+        table.row();
+        table.add(btn_tutorial);
 
         stage.addActor(table);
     }
@@ -58,5 +62,10 @@ public class OnlineMenuView extends MenuView {
     @Override
     public void dispose() {
         super.dispose();
+        btn_invite.remove();
+        btn_PlaySingle.remove();
+        btn_signout.remove();
+        btn_tutorial.remove();
+        heading.remove();
     }
 }
