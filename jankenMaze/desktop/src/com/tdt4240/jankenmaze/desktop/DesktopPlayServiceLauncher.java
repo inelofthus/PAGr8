@@ -43,4 +43,14 @@ public class DesktopPlayServiceLauncher implements PlayServices {
     public void sendUnreliableMessageToOthers(byte[] messageData) {
 
     }
+
+    @Override
+    public void sendReliableMessageToOthers(byte[] messageData) {
+
+    }
+
+    @Override
+    public void sendReliableMessageTo(String participantId, byte[] messageData) {
+
+    }
 }

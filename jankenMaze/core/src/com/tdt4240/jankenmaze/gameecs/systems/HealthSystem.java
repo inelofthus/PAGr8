@@ -14,11 +14,14 @@ import com.tdt4240.jankenmaze.gameecs.components.PlayerNetworkData;
 import com.tdt4240.jankenmaze.gameecs.components.Position;
 import com.tdt4240.jankenmaze.gameecs.components.Unoccupied;
 import com.tdt4240.jankenmaze.gameecs.components.Velocity;
+import com.tdt4240.jankenmaze.gameecs.components.PlayerInfo;
 import com.tdt4240.jankenmaze.gameecs.events.EventQueue;
 import com.tdt4240.jankenmaze.gameecs.events.GameEvent;
 import com.tdt4240.jankenmaze.gameecs.events.GameVariable;
 import com.tdt4240.jankenmaze.gameecs.events.VariableQueue;
 import com.tdt4240.jankenmaze.gamesettings.GameSettings;
+import com.tdt4240.jankenmaze.gamesettings.PlayerType;
+import com.tdt4240.jankenmaze.gamesettings.PlayerTypes;
 
 import java.util.Random;
 
@@ -37,11 +40,14 @@ public class HealthSystem extends EntitySystem {
     private ComponentMapper<com.tdt4240.jankenmaze.gameecs.components.Health> healthComponentMapper =ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.Health.class);
     private ComponentMapper<Velocity> velocityComponentMapper = ComponentMapper.getFor(Velocity.class);
     private ComponentMapper<PlayerNetworkData> playerDataCompMapper = ComponentMapper.getFor(PlayerNetworkData.class);
+    private ComponentMapper<PlayerInfo> playerInfoCompMapper = ComponentMapper.getFor(PlayerInfo.class);
     ImmutableArray<Entity> localPlayer;
     Random rand = new Random();
     private ImmutableArray<Entity> spawnPositions;
     private ImmutableArray<Entity> remotePlayers;
-
+    private ImmutableArray<Entity> bots;
+    private Entity paper;
+    private Entity scissors;
 
 
 
@@ -59,8 +65,12 @@ public class HealthSystem extends EntitySystem {
         this.decreaseHealthSignal.add(healthQueue);
     }
 
-    public void increaseHealth(Entity entity, int delta){
-        //TODO: Logic
+    public void increaseHealth(Entity player, int delta){
+        Health health=healthComponentMapper.get(player);
+        Velocity velocity = velocityComponentMapper.get(player);
+        //increase health
+        health.health=health.health+Math.abs(delta);
+        decreaseHealthSignal.dispatch(GameEvent.DECREASE_HEALTH);
 
     }
   public void decreaseHealth(Entity player, int delta){
@@ -96,13 +106,15 @@ public class HealthSystem extends EntitySystem {
 
     @Override
     public void addedToEngine(Engine engine) {
+        System.out.println("Entered Added to engine in HealthSystem");
         //get localPLayer
         localPlayer = engine.getEntitiesFor(Family.all(com.tdt4240.jankenmaze.gameecs.components.LocalPlayer.class).get());
         //get all spawnPositions
         spawnPositions = engine.getEntitiesFor(Family.all(Unoccupied.class).get());
         //get remotePlayers
         remotePlayers=engine.getEntitiesFor(Family.all(com.tdt4240.jankenmaze.gameecs.components.Remote.class).get());
-
+        //get bots
+        bots=engine.getEntitiesFor(Family.all(com.tdt4240.jankenmaze.gameecs.components.Bot.class).get());
 
 
     }
@@ -114,13 +126,39 @@ public class HealthSystem extends EntitySystem {
 
     @Override
     public void update(float deltaTime) {
+        if (!GameSettings.getInstance().isMultiplayerGame) {
+            for (Entity bot:bots) {
+                if (playerInfoCompMapper.get(bot).type == PlayerType.PAPER) {
+                    paper = bot;
+                }
+                else if (playerInfoCompMapper.get(bot).type == PlayerType.SCISSORS) {
+                    scissors = bot;
+                }
+            }
+        }
       // decreases Health when local player has been eaten.
         for (GameEvent event: collisionQueue.getEvents()){
-           decreaseHealth(localPlayer.get(0),1);
+            System.out.println("GameEvent:" + event);
+            if (event == GameEvent.PLAYER_COLLISION) { //Player gets killed by a remote paper
+                decreaseHealth(localPlayer.get(0),1);
+            }
+            else if (event == GameEvent.PLAYER_PAPER_COLLISION) { //Player gets killed by a local paper bot
+                decreaseHealth(localPlayer.get(0),1);
+                increaseHealth(paper, 1);
+            }
+            else if (event == GameEvent.PLAYER_SCISSORS_COLLISION) { //Player kills a local scissors bot
+                increaseHealth(localPlayer.get(0),1);
+                decreaseHealth(scissors, 1);
+            }
+            else if (event == GameEvent.PAPER_SCISSORS_COLLISION) {
+                increaseHealth(scissors, 1);
+                decreaseHealth(paper, 1);
+            }
         }
 
-        if (HealthMessage.getInstance().hasChanged){
-            if (GameSettings.getInstance().isMultplayerGame){
+
+        if (GameSettings.getInstance().isMultiplayerGame){
+            if (HealthMessage.getInstance().hasChanged){
                 updateRemotePlayerHealth();
             }
         }

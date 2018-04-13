@@ -79,6 +79,7 @@ public class EntityManager {
     public EntityManager(Engine e, SpriteBatch sb, Signal<GameEvent> gameOverSignal) {
         this.engine = e;
         this.batch = sb;
+        System.out.println("this.batch = sb");
         entityFactory = new EntityFactory(engine, batch);
         gameEventSignal = new Signal<GameEvent>();
         playerCollisionSignal = new Signal<GameEvent>();
@@ -89,6 +90,7 @@ public class EntityManager {
         this.gameOverSignal = gameOverSignal;
 
         addSystemsToEngine();
+        System.out.println("Added systems to engine in EntityManager");
     }
 
     //TODO: Should entityfactory add entities directly? It's currently done in playstate
@@ -107,6 +109,24 @@ public class EntityManager {
                 = ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.Position.class).get(randomSpawnPosition());
         engine.addEntity(
                 entityFactory.createLocalPlayer(type, playerPosition.x, playerPosition.y, 3, playerTextureMap.get(type), networkData)
+        );
+    }
+
+    public void SP_createLocalPlayer(PlayerType type) {
+        System.out.println("Create local player " + PlayerTypes.getPlayerTextures().get(type));
+        com.tdt4240.jankenmaze.gameecs.components.Position playerPosition
+                = ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.Position.class).get(randomSpawnPosition());
+        engine.addEntity(
+                entityFactory.SP_createLocalPlayer(type, playerPosition.x, playerPosition.y, 3, playerTextureMap.get(type))
+        );
+    }
+
+    public void SP_createLocalBot(PlayerType type) {
+        System.out.println("Create local player " + PlayerTypes.getPlayerTextures().get(type));
+        com.tdt4240.jankenmaze.gameecs.components.Position playerPosition
+                = ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.Position.class).get(randomSpawnPosition());
+        engine.addEntity(
+                entityFactory.SP_createLocalBot(type, playerPosition.x, playerPosition.y, 3, playerTextureMap.get(type))
         );
     }
 
@@ -156,7 +176,7 @@ public class EntityManager {
         }
     }
 
-    void addSystemsToEngine(){
+    public void addSystemsToEngine(){
         MovementSystem cms = new MovementSystem(gameEventSignal);
         engine.addSystem(cms);
         com.tdt4240.jankenmaze.gameecs.systems.RenderSystem rs = new com.tdt4240.jankenmaze.gameecs.systems.RenderSystem(batch);

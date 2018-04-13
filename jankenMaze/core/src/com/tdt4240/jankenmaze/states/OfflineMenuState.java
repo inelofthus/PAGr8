@@ -33,7 +33,7 @@ public class OfflineMenuState extends State {
     @Override
     protected void handleInput() {
         if (offlineMenuView.btn_PlaySingle.isPressed()){
-            GameSettings.getInstance().isMultplayerGame = false;
+            GameSettings.getInstance().isMultiplayerGame = false;
             gsm.push(new SinglePlayState(batch));
         }
         if (offlineMenuView.btn_signin.isPressed()){

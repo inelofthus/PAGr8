@@ -9,6 +9,7 @@ public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		DesktopPlayServiceLauncher playServiceLauncher = new DesktopPlayServiceLauncher();
+		//new LwjglApplication(new JankenMaze(), config);
 		new LwjglApplication(new JankenMaze(playServiceLauncher), config);
 	}
 }

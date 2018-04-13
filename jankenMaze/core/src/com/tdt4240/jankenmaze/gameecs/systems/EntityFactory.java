@@ -14,6 +14,7 @@ import com.tdt4240.jankenmaze.gameecs.components.BoundsBox;
 import com.tdt4240.jankenmaze.gameecs.components.PlayerInfo;
 import com.tdt4240.jankenmaze.gameecs.components.Spawnable;
 import com.tdt4240.jankenmaze.gameecs.components.LocalPlayer;
+import com.tdt4240.jankenmaze.gameecs.components.Bot;
 import com.tdt4240.jankenmaze.gameecs.components.Renderable;
 import com.tdt4240.jankenmaze.gameecs.components.SpriteComponent;
 import com.tdt4240.jankenmaze.gameecs.components.Remote;
@@ -119,5 +120,37 @@ public class EntityFactory {
         background.add(new Renderable());
         background.add(new SpriteComponent(texture));
         return background;
+    }
+
+    public Entity SP_createLocalPlayer(PlayerType type, float xPosition, float yPosition, int health, Texture texture) {
+        Entity player = new Entity();
+        Sprite playerSprite=new Sprite(texture);
+        player.add(new Health(health));
+        player.add(new Position(xPosition,yPosition)); //TODO: Consider whether the startposition should be given by some function which finds an unoccupied spot or just be taken as an input to the factory.
+        player.add(new Velocity(0,0));
+        player.add(new BoundsBox(xPosition,yPosition,playerSprite.getWidth()-4,playerSprite.getHeight()-4)); //TODO: Gjør x og y identiske med Position.x og Position.y
+        player.add(new PlayerInfo(type));
+        player.add(new Spawnable());
+        player.add(new LocalPlayer());
+        player.add(new Renderable());
+        player.add(new SpriteComponent(playerSprite));
+        //player.add(new Remote());
+        return player;
+    }
+
+    public Entity SP_createLocalBot(PlayerType type, float xPosition, float yPosition, int health, Texture texture) {
+        Entity player = new Entity();
+        Sprite playerSprite=new Sprite(texture);
+        player.add(new Health(health));
+        player.add(new Position(xPosition,yPosition)); //TODO: Consider whether the startposition should be given by some function which finds an unoccupied spot or just be taken as an input to the factory.
+        player.add(new Velocity(0,0));
+        player.add(new BoundsBox(xPosition,yPosition,playerSprite.getWidth()-4,playerSprite.getHeight()-4)); //TODO: Gjør x og y identiske med Position.x og Position.y
+        player.add(new PlayerInfo(type));
+        player.add(new Spawnable());
+        player.add(new Bot());
+        player.add(new Renderable());
+        player.add(new SpriteComponent(playerSprite));
+        //player.add(new Remote());
+        return player;
     }
 }

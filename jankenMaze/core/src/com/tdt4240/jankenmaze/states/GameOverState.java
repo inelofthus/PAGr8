@@ -48,7 +48,7 @@ public class GameOverState extends State implements PlayServices.NetworkListener
     @Override
     protected void handleInput() {
         if (gameOverView.btn_playAgain.isPressed()){
-            if(GameSettings.getInstance().isMultplayerGame){
+            if(GameSettings.getInstance().isMultiplayerGame){
                 ByteBuffer buffer = ByteBuffer.allocate(1);
                 buffer.put(MessageCodes.PLAY_AGAIN);
                 gsm.playServices.sendReliableMessageToOthers(buffer.array());

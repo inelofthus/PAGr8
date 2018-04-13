@@ -11,11 +11,26 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.tdt4240.jankenmaze.gameecs.events.EventQueue;
 import com.tdt4240.jankenmaze.gameecs.events.GameEvent;
+import com.tdt4240.jankenmaze.gamesettings.GameSettings;
+import com.tdt4240.jankenmaze.gamesettings.PlayerType;
 
 public class InputSystem extends EntitySystem{
     private ImmutableArray<Entity> entities;
+    private Entity localPlayer;
+    private ImmutableArray<Entity> bots;
     private Entity player;
     private ComponentMapper<Velocity> velocityMapper = ComponentMapper.getFor(Velocity.class);
+    private ComponentMapper<PlayerInfo> playerInfoCompMapper = ComponentMapper.getFor(PlayerInfo.class);
+    private ComponentMapper<Position> positionMapper = ComponentMapper.getFor(Position.class);
+    private Entity paper;
+    private Entity scissors;
+
+    private Position localPlayerPosition;
+    private Position paperPosition;
+    private Velocity paperVelocity;
+    private Position scissorsPosition;
+    private Velocity scissorsVelocity;
+
 
     //Note: Min X and Y are 0
 
@@ -38,6 +53,7 @@ public class InputSystem extends EntitySystem{
 
     public void addedToEngine(Engine engine){
         entities = engine.getEntitiesFor(Family.all(LocalPlayer.class).get());
+        bots = engine.getEntitiesFor(Family.all(Bot.class).get());
     }
 
     public boolean canPerformMove(Entity player, int xMove, int yMove) {
@@ -47,10 +63,63 @@ public class InputSystem extends EntitySystem{
 
     public void update(float dt){
         //TODO: Fix hardcoded value
-
+        localPlayer = entities.get(0);
+        if (!GameSettings.getInstance().isMultiplayerGame) {
+            for (Entity bot:bots) {
+                if (playerInfoCompMapper.get(bot).type == PlayerType.PAPER) {
+                    paper = bot;
+                }
+                else if (playerInfoCompMapper.get(bot).type == PlayerType.SCISSORS) {
+                    scissors = bot;
+                }
+            }
+            localPlayerPosition = positionMapper.get(localPlayer);
+            paperPosition = positionMapper.get(paper);
+            paperVelocity = velocityMapper.get(paper);
+            scissorsPosition = positionMapper.get(scissors);
+            scissorsVelocity = velocityMapper.get(scissors);
+        }
 
         float touchX = Gdx.input.getX();
         float touchY = Gdx.input.getY();
+
+        if (!GameSettings.getInstance().isMultiplayerGame) {
+            //Decides paper velocity
+            if(paperPosition.x < localPlayerPosition.x) {
+                paperVelocity.currentX = vel;
+                paperVelocity.futureX = vel;
+            }
+            else {
+                paperVelocity.currentX = -vel;
+                paperVelocity.futureX = -vel;
+            }
+            if(paperPosition.y < localPlayerPosition.y) {
+                paperVelocity.currentY = vel;
+                paperVelocity.futureY = vel;
+            }
+            else {
+                paperVelocity.currentY = -vel;
+                paperVelocity.futureY = -vel;
+            }
+            //Decides scissors position
+            if(scissorsPosition.x < paperPosition.x) {
+                scissorsVelocity.currentX = vel;
+                scissorsVelocity.futureX = vel;
+            }
+            else {
+                scissorsVelocity.currentX = -vel;
+                scissorsVelocity.futureX = -vel;
+            }
+            if(scissorsPosition.y < paperPosition.y) {
+                scissorsVelocity.currentX = vel;
+                scissorsVelocity.futureY = vel;
+            }
+            else {
+                scissorsVelocity.currentY = -vel;
+                scissorsVelocity.futureY = -vel;
+            }
+        }
+
 
         if(Gdx.input.isTouched()) {
             Velocity velocity = velocityMapper.get(entities.get(0));

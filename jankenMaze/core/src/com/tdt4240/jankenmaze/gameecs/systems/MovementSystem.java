@@ -34,7 +34,17 @@ public class MovementSystem extends EntitySystem {
     private ImmutableArray<Entity> entities;
     private ImmutableArray<Entity> localPlayers;
     private ImmutableArray<Entity> remotePlayers;
+    private ImmutableArray<Entity> bots;
     private ImmutableArray<Entity> walls;
+
+    private Entity paper;
+    private Entity scissors;
+
+    private Position localPlayerPosition;
+    private Position paperPosition;
+    private Velocity paperVelocity;
+    private Position scissorsPosition;
+    private Velocity scissorsVelocity;
 
     private ComponentMapper<PlayerNetworkData> playerDataCompMapper = ComponentMapper.getFor(PlayerNetworkData.class);
     private ComponentMapper<Position> positionMapper = ComponentMapper.getFor(Position.class);
@@ -54,6 +64,7 @@ public class MovementSystem extends EntitySystem {
         entities = engine.getEntitiesFor(Family.all(Position.class, Velocity.class).get());
         localPlayers = engine.getEntitiesFor(Family.all(LocalPlayer.class).get());
         remotePlayers = engine.getEntitiesFor(Family.all(Remote.class).get());
+        bots = engine.getEntitiesFor(Family.all(Remote.class).get());
         walls = engine.getEntitiesFor(Family.all(com.tdt4240.jankenmaze.gameecs.components.BoundsBox.class).exclude(com.tdt4240.jankenmaze.gameecs.components.PlayerInfo.class, com.tdt4240.jankenmaze.gameecs.components.PowerUpInfo.class).get());
 
     }
@@ -62,11 +73,10 @@ public class MovementSystem extends EntitySystem {
         if(entities != null){
             for (int i = 0; i < entities.size(); i++){
                 Entity entity = entities.get(i);
-
                 Position position = positionMapper.get(entity);
                 Velocity velocity = velocityMapper.get(entity);
                 BoundsBox bounds = boundsBoxMapper.get(entity);
-                if (entity == localPlayers.get(0)) {
+                if (entity == localPlayers.get(0) || !GameSettings.getInstance().isMultiplayerGame) {
                     if(velocity.futureX != 0 || velocity.futureY != 0) {
                         //This is where future velocity is tested
                         bounds.boundsBox.setX(position.x+velocity.futureX*dt*4);
@@ -106,7 +116,7 @@ public class MovementSystem extends EntitySystem {
             }
         }
 
-        if (GameSettings.getInstance().isMultplayerGame){
+        if (GameSettings.getInstance().isMultiplayerGame){
             //Update the positions of the remote players
             for (Entity remotePlayer: remotePlayers){
                 PlayerNetworkData netData = playerDataCompMapper.get(remotePlayer);

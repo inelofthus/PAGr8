@@ -28,7 +28,7 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
     public MultiPlayState(SpriteBatch batch) {
         super(batch);
         gsm.playServices.setNetworkListener(this);
-        GameSettings.getInstance().isMultplayerGame = true;
+        GameSettings.getInstance().isMultiplayerGame = true;
 
 
         if (!(GameSettings.getInstance().getPlayers() == null)){

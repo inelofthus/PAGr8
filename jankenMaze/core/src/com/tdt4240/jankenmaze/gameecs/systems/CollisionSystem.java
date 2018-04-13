@@ -7,10 +7,13 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.signals.Signal;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.math.Rectangle;
+import com.tdt4240.jankenmaze.gameecs.components.PlayerInfo;
 import com.tdt4240.jankenmaze.gameecs.events.EventQueue;
 import com.tdt4240.jankenmaze.gameecs.events.GameEvent;
 import com.tdt4240.jankenmaze.gameecs.events.GameVariable;
 import com.tdt4240.jankenmaze.gameecs.events.VariableQueue;
+import com.tdt4240.jankenmaze.gamesettings.GameSettings;
+import com.tdt4240.jankenmaze.gamesettings.PlayerType;
 
 /**
  * Created by bartosz on 3/15/18.
@@ -42,10 +45,14 @@ public class CollisionSystem extends EntitySystem {
     private VariableQueue positionQueue;
     private ImmutableArray<Entity> powerUps;
     private ImmutableArray<Entity> players;
+    private ImmutableArray<Entity> bots;
     private ImmutableArray<Entity> localPlayer;
     private ImmutableArray<Entity> walls;
     private ComponentMapper<com.tdt4240.jankenmaze.gameecs.components.BoundsBox> bb= ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.BoundsBox.class);
     private ComponentMapper<com.tdt4240.jankenmaze.gameecs.components.PlayerInfo> pi = ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.PlayerInfo.class);
+    private ComponentMapper<PlayerInfo> playerInfoCompMapper = ComponentMapper.getFor(PlayerInfo.class);
+    private Entity paper;
+    private Entity scissors;
 
     public CollisionSystem(Signal<GameEvent> playerCollisionSignal, Signal<GameVariable> playerPositionSignal){
         //creates playerCollisionSignal
@@ -66,6 +73,7 @@ public class CollisionSystem extends EntitySystem {
         //get remote players in GameState
         players = engine.getEntitiesFor(Family.all(com.tdt4240.jankenmaze.gameecs.components.Remote.class).get());
         //get localPLayer
+        bots = engine.getEntitiesFor(Family.all(com.tdt4240.jankenmaze.gameecs.components.Bot.class).get());
         localPlayer = engine.getEntitiesFor(Family.all(com.tdt4240.jankenmaze.gameecs.components.LocalPlayer.class).get());
 
 
@@ -119,7 +127,8 @@ public class CollisionSystem extends EntitySystem {
         if (walls != null && players != null && localPlayer!=null){
             //check if there is any collision
             for (int i=0; i < localPlayer.size(); i++){
-                //checks if player collide
+
+                //checks if localPlayer collides with remote players
                 Entity player1 = localPlayer.get(i);
                 for (int k=0; k < players.size(); k++){
                     //checks if looking at the same entity
@@ -130,6 +139,24 @@ public class CollisionSystem extends EntitySystem {
                         if (pi.get(player1).targetetBy.equals(pi.get(player2).type)) {
                             //sends a playerCollisionSignal
                             playerCollisionSignal.dispatch(GameEvent.PLAYER_COLLISION);
+                        }
+                    }
+                }
+
+                //Checks if localPlayers collide with bots
+                for (int k=0; k < bots.size(); k++){
+                    //checks if looking at the same entity
+                    Entity player2 = bots.get(k);
+                    //checks if player1 collides with player2
+                    if(bb.get(player1).boundsBox.overlaps(bb.get(player2).boundsBox)){
+
+                        if (pi.get(player1).targetetBy.equals(pi.get(player2).type)) {
+                            //sends a playerCollisionSignal
+                            playerCollisionSignal.dispatch(GameEvent.PLAYER_PAPER_COLLISION);
+                        }
+                        else if (pi.get(player2).targetetBy.equals(pi.get(player1).type)) {
+                            //sends a playerCollisionSignal
+                            playerCollisionSignal.dispatch(GameEvent.PLAYER_SCISSORS_COLLISION);
                         }
                     }
                 }
@@ -153,6 +180,20 @@ public class CollisionSystem extends EntitySystem {
                     }
                     playerPositionSignal.dispatch(GameVariable.PLAYER_POSITION);
                 }
+            }
+            //Here it checks the case where two bots collide with each other
+            if (!GameSettings.getInstance().isMultiplayerGame) {
+                for (Entity bot:bots) {
+                    if (playerInfoCompMapper.get(bot).type == PlayerType.PAPER) {
+                        paper = bot;
+                    }
+                    else if (playerInfoCompMapper.get(bot).type == PlayerType.SCISSORS) {
+                        scissors = bot;
+                    }
+                }
+            }
+            if(bb.get(paper).boundsBox.overlaps(bb.get(scissors).boundsBox)){
+                playerCollisionSignal.dispatch(GameEvent.PAPER_SCISSORS_COLLISION);
             }
         }
     }
