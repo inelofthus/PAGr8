@@ -39,7 +39,7 @@ public class TutorialState extends State {
     public void update(float dt) {
         if(Gdx.input.justTouched()){
             System.out.println("Pop it like a zit");
-            gsm.pop();
+            gsm.set(new OnlineMenuState());
         }
     }
 

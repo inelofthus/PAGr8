@@ -1,6 +1,7 @@
 package com.tdt4240.jankenmaze.states;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.tdt4240.jankenmaze.view.OnlineMenuView;
 
@@ -19,46 +20,51 @@ public class OnlineMenuState extends State {
         gsm = GameStateManager.getGsm();
         this.onlineMenuView = new OnlineMenuView();
 
-        listenerBtn_invite = new ClickListener();
-        onlineMenuView.btn_invite.addListener(listenerBtn_invite);
+        onlineMenuView.btn_invite.addListener( new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                gsm.playServices.startSelectOpponents(false);
+            }
+        });
 
-        listenerBtn_signOut = new ClickListener();
-        onlineMenuView.btn_signout.addListener(listenerBtn_signOut);
+        onlineMenuView.btn_signout.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                gsm.set(new SinglePlayState(batch));
+            }
+        });
 
-        listenerBtn_playSingle = new ClickListener();
-        onlineMenuView.btn_PlaySingle.addListener(listenerBtn_playSingle);
+        onlineMenuView.btn_PlaySingle.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                gsm.playServices.signOut();
+                if (!gsm.playServices.isSignedIn()){
+                    gsm.set(new OfflineMenuState());
+                }
+            }
+        });
 
-        listenerBtn_tutorial = new ClickListener();
-        onlineMenuView.btn_tutorial.addListener(listenerBtn_tutorial);
+        onlineMenuView.btn_tutorial.addListener( new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                gsm.set(new TutorialState());
+            };
+        });
+        //onlineMenuView.btn_tutorial.addListener(listenerBtn_tutorial);
 
         cam.setToOrtho(false);
     }
 
     @Override
     protected void handleInput() {
-        if (onlineMenuView.btn_invite.isPressed()){
-            gsm.playServices.startSelectOpponents(false);
-        }
-        if (onlineMenuView.btn_PlaySingle.isPressed()){
-            gsm.push(new SinglePlayState(batch));
-        }
-        if (onlineMenuView.btn_signout.isPressed()){
-            gsm.playServices.signOut();
-            if (!gsm.playServices.isSignedIn()){
-                gsm.push(new OfflineMenuState());
-            }
-        }
-        if (onlineMenuView.btn_tutorial.isPressed()){
-            onlineMenuView.btn_tutorial.reset();
-            gsm.push(new TutorialState() );
-        }
+
     }
 
     @Override
     public void update(float dt) {
         handleInput();
         if (!gsm.playServices.isSignedIn()){
-            gsm.push(new OfflineMenuState());
+            gsm.set(new OfflineMenuState());
         }
     }
 
