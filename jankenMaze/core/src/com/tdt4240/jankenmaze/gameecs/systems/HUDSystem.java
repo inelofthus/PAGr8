@@ -9,17 +9,22 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.tdt4240.jankenmaze.gameMessages.HealthMessage;
+import com.tdt4240.jankenmaze.gameMessages.PositionMessage;
 import com.tdt4240.jankenmaze.gameecs.components.HUDItemInfo;
 import com.tdt4240.jankenmaze.gameecs.components.Health;
 import com.tdt4240.jankenmaze.gameecs.components.LocalPlayer;
 import com.tdt4240.jankenmaze.gameecs.components.PlayerInfo;
+import com.tdt4240.jankenmaze.gameecs.components.PlayerNetworkData;
 import com.tdt4240.jankenmaze.gameecs.components.Position;
 import com.tdt4240.jankenmaze.gameecs.components.Remote;
 import com.tdt4240.jankenmaze.gameecs.components.Renderable;
 import com.tdt4240.jankenmaze.gameecs.components.SpriteComponent;
 import com.tdt4240.jankenmaze.gamesettings.GameSettings;
+import com.tdt4240.jankenmaze.gamesettings.PlayerType;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by jonas on 18/03/2018.
@@ -30,17 +35,21 @@ public class HUDSystem extends EntitySystem {
     GameSettings gameSettings;
     ImmutableArray<Entity> hudEntities;
     ImmutableArray<Entity> localPlayerEntities;
+    ImmutableArray<Entity> remoteEntities;
     ComponentMapper<Health> healthComponentMapper;
     ComponentMapper<HUDItemInfo> hudItemInfoComponentMapper;
     ComponentMapper<SpriteComponent> spriteComponentMapper;
     ComponentMapper<Position> positionComponentMapper;
     ComponentMapper<PlayerInfo> playerInfoMapper;
+    ComponentMapper<PlayerNetworkData> netDataComponentMapper;
     private int numOfHealthSprites;
     private int maxHealthSpriteX;
     private boolean typeSpritesNotMade;
 
     private int typeSpriteWidth;
     private int typepriteHeight;
+
+    HashMap<String, ArrayList<Entity>> remoteHP;
 
     int playerHealth;
     ArrayList<Entity> playerHearts;
@@ -51,6 +60,7 @@ public class HUDSystem extends EntitySystem {
         spriteComponentMapper = ComponentMapper.getFor(SpriteComponent.class);
         positionComponentMapper = ComponentMapper.getFor(Position.class);
         playerInfoMapper = ComponentMapper.getFor(PlayerInfo.class);
+        // netDataComponentMapper = ComponentMapper.getFor(PlayerNetworkData.class);
 
         gameSettings = GameSettings.getInstance();
         typepriteHeight = 160;
@@ -60,6 +70,8 @@ public class HUDSystem extends EntitySystem {
         numOfHealthSprites = 0;
         typeSpritesNotMade = true;
         maxHealthSpriteX = gameSettings.viewPortWidth - typeSpriteWidth;
+
+        //remoteHP = new HashMap<String, ArrayList<Entity>>();
     }
 
     @Override
@@ -67,6 +79,7 @@ public class HUDSystem extends EntitySystem {
         hudEntities = engine.getEntitiesFor(Family.all(
                 HUDItemInfo.class, Renderable.class, Position.class).get());
         localPlayerEntities = engine.getEntitiesFor(Family.one(LocalPlayer.class).get());
+        remoteEntities = engine.getEntitiesFor(Family.all(Remote.class).get());
     }
 
     @Override
@@ -74,15 +87,19 @@ public class HUDSystem extends EntitySystem {
         hudEntities = engine.getEntitiesFor(Family.all(
                 HUDItemInfo.class, Renderable.class, Position.class).get());
         localPlayerEntities = engine.getEntitiesFor(Family.one(LocalPlayer.class).get());
+        remoteEntities = engine.getEntitiesFor(Family.all(Remote.class).get());
     }
 
     @Override
     public void update(float deltaTime) {
         //Health-display
+        if (localPlayerEntities.size() == 0) {
+            System.out.println("HUDSys:95: LocalplayerEntities is empty!");
+            return;
+        }
         Entity localPlayer = localPlayerEntities.first();
 
         int localPlayerHealth = healthComponentMapper.get(localPlayer).health;
-
         if (numOfHealthSprites != localPlayerHealth) {
             //Gets the texture of the local player with a long-ass line of code
             Texture healthTexture = new Texture("greenSquare.png");
@@ -93,7 +110,7 @@ public class HUDSystem extends EntitySystem {
                         .add(new HUDItemInfo("playerHealth"))
                         .add(new SpriteComponent(healthTexture))
                         .add(new Position(maxHealthSpriteX,
-                                gameSettings.viewPortHeight-(typepriteHeight+healthTexture.getHeight()) - margin))
+                                gameSettings.viewPortHeight - (typepriteHeight + healthTexture.getHeight()) - margin))
                         .add(new Renderable());
 
                 getEngine().addEntity(heartEntity);
@@ -111,12 +128,11 @@ public class HUDSystem extends EntitySystem {
                     maxHealthSpriteX -= healthTexture.getWidth() + margin;
 
                 }
-                numOfHealthSprites --;
+                numOfHealthSprites--;
             }
         }
-
         //Type display. Wrapped in if-clause to only run once (uses created sprites so shouldn't be in constructor)
-        if(typeSpritesNotMade) {
+        if (typeSpritesNotMade) {
             Engine engine = getEngine();
 
             //Make big localplayer-sprite
@@ -131,6 +147,65 @@ public class HUDSystem extends EntitySystem {
                     .add(new HUDItemInfo("playerType")));
 
             typeSpritesNotMade = false;
+        }
+    }
+
+    private void makeOpponentHud() {
+        Entity localPlayer = localPlayerEntities.first();
+        int remoteHpSize = 12;
+        int margin = 4;
+        //Check HP for remotes, then maybe add/remove sprites
+        HashMap<String, Position> positionMap = PositionMessage.getInstance().getRemotePlayerPositions();
+        HealthMessage healthMessage = HealthMessage.getInstance();
+        // String[] playerIds = (String[]) healthMessage.getRemotePlayerHealth().keySet().toArray();
+        for (Entity remoteEntity : remoteEntities) {
+            //TODO: Look into nullpointers from netDataComponentMapper
+            try {
+               /* String remoteID = netDataComponentMapper.get(remoteEntity).participantId;
+                int remoteHealth = 3;
+                if (healthMessage.getRemotePlayerHealth().containsKey(remoteID)) {
+                    remoteHealth = healthMessage.getRemotePlayerHealth().get(remoteID).health;
+                }
+
+                if (!remoteHP.containsKey(remoteID)) {
+                    remoteHP.put(remoteID, new ArrayList<Entity>());
+                }
+                ArrayList<Entity> displayedHPSprites = remoteHP.get(remoteID);
+                while (displayedHPSprites.size() > remoteHealth) {
+                    //Too much HP is displayed
+                    System.out.println("HUDSys 144: remoteHealth: " + remoteHealth + ", displayedHpSprites.size: " + displayedHPSprites.size());
+                    Entity remoteHpSprite = displayedHPSprites.get(displayedHPSprites.size() - 1);
+                    getEngine().removeEntity(remoteHpSprite);
+                    displayedHPSprites.remove(displayedHPSprites);
+                }
+                while (displayedHPSprites.size() < remoteHealth) {
+                    System.out.println("HUDSys 150" +
+                            ": remoteHealth: " + remoteHealth + ", displayedHpSprites.size: " + displayedHPSprites.size());
+                    Entity remoteHpSprite = new Entity();
+                    remoteHpSprite.add(new SpriteComponent(new Texture("greenSquare.png"), remoteHpSize, remoteHpSize))
+                            .add(new Renderable())
+                            .add(new Position(0, 0))
+                            .add(new HUDItemInfo("remoteHealth"));
+                    displayedHPSprites.add(remoteHpSprite);
+                    getEngine().addEntity(remoteHpSprite);
+                }
+
+                //Position stuff:
+
+                Position pos = positionMap.get(remoteID);
+                Sprite sprite = spriteComponentMapper.get(localPlayer).sprite;
+                //X = half the size of how total width of all the HP-sprites off the center of the player-sprite
+                int anchorX = (int) (pos.x + (sprite.getWidth() / 2) - (remoteHP.get(remoteID).size() * (remoteHpSize + margin)) / 2);
+                int anchorY = (int) (pos.y - (remoteHpSize + margin));
+
+                for (int i = 0; i > displayedHPSprites.size(); i++) {
+                    Position hpPos = positionComponentMapper.get(displayedHPSprites.get(i));
+                    hpPos.x = anchorX + i * (remoteHpSize + margin);
+                    hpPos.y = anchorY;
+                }*/
+            } catch (NullPointerException e) {
+                System.out.println("HUDSys:210: Remoteplayers not found");
+            }
         }
     }
 }

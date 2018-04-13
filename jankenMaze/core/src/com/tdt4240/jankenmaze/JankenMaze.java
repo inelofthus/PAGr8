@@ -50,7 +50,7 @@ public class JankenMaze extends ApplicationAdapter implements PlayServices.GameL
 
 		//socket.connectSocket();
 		//socket.configSocketEvents();
-
+		System.out.println("create is accessed");
 		gsm = GameStateManager.getGsm();
 		gsm.setPlayServices(playServices);
 		playServices.setGameListener(this);
@@ -83,7 +83,7 @@ public class JankenMaze extends ApplicationAdapter implements PlayServices.GameL
 	@Override
 	public void onMultiplayerGameStarting() {
 		System.out.println("JankenMaze: onMultiplayerGameStarting");
-		gsm.push(multiPlayState);
+		gsm.set(multiPlayState);
 	}
 
 	@Override
