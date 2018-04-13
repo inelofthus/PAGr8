@@ -158,10 +158,7 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
     public void sendUnreliableMessageToOthers(byte[] messageData) {
         if (currentRoomId == null){
             System.out.println("RoomID is null!");
-            if (! (GameSettings.getInstance().roomID == null)){
-                System.out.println("Setting RoomId:" + GameSettings.getInstance().roomID);
-                currentRoomId = GameSettings.getInstance().roomID;
-            }
+            return;
         }
         if (!gameHelper.isSignedIn()){
             System.out.println("not signed in");
@@ -169,7 +166,7 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
         }
 
         Games.RealTimeMultiplayer.sendUnreliableMessageToOthers(gameHelper.getApiClient(), messageData, currentRoomId);
-        Log.d(TAG, "sendUnreliableMessageToOthers: ");
+        //Log.d(TAG, "sendUnreliableMessageToOthers: ");
 
     }
 
@@ -234,10 +231,12 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
 
 
     public void onStart() {
+        Log.d(TAG, "onStart: ");
         gameHelper.onStart(activity);
     }
 
     public void onStop() {
+        Log.d(TAG, "onStop: ");
         gameHelper.onStop();
     }
 
@@ -461,8 +460,15 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
 
     @Override
     public void onDisconnectedFromRoom(Room room) {
-        Log.d(TAG, "onDisconnectedFromRoom: ");
         stopKeepingScreenOn();
+        Log.d(TAG, "onDisconnectedFromRoom: ");
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                gameListener.onDisconnectedFromRoom();
+            }
+        });
+
         currentRoomId = null;
     }
 

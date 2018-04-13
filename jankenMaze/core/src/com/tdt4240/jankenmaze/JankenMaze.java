@@ -82,8 +82,12 @@ public class JankenMaze extends ApplicationAdapter implements PlayServices.GameL
 	@Override
 	public void onMultiplayerGameStarting() {
 		System.out.println("JankenMaze: onMultiplayerGameStarting");
-
 		gsm.push(multiPlayState);
+	}
+
+	@Override
+	public void onDisconnectedFromRoom() {
+		gsm.push(new OnlineMenuState("onDisconnectedFromRoom"));
 	}
 
 	@Override

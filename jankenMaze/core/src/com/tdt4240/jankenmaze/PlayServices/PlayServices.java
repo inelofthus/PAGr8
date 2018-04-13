@@ -28,6 +28,7 @@ public interface PlayServices {
 
     public interface GameListener{
         void onMultiplayerGameStarting();
+        void onDisconnectedFromRoom();
     }
 
 }
