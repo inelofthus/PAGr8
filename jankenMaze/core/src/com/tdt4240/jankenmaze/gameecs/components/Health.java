@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Component;
 
 /**
  * Created by jonas on 07/03/2018.
+ * This component consists of an int with the healthValue of playerEntity
  */
 
 public class Health implements Component {
