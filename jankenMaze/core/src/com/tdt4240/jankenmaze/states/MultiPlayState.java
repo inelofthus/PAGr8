@@ -67,11 +67,7 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
             ByteBuffer buffer = ByteBuffer.allocate(1);
             buffer.put(MessageCodes.GAME_OVER);
             gsm.playServices.sendReliableMessageToOthers(buffer.array());
-            ImmutableArray<Entity> players = engine.getEntitiesFor(Family.all(com.tdt4240.jankenmaze.gameecs.components.PlayerInfo.class).get());
-            ComponentMapper<PlayerInfo> info =ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.PlayerInfo.class);
-            for(Entity player:players) {
-                System.out.println("gameOverInfo: " + info.get(player).type);
-            }
+            HealthMessage.getInstance().gameOver(engine);
             gsm.push(new GameOverState());
         }
 
@@ -101,6 +97,7 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
 
             case MessageCodes.GAME_OVER:
                 System.out.println("GAME OVER MESSAGE RECEIVED");
+                HealthMessage.getInstance().gameOver(engine);
                 Gdx.app.postRunnable(new Runnable() {
                     @Override
                     public void run() {
@@ -113,7 +110,7 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
                 System.out.println("HEALTH MESSAGE RECEIVED");
                 int hp = buffer.getInt();
                 if (! (GameSettings.getInstance().getPlayers() == null)){
-                    HealthMessage.getInstance().updateRemotePlayerHealth(senderParticipantId, new Health(hp));
+                    HealthMessage.getInstance().updatePlayerHealth(senderParticipantId, new Health(hp));
                     HealthMessage.getInstance().hasChanged = true;
                 }
 

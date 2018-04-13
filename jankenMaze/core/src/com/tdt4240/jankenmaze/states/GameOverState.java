@@ -4,14 +4,20 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.tdt4240.jankenmaze.PlayServices.PlayServices;
+import com.tdt4240.jankenmaze.gameMessages.HealthMessage;
 import com.tdt4240.jankenmaze.gameMessages.MessageCodes;
+import com.tdt4240.jankenmaze.gameecs.components.Health;
 import com.tdt4240.jankenmaze.gameecs.components.PlayerNetworkData;
 import com.tdt4240.jankenmaze.gamesettings.GameSettings;
 import com.tdt4240.jankenmaze.view.GameOverView;
 import com.tdt4240.jankenmaze.view.YouWinView;
 
 import java.nio.ByteBuffer;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  * Created by bartosz on 4/7/18.
@@ -38,6 +44,9 @@ public class GameOverState extends State implements PlayServices.NetworkListener
 
         listenerBtn_quitGame = new ClickListener();
         gameOverView.btn_quitGame.addListener(listenerBtn_quitGame);
+
+        System.out.println(HealthMessage.getInstance().getResults());
+
 
 
         cam.setToOrtho(false);
