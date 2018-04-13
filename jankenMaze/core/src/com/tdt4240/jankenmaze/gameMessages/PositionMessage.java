@@ -38,4 +38,11 @@ public class PositionMessage {
         return remotePlayerPositions;
     }
 
+    public void reset() {
+        List<PlayerNetworkData> players = GameSettings.getInstance().getPlayers();
+        this.remotePlayerPositions= new HashMap<String, Position>();
+        for (PlayerNetworkData player : players){
+            remotePlayerPositions.put(player.participantId, new Position(0, 0));
+        }
+    }
 }

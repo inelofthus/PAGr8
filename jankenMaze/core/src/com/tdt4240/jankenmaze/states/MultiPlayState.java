@@ -38,7 +38,6 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
 
         if (!(GameSettings.getInstance().getPlayers() == null)){
             onRoomReady(GameSettings.getInstance().getPlayers());
-
         }
     }
 
@@ -170,6 +169,8 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
             }
         }
 
+        HealthMessage.getInstance().reset();
+        PositionMessage.getInstance().reset();
         entityManager.addMPSystemsToEngine(gsm.playServices);
     }
 

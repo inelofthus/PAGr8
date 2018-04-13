@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.tdt4240.jankenmaze.PlayServices.PlayServices;
+import com.tdt4240.jankenmaze.gamesettings.GameSettings;
 import com.tdt4240.jankenmaze.states.GameStateManager;
 import com.tdt4240.jankenmaze.states.MenuState;
 import com.tdt4240.jankenmaze.gameecs.EntityManager;
@@ -87,7 +88,17 @@ public class JankenMaze extends ApplicationAdapter implements PlayServices.GameL
 
 	@Override
 	public void onDisconnectedFromRoom() {
+		GameSettings.getInstance().reset();
+		//multiPlayState.reset();
+		this.multiPlayState = new MultiPlayState(batch);
 		gsm.push(new OnlineMenuState("onDisconnectedFromRoom"));
+	}
+
+	@Override
+	public void resetGameVariables() {
+		GameSettings.getInstance().reset();
+		System.out.println("JankenMaze: resetGameVariables");
+		//this.multiPlayState = new MultiPlayState(batch);
 	}
 
 	@Override

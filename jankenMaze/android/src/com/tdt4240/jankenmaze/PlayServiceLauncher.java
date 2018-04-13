@@ -139,6 +139,7 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
     @Override
     public void startSelectOpponents(boolean autoMatch) {
         Intent intent = Games.RealTimeMultiplayer.getSelectOpponentsIntent(gameHelper.getApiClient(), MIN_PLAYERS, MAX_PLAYERS, autoMatch);
+        gameListener.resetGameVariables();
         activity.startActivityForResult(intent, RC_SELECT_PLAYERS);
     }
 
@@ -250,6 +251,10 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
                 break;
             case RC_WAITING_ROOM:
                 Log.d(TAG, "onActivityResult: RC_WAITING_ROOM");
+
+
+
+
                 handleWaitingRoomResult(resultCode, data);
                 break;
             default:
@@ -503,18 +508,24 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
     ////////////////RealTimeMessageReceivedListener/////////////////////////
     @Override
     public void onRealTimeMessageReceived(RealTimeMessage realTimeMessage) {
-        if (networkListener == null) {
-            Gdx.app.debug(TAG, "onRealTimeMessageReceived: NetworkListener is null");
-            return;
+        try {
+            if (networkListener == null) {
+                Gdx.app.debug(TAG, "onRealTimeMessageReceived: NetworkListener is null");
+                return;
+            }
+            byte[] messageData = realTimeMessage.getMessageData();
+            String senderParticipantId = realTimeMessage.getSenderParticipantId();
+            int describeContents = realTimeMessage.describeContents();
+            if (realTimeMessage.isReliable()) {
+                networkListener.onReliableMessageReceived(senderParticipantId, describeContents, messageData);
+            } else {
+                networkListener.onUnreliableMessageReceived(senderParticipantId, describeContents, messageData);
+            }
+        }catch (Exception e){
+            System.out.println("PlayServiceLauncher: ErrorOnRealTimeMessage");
         }
-        byte[] messageData = realTimeMessage.getMessageData();
-        String senderParticipantId = realTimeMessage.getSenderParticipantId();
-        int describeContents = realTimeMessage.describeContents();
-        if (realTimeMessage.isReliable()) {
-            networkListener.onReliableMessageReceived(senderParticipantId, describeContents, messageData);
-        } else {
-            networkListener.onUnreliableMessageReceived(senderParticipantId, describeContents, messageData);
-        }
+
+
     }
 
     ////////////////END RealTimeMessageReceivedListener/////////////////////////
