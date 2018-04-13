@@ -8,6 +8,7 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.badlogic.gdx.Gdx;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.RealTimeMultiplayerClient;
 import com.google.android.gms.games.multiplayer.Invitation;
@@ -55,6 +56,7 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
     private NetworkListener networkListener;
     private String incomingInvitationId;
     private RealTimeMultiplayer.ReliableMessageSentCallback reliableMessageSentCallback = null;
+    private RoomConfig currentRoomConfig = null;
 
     public PlayServiceLauncher(AndroidLauncher activity) {
         this.activity = activity;
@@ -86,7 +88,8 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
                 .setMessageReceivedListener(this)
                 .setRoomStatusUpdateListener(this);
         keepScreenOn();
-        Games.RealTimeMultiplayer.join(gameHelper.getApiClient(), roomConfigBuilder.build());
+        this.currentRoomConfig = roomConfigBuilder.build();
+        Games.RealTimeMultiplayer.join(gameHelper.getApiClient(), currentRoomConfig);
     }
 
 
@@ -230,6 +233,24 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
         Log.d(TAG, "sendReliableMessageTo: ");
         }
 
+    @Override
+    public void leaveRoom() {
+        Log.d(TAG, "leaveRoom:  ");
+        if (currentRoomConfig == null){
+            Log.d(TAG, "leaveRoom: roomConfig is null ");
+            return;
+        }
+        if (currentRoomId == null){
+            Log.d(TAG, "leaveRoom: roomID is null ");
+            return;
+        }
+
+        Games.RealTimeMultiplayer.leave(gameHelper.getApiClient(), this, "3");
+        //Games.getRealTimeMultiplayerClient(activity, GoogleSignIn.getLastSignedInAccount(activity.getApplicationContext())).leave(currentRoomConfig, currentRoomId);
+        currentRoomId = null;
+        currentRoomConfig = null;
+    }
+
 
     public void onStart() {
         Log.d(TAG, "onStart: ");
@@ -331,6 +352,7 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
         keepScreenOn();
         Games.RealTimeMultiplayer.create(gameHelper.getApiClient(), rtmConfigBuilder.build());
         Log.d(TAG, "Room created, waiting for it to be ready...");
+        this.currentRoomConfig = rtmConfigBuilder.build();
     }
 
     //Sets flag to keep screen on. Important during game setup so game is not cancelled
@@ -375,6 +397,13 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
 
     @Override
     public void onLeftRoom(int i, String s) {
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                gameListener.onDisconnectedFromRoom();
+            }
+        });
+
         Log.d(TAG, "onLeftRoom: ");
     }
 
@@ -484,6 +513,7 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
 
     @Override
     public void onPeersDisconnected(Room room, List<String> list) {
+        leaveRoom();
         Log.d(TAG, "onPeersDisconnected");
     }
 
