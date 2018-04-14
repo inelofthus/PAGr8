@@ -90,10 +90,12 @@ public class MovementSystem extends EntitySystem {
                             }
                         }
                         if(collision){
-                                bounds.boundsBox.setX(position.x += velocity.currentX * dt);
-                                bounds.boundsBox.setY(position.y += velocity.currentY * dt);
+                            bounds.boundsBox.setX(position.x += velocity.currentX * dt);
+                            bounds.boundsBox.setY(position.y += velocity.currentY * dt);
                         }
                         else {
+                            bounds.boundsBox.setX(position.x += velocity.currentX * dt);
+                            bounds.boundsBox.setY(position.y += velocity.currentY * dt);
                             velocity.currentX = velocity.futureX;
                             velocity.currentY = velocity.futureY;
                             velocity.futureY = 0;

@@ -96,10 +96,12 @@ public class CollisionSystem extends EntitySystem {
                 // gets the difference between the position of wal and position of player and moves player outside the wall.
                 playerPosition.x = playerPosition.x + (wall.getX() - playerPosition.x) - bb.get(player).boundsBox.getWidth();
                 playerVelocity.currentX = 0;
+                playerVelocity.canMoveRight = false;
             }else{
                 // gets the difference between the position of wal and position of player and moves player outside the wall.
                 playerPosition.x = playerPosition.x +(wall.getX() - playerPosition.x) + wall.getWidth();
                 playerVelocity.currentX = 0;
+                playerVelocity.canMoveLeft = false;
 
             }
         }else {
@@ -107,10 +109,12 @@ public class CollisionSystem extends EntitySystem {
                 // gets the difference between the position of wal and position of player and moves player outside the wall.
                 playerPosition.y = playerPosition.y + (wall.getY() - playerPosition.y) - bb.get(player).boundsBox.getHeight();
                 playerVelocity.currentY = 0;
+                playerVelocity.canMoveUp = false;
             }else if (playerVelocity.currentY < 0){
                 // gets the difference between the position of wal and position of player and moves player outside the wall.
                 playerPosition.y = playerPosition.y + (wall.getY() - playerPosition.y) + wall.getHeight();
                 playerVelocity.currentY = 0;
+                playerVelocity.canMoveUp = false;
             }
 
         }
@@ -179,6 +183,11 @@ public class CollisionSystem extends EntitySystem {
                         collisionWithWall(player1,wallBox);
                     }
                     playerPositionSignal.dispatch(GameVariable.PLAYER_POSITION);
+                    for (Entity bot:bots) {
+                        if (bb.get(bot).boundsBox.overlaps(wallBox)) {
+                            collisionWithWall(bot, wallBox);
+                        }
+                    }
                 }
             }
             //Here it checks the case where two bots collide with each other

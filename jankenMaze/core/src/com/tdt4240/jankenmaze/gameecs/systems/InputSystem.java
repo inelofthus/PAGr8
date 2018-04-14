@@ -48,6 +48,9 @@ public class InputSystem extends EntitySystem{
         this.maxY = Gdx.graphics.getHeight();
         this.centerX = Gdx.graphics.getWidth() /2;
         this.centerY = Gdx.graphics.getHeight() /2;
+        if (!GameSettings.getInstance().isMultiplayerGame) {
+            vel = 100;
+        }
 
     }
 
@@ -84,39 +87,130 @@ public class InputSystem extends EntitySystem{
         float touchY = Gdx.input.getY();
 
         if (!GameSettings.getInstance().isMultiplayerGame) {
-            //Decides paper velocity
-            if(paperPosition.x < localPlayerPosition.x) {
-                paperVelocity.currentX = vel;
-                paperVelocity.futureX = vel;
+
+            if (paperVelocity.futureX == 0 && paperVelocity.futureY == 0) {
+                System.out.println("\nBefore input");
+                System.out.println("paperVelocity.currentX = " + paperVelocity.currentX);
+                System.out.println("paperVelocity.futureX = " + paperVelocity.futureX);
+                System.out.println("paperVelocity.currentY = " + paperVelocity.currentY);
+                System.out.println("paperVelocity.futureY = " + paperVelocity.futureY);
+                System.out.println("Last move = " + paperVelocity.lastMove);
+                if (paperVelocity.currentX == 0 && paperVelocity.lastMove) {
+                    if (paperPosition.x < localPlayerPosition.x) {
+                        paperVelocity.futureX = vel;
+                    } else if (paperPosition.x > localPlayerPosition.x) {
+                        paperVelocity.futureX = -vel;
+                    }
+                    else {
+                        paperVelocity.futureX = 0;
+                    }
+                }
+                if (paperVelocity.currentY == 0 && !paperVelocity.lastMove) {
+                    if (paperPosition.y < localPlayerPosition.y) {
+                        paperVelocity.futureY = vel;
+                    } else if (paperPosition.y > localPlayerPosition.y) {
+                        paperVelocity.futureY = -vel;
+                    }
+                    else {
+                        paperVelocity.futureY = 0;
+                    }
+                }
+            }
+            if (paperVelocity.lastMove) {
+                paperVelocity.lastMove = false;
             }
             else {
-                paperVelocity.currentX = -vel;
-                paperVelocity.futureX = -vel;
+                paperVelocity.lastMove = true;
             }
-            if(paperPosition.y < localPlayerPosition.y) {
-                paperVelocity.currentY = vel;
-                paperVelocity.futureY = vel;
+            System.out.println("paperVelocity.currentX = " + paperVelocity.currentX);
+            System.out.println("paperVelocity.futureX = " + paperVelocity.futureX);
+            System.out.println("paperVelocity.currentY = " + paperVelocity.currentY);
+            System.out.println("paperVelocity.futureY = " + paperVelocity.futureY);
+            System.out.println("Last move = " + paperVelocity.lastMove);
+
+            if (scissorsVelocity.futureX == 0 && scissorsVelocity.futureY == 0) {
+                if (scissorsVelocity.currentX == 0 && scissorsVelocity.lastMove) {
+                    if (scissorsPosition.x < paperPosition.x) {
+                        scissorsVelocity.futureX = vel;
+                    } else if (scissorsPosition.x > paperPosition.x) {
+                        scissorsVelocity.futureX = -vel;
+                    }
+                    else {
+                        scissorsVelocity.futureX = 0;
+                    }
+                }
+                if (scissorsVelocity.currentY == 0 && !scissorsVelocity.lastMove) {
+                    if (scissorsPosition.y < paperPosition.y) {
+                        scissorsVelocity.futureY = vel;
+                    } else if (scissorsPosition.y > paperPosition.y) {
+                        scissorsVelocity.futureY = -vel;
+                    }
+                    else {
+                        scissorsVelocity.futureY = 0;
+                    }
+                }
+            }
+            if (scissorsVelocity.lastMove) {
+                scissorsVelocity.lastMove = false;
             }
             else {
-                paperVelocity.currentY = -vel;
-                paperVelocity.futureY = -vel;
+                scissorsVelocity.lastMove = true;
             }
+
+
+
+
             //Decides scissors position
-            if(scissorsPosition.x < paperPosition.x) {
-                scissorsVelocity.currentX = vel;
-                scissorsVelocity.futureX = vel;
-            }
-            else {
-                scissorsVelocity.currentX = -vel;
-                scissorsVelocity.futureX = -vel;
-            }
-            if(scissorsPosition.y < paperPosition.y) {
-                scissorsVelocity.currentX = vel;
-                scissorsVelocity.futureY = vel;
-            }
-            else {
-                scissorsVelocity.currentY = -vel;
-                scissorsVelocity.futureY = -vel;
+            if (scissorsVelocity.currentX == 0 && scissorsVelocity.currentY == 0) {
+                if (scissorsPosition.x < paperPosition.x && scissorsPosition.y < paperPosition.y) {
+                    if (scissorsVelocity.lastMove) {
+                        //if (scissorsVelocity.currentX == 0) {
+                        scissorsVelocity.futureX = vel;
+                        scissorsVelocity.futureY = 0;
+                        //}
+                    } else {
+                        //if (scissorsVelocity.currentY == 0) {
+                        scissorsVelocity.futureX = 0;
+                        scissorsVelocity.futureY = vel;
+                        //}
+                    }
+                } else if (scissorsPosition.x < paperPosition.x && scissorsPosition.y > paperPosition.y) {
+                    if (scissorsVelocity.lastMove) {
+                        //if (scissorsVelocity.currentX == 0) {
+                        scissorsVelocity.futureX = vel;
+                        scissorsVelocity.futureY = 0;
+                        //}
+                    } else {
+                        //if (scissorsVelocity.currentY == 0) {
+                        scissorsVelocity.futureX = 0;
+                        scissorsVelocity.futureY = -vel;
+                        //}
+                    }
+                } else if (scissorsPosition.x > paperPosition.x && scissorsPosition.y < paperPosition.y) {
+                    if (scissorsVelocity.lastMove) {
+                        //if (scissorsVelocity.currentX == 0) {
+                        scissorsVelocity.futureX = -vel;
+                        scissorsVelocity.futureY = 0;
+                        //}
+                    } else {
+                        //if (scissorsVelocity.currentY == 0) {
+                        scissorsVelocity.futureX = 0;
+                        scissorsVelocity.futureY = vel;
+                        //}
+                    }
+                } else if (scissorsPosition.x > paperPosition.x && scissorsPosition.y > paperPosition.y) {
+                    if (scissorsVelocity.lastMove) {
+                        //if (scissorsVelocity.currentX == 0) {
+                        scissorsVelocity.futureX = -vel;
+                        scissorsVelocity.futureY = 0;
+                        //}
+                    } else {
+                        //if (scissorsVelocity.currentY == 0) {
+                        scissorsVelocity.futureX = 0;
+                        scissorsVelocity.futureY = -vel;
+                        //}
+                    }
+                }
             }
         }
 
