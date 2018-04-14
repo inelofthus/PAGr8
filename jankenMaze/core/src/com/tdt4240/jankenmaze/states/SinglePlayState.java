@@ -18,13 +18,6 @@ public class SinglePlayState extends PlayState {
         entityManager.SP_createLocalPlayer(PlayerType.ROCK);
         entityManager.SP_createLocalBot(PlayerType.SCISSORS);
         entityManager.SP_createLocalBot(PlayerType.PAPER);
-        //The bots have to be instantiated before the health system is added to the engine, but
-        //since the health system is added to the engine when entityManager is instantiated, we
-        //have to instantiate entityManager again, lol.
-        //entityManager = new com.tdt4240.jankenmaze.gameecs.EntityManager(engine, batch, gameOverSignal);
-        //entityManager.createMap(binaryMap, new Texture("redAndWhiteWall.png"));
-        //entityManager.createHUDItem();
-        System.out.println("Created two bots in SinglePlayerState");
     }
 
     @Override

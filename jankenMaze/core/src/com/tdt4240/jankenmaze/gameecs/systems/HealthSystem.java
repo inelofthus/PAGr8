@@ -106,7 +106,6 @@ public class HealthSystem extends EntitySystem {
 
     @Override
     public void addedToEngine(Engine engine) {
-        System.out.println("Entered Added to engine in HealthSystem");
         //get localPLayer
         localPlayer = engine.getEntitiesFor(Family.all(com.tdt4240.jankenmaze.gameecs.components.LocalPlayer.class).get());
         //get all spawnPositions
@@ -138,7 +137,6 @@ public class HealthSystem extends EntitySystem {
         }
       // decreases Health when local player has been eaten.
         for (GameEvent event: collisionQueue.getEvents()){
-            System.out.println("GameEvent:" + event);
             if (event == GameEvent.PLAYER_COLLISION) { //Player gets killed by a remote paper
                 decreaseHealth(localPlayer.get(0),1);
             }

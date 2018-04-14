@@ -12,10 +12,6 @@ public class Velocity implements Component {
     public float futureX = 0;
     public float futureY = 0;
     public boolean lastMove = true; //Used to determine if it's time for the bot to update its future velocity.
-    public boolean canMoveUp = false;
-    public boolean canMoveDown = false;
-    public boolean canMoveLeft = false;
-    public boolean canMoveRight = false;
 
     public Velocity(float currentVelocityX, float currentVelocityY){
         this.currentX = currentVelocityX;

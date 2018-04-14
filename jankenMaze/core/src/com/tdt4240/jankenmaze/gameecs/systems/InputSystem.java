@@ -89,12 +89,6 @@ public class InputSystem extends EntitySystem{
         if (!GameSettings.getInstance().isMultiplayerGame) {
 
             if (paperVelocity.futureX == 0 && paperVelocity.futureY == 0) {
-                System.out.println("\nBefore input");
-                System.out.println("paperVelocity.currentX = " + paperVelocity.currentX);
-                System.out.println("paperVelocity.futureX = " + paperVelocity.futureX);
-                System.out.println("paperVelocity.currentY = " + paperVelocity.currentY);
-                System.out.println("paperVelocity.futureY = " + paperVelocity.futureY);
-                System.out.println("Last move = " + paperVelocity.lastMove);
                 if (paperVelocity.currentX == 0 && paperVelocity.lastMove) {
                     if (paperPosition.x < localPlayerPosition.x) {
                         paperVelocity.futureX = vel;
@@ -122,11 +116,6 @@ public class InputSystem extends EntitySystem{
             else {
                 paperVelocity.lastMove = true;
             }
-            System.out.println("paperVelocity.currentX = " + paperVelocity.currentX);
-            System.out.println("paperVelocity.futureX = " + paperVelocity.futureX);
-            System.out.println("paperVelocity.currentY = " + paperVelocity.currentY);
-            System.out.println("paperVelocity.futureY = " + paperVelocity.futureY);
-            System.out.println("Last move = " + paperVelocity.lastMove);
 
             if (scissorsVelocity.futureX == 0 && scissorsVelocity.futureY == 0) {
                 if (scissorsVelocity.currentX == 0 && scissorsVelocity.lastMove) {
