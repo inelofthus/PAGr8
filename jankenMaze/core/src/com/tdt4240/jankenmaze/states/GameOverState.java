@@ -2,23 +2,17 @@ package com.tdt4240.jankenmaze.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.tdt4240.jankenmaze.PlayServices.PlayServices;
 import com.tdt4240.jankenmaze.gameMessages.HealthMessage;
 import com.tdt4240.jankenmaze.gameMessages.MessageCodes;
-import com.tdt4240.jankenmaze.gameecs.components.Health;
 import com.tdt4240.jankenmaze.gameecs.components.PlayerNetworkData;
 import com.tdt4240.jankenmaze.gamesettings.GameSettings;
 import com.tdt4240.jankenmaze.gamesettings.Maps;
 import com.tdt4240.jankenmaze.view.GameOverView;
-import com.tdt4240.jankenmaze.view.YouWinView;
-
 import java.nio.ByteBuffer;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 /**
  * Created by bartosz on 4/7/18.
@@ -37,14 +31,7 @@ public class GameOverState extends State implements PlayServices.NetworkListener
         this.gameOverView = new GameOverView();
         gsm.playServices.setNetworkListener(this);
 
-        listenerBtn_playAgain = new ClickListener();
-        gameOverView.btn_playAgain.addListener(listenerBtn_playAgain);
-
-        listenerBtn_mainMenu = new ClickListener();
-        gameOverView.btn_toMainMenu.addListener(listenerBtn_mainMenu);
-
-        listenerBtn_quitGame = new ClickListener();
-        gameOverView.btn_quitGame.addListener(listenerBtn_quitGame);
+        addButtonListeners();
 
         gameOverView.setResultLabel(HealthMessage.getInstance().getResults());
 
@@ -55,31 +42,6 @@ public class GameOverState extends State implements PlayServices.NetworkListener
 
     @Override
     protected void handleInput() {
-        if (gameOverView.btn_playAgain.isPressed()){
-            Maps.getINSTANCE().increment();
-            if(GameSettings.getInstance().isMultplayerGame){
-                ByteBuffer buffer = ByteBuffer.allocate(1);
-                buffer.put(MessageCodes.PLAY_AGAIN);
-                gsm.playServices.sendReliableMessageToOthers(buffer.array());
-                gsm.set(new MultiPlayState(batch));
-            }else {
-                gsm.set(new SinglePlayState(batch));
-            }
-
-        }
-        if (gameOverView.btn_toMainMenu.isPressed()){
-            Maps.getINSTANCE().zeroMaps();
-            if(gsm.playServices.isSignedIn()){
-                gsm.set(new OnlineMenuState());
-            }else {
-                gsm.set(new OfflineMenuState());
-            }
-        }
-        if (gameOverView.btn_quitGame.isPressed()){
-            Gdx.app.exit();
-         }
-
-
     }
 
     @Override
@@ -87,7 +49,6 @@ public class GameOverState extends State implements PlayServices.NetworkListener
         if(Gdx.input.isTouched()){
             handleInput();
         }
-
     }
 
     @Override
@@ -97,7 +58,6 @@ public class GameOverState extends State implements PlayServices.NetworkListener
         sb.begin();
         gameOverView.render(batch);
         sb.end();
-
     }
 
     @Override
@@ -135,5 +95,42 @@ public class GameOverState extends State implements PlayServices.NetworkListener
     @Override
     public void onRoomReady(List<PlayerNetworkData> players) {
 
+    }
+
+    private void addButtonListeners(){
+
+        gameOverView.btn_playAgain.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Maps.getINSTANCE().increment();
+                if(GameSettings.getInstance().isMultplayerGame){
+                    ByteBuffer buffer = ByteBuffer.allocate(1);
+                    buffer.put(MessageCodes.PLAY_AGAIN);
+                    gsm.playServices.sendReliableMessageToOthers(buffer.array());
+                    gsm.set(new MultiPlayState(batch));
+                }else {
+                    gsm.set(new SinglePlayState(batch));
+                }
+            }
+        });
+
+        gameOverView.btn_toMainMenu.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Maps.getINSTANCE().zeroMaps();
+                if(gsm.playServices.isSignedIn()){
+                    gsm.set(new OnlineMenuState());
+                }else {
+                    gsm.set(new OfflineMenuState());
+                }
+            }
+        });
+
+        gameOverView.btn_quitGame.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.exit();
+            }
+        });
     }
 }

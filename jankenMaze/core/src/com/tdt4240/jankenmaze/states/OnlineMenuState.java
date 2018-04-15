@@ -20,6 +20,36 @@ public class OnlineMenuState extends State {
         gsm = GameStateManager.getGsm();
         this.onlineMenuView = new OnlineMenuView();
 
+        addButtonListener();
+
+        cam.setToOrtho(false);
+    }
+
+    @Override
+    protected void handleInput() {
+
+    }
+
+    @Override
+    public void update(float dt) {
+        handleInput();
+        if (!gsm.playServices.isSignedIn()){
+            gsm.set(new OfflineMenuState());
+        }
+    }
+
+    @Override
+    public void render(SpriteBatch sb) {
+        this.batch = sb;
+        onlineMenuView.render(sb);
+    }
+
+    @Override
+    public void dispose() {
+        onlineMenuView.dispose();
+    }
+
+    private void addButtonListener(){
         onlineMenuView.btn_invite.addListener( new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -50,31 +80,5 @@ public class OnlineMenuState extends State {
                 gsm.set(new TutorialState());
             };
         });
-
-        cam.setToOrtho(false);
-    }
-
-    @Override
-    protected void handleInput() {
-
-    }
-
-    @Override
-    public void update(float dt) {
-        handleInput();
-        if (!gsm.playServices.isSignedIn()){
-            gsm.set(new OfflineMenuState());
-        }
-    }
-
-    @Override
-    public void render(SpriteBatch sb) {
-        this.batch = sb;
-        onlineMenuView.render(sb);
-    }
-
-    @Override
-    public void dispose() {
-        onlineMenuView.dispose();
     }
 }

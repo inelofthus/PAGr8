@@ -36,8 +36,6 @@ public class YouLoseView extends GameOverView {
 
         //table.debug();
         super.stage.addActor(table);
-
-
     }
 
     @Override

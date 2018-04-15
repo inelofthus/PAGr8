@@ -45,17 +45,6 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
     @Override
     protected void handleInput() {
         super.handleInput();
-        if (Gdx.input.isTouched()){
-
-           /* // will send a byte code for touched
-            ByteBuffer buffer = ByteBuffer.allocate(2 * 4 + 1);
-            int x = 1;
-            int y = 2;
-            buffer.put(POSITION);
-            buffer.putInt(x);
-            buffer.putInt(y);
-            gsm.playServices.sendUnreliableMessageToOthers(buffer.array());*/
-        }
     }
 
     @Override

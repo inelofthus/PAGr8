@@ -38,8 +38,6 @@ public class YouWinView extends GameOverView {
         //table.debug();
         super.stage.addActor(table);
 
-
-
     }
 
     @Override
@@ -55,5 +53,8 @@ public class YouWinView extends GameOverView {
     @Override
     public void dispose() {
         super.dispose();
+        font.dispose();
+        heading1.remove();
+        table.remove();
     }
 }
