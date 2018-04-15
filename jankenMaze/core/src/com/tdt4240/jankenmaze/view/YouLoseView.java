@@ -11,11 +11,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
  * Created by bartosz on 4/9/18.
  */
 
-public class YouLooseView extends GameOverView {
+public class YouLoseView extends GameOverView {
     private Label heading1;
     private BitmapFont font;
     private Table table;
-    public  YouLooseView(){
+    public YouLoseView(){
         super();
         font = new BitmapFont();
         table = new Table(super.skin);
