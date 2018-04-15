@@ -34,7 +34,6 @@ public class PlayState extends State {
         this.gameOverSignal.add(gameOverQueue);
         entityManager = new com.tdt4240.jankenmaze.gameecs.EntityManager(engine, batch, gameOverSignal);
         entityManager.createMap(Maps.getINSTANCE().getMap(), new Texture("redAndWhiteWall.png"));
-        entityManager.createHUDItem();
     }
     @Override
     protected void handleInput() {

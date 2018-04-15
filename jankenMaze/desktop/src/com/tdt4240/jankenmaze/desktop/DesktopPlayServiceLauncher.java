@@ -49,8 +49,4 @@ public class DesktopPlayServiceLauncher implements PlayServices {
 
     }
 
-    @Override
-    public void sendReliableMessageTo(String participantId, byte[] messageData) {
-
-    }
 }
