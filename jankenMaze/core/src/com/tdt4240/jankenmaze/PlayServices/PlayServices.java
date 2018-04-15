@@ -18,6 +18,7 @@ public interface PlayServices {
     void setNetworkListener(NetworkListener networkListener);
     void sendUnreliableMessageToOthers(byte[] messageData);
     void sendReliableMessageToOthers(byte[] messageData);
+    void sendReliableMessageTo(String participantId, byte[] messageData);
 
     interface NetworkListener{
         void onReliableMessageReceived(String senderParticipantId, int describeContents, byte[] messageData);
