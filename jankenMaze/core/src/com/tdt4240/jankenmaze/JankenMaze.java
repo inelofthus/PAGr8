@@ -27,8 +27,6 @@ public class JankenMaze extends ApplicationAdapter implements PlayServices.GameL
 	GameStateManager gsm;
 	//SocketConnection socket = SocketConnection.getSocketConnection();
 	PlayServices playServices;
-	PlayState multiPlayState;
-
 
 	//Constructor for the android app
 	public JankenMaze(PlayServices playServices) {
@@ -53,7 +51,6 @@ public class JankenMaze extends ApplicationAdapter implements PlayServices.GameL
 		gsm = GameStateManager.getGsm();
 		gsm.setPlayServices(playServices);
 		playServices.setGameListener(this);
-		this.multiPlayState = new MultiPlayState(batch);
 		if (playServices.isSignedIn()){
 			gsm.push(new OnlineMenuState());
 		}else {
@@ -83,7 +80,7 @@ public class JankenMaze extends ApplicationAdapter implements PlayServices.GameL
 	public void onMultiplayerGameStarting() {
 		System.out.println("JankenMaze: onMultiplayerGameStarting");
 
-		gsm.push(multiPlayState);
+		gsm.push(new MultiPlayState(batch));
 	}
 
 	@Override
