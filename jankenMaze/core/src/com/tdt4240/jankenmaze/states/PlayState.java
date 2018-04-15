@@ -3,6 +3,12 @@ package com.tdt4240.jankenmaze.states;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.ashley.signals.Signal;
+import com.tdt4240.jankenmaze.gameecs.events.EventQueue;
+import com.tdt4240.jankenmaze.gameecs.events.GameEvent;
+import com.tdt4240.jankenmaze.gamesettings.GameSettings;
+import com.tdt4240.jankenmaze.gamesettings.Maps;
+import com.tdt4240.jankenmaze.gamesettings.PlayerType;
 
 /**
  * Created by jonas on 07/03/2018.
@@ -14,33 +20,22 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class PlayState extends State {
     Engine engine;
+    protected Signal<GameEvent> gameOverSignal;
+    protected EventQueue gameOverQueue;
     com.tdt4240.jankenmaze.gameecs.EntityManager entityManager;
-    int[][] binaryMap = {{1 ,1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1 ,1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}}; //Map is instatiated from a binary matrix (A list of columns)
+    SpriteBatch batch;
 
     public PlayState(SpriteBatch batch){
         super();
+        this.batch = batch;
         engine = new Engine();
-        entityManager = new com.tdt4240.jankenmaze.gameecs.EntityManager(engine, batch);
-        entityManager.createMap(binaryMap, new Texture("greyWall.png"));
+        gameOverSignal= new Signal<GameEvent>();
+        gameOverQueue= new EventQueue();
+        this.gameOverSignal.add(gameOverQueue);
+        entityManager = new com.tdt4240.jankenmaze.gameecs.EntityManager(engine, batch, gameOverSignal);
+        entityManager.createMap(Maps.getINSTANCE().getMap(), new Texture("redAndWhiteWall.png"));
+        //entityManager.createPlayer(PlayerType.SCISSORS);
+        entityManager.createHUDItem();
     }
     @Override
     protected void handleInput() {
@@ -49,7 +44,11 @@ public class PlayState extends State {
 
     @Override
     public void update(float dt) {
+        handleInput();
         entityManager.update();
+
+
+
     }
 
     @Override
@@ -61,4 +60,6 @@ public class PlayState extends State {
     public void dispose() {
 
     }
+
+
 }

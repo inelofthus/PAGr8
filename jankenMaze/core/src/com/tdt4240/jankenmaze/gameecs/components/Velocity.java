@@ -7,11 +7,15 @@ import com.badlogic.ashley.core.Component;
  */
 
 public class Velocity implements Component {
-    public float x = 0;
-    public float y = 0;
+    public float currentX = 0;
+    public float currentY = 0;
+    public float futureX = 0;
+    public float futureY = 0;
 
-    public Velocity(float x, float y){
-        this.x = x;
-        this.y = y;
+    public Velocity(float currentVelocityX, float currentVelocityY){
+        this.currentX = currentVelocityX;
+        this.currentY = currentVelocityY;
+        this.futureX = 0;
+        this.futureY = 0;
     }
 }
