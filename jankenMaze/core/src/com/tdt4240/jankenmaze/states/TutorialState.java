@@ -15,15 +15,8 @@ import com.tdt4240.jankenmaze.gamesettings.GameSettings;
  */
 
 public class TutorialState extends State {
-    Viewport viewport;
     Stage stage;
-    public TutorialState() {
-        GameSettings gameSettings = GameSettings.getInstance();
-        int gameWidth = gameSettings.viewPortWidth;
-        int gameHeight = gameSettings.viewPortHeight;
-        viewport = new FitViewport(gameWidth, gameHeight);
-        viewport.setScreenBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        viewport.apply();
+    public TutorialState() {;
         stage = new Stage(viewport);
         Gdx.input.setInputProcessor(stage);
 
@@ -38,7 +31,6 @@ public class TutorialState extends State {
     @Override
     public void update(float dt) {
         if(Gdx.input.justTouched()){
-            System.out.println("Pop it like a zit");
             gsm.set(new OnlineMenuState());
         }
     }
@@ -54,6 +46,6 @@ public class TutorialState extends State {
 
     @Override
     public void dispose() {
-
+        stage.dispose();
     }
 }
