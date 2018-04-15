@@ -16,7 +16,14 @@ import com.tdt4240.jankenmaze.gamesettings.GameSettings;
 
 public class TutorialState extends State {
     Stage stage;
-    public TutorialState() {;
+    public TutorialState() {
+        GameSettings gameSettings = GameSettings.getInstance();
+        int gameWidth = gameSettings.viewPortWidth;
+        int gameHeight = gameSettings.viewPortHeight;
+        FitViewport viewport = new FitViewport(gameWidth, gameHeight);
+        viewport.setScreenBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        viewport.apply();
+
         stage = new Stage(viewport);
         Gdx.input.setInputProcessor(stage);
 

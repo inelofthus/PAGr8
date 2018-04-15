@@ -7,20 +7,15 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
-import com.tdt4240.jankenmaze.gamesettings.GameSettings;
 
 /**
  * Created by karim on 09/04/2018.
  */
 
 public abstract class MenuView extends View {
-    Viewport viewport;
     TextButton.TextButtonStyle textButtonStyle;
     protected Stage stage;
     protected TextureAtlas atlas;
@@ -30,12 +25,6 @@ public abstract class MenuView extends View {
 
 
     public MenuView() {
-        GameSettings gameSettings = GameSettings.getInstance();
-        int gameWidth = gameSettings.viewPortWidth;
-        int gameHeight = gameSettings.viewPortHeight;
-        viewport = new FitViewport(gameWidth, gameHeight);
-        viewport.setScreenBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        viewport.apply();
         stage = new Stage(viewport);
         Gdx.input.setInputProcessor(stage);
 
