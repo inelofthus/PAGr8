@@ -20,8 +20,6 @@ public class OfflineMenuState extends State {
         this.offlineMenuView = new OfflineMenuView();
 
         addButtonListeners();
-
-        cam.setToOrtho(false);
     }
 
     @Override
