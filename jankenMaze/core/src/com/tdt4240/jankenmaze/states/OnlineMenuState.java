@@ -30,8 +30,6 @@ public class OnlineMenuState extends State {
         this.onlineMenuView = new OnlineMenuView();
 
         addButtonListener();
-
-        cam.setToOrtho(false);
     }
 
     @Override
@@ -89,6 +87,5 @@ public class OnlineMenuState extends State {
                 gsm.set(new TutorialState());
             };
         });
-        cam.setToOrtho(false);
     }
 }

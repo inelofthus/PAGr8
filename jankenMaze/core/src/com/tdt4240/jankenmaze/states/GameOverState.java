@@ -34,8 +34,6 @@ public class GameOverState extends State implements PlayServices.NetworkListener
         addButtonListeners();
 
         gameOverView.setResultLabel(HealthMessage.getInstance().getResults());
-
-        cam.setToOrtho(false);
     }
 
     @Override
@@ -52,10 +50,7 @@ public class GameOverState extends State implements PlayServices.NetworkListener
     @Override
     public void render(SpriteBatch sb) {
         this.batch = sb;
-        sb.setProjectionMatrix(cam.combined);
-        sb.begin();
         gameOverView.render(batch);
-        sb.end();
     }
 
     @Override
