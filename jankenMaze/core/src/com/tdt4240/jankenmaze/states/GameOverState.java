@@ -4,14 +4,21 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.tdt4240.jankenmaze.PlayServices.PlayServices;
+import com.tdt4240.jankenmaze.gameMessages.HealthMessage;
 import com.tdt4240.jankenmaze.gameMessages.MessageCodes;
+import com.tdt4240.jankenmaze.gameecs.components.Health;
 import com.tdt4240.jankenmaze.gameecs.components.PlayerNetworkData;
 import com.tdt4240.jankenmaze.gamesettings.GameSettings;
+import com.tdt4240.jankenmaze.gamesettings.Maps;
 import com.tdt4240.jankenmaze.view.GameOverView;
 import com.tdt4240.jankenmaze.view.YouWinView;
 
 import java.nio.ByteBuffer;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  * Created by bartosz on 4/7/18.
@@ -27,7 +34,7 @@ public class GameOverState extends State implements PlayServices.NetworkListener
     public GameOverState(){
         super();
 
-        this.gameOverView = new YouWinView();
+        this.gameOverView = new GameOverView();
         gsm.playServices.setNetworkListener(this);
 
         listenerBtn_playAgain = new ClickListener();
@@ -39,6 +46,7 @@ public class GameOverState extends State implements PlayServices.NetworkListener
         listenerBtn_quitGame = new ClickListener();
         gameOverView.btn_quitGame.addListener(listenerBtn_quitGame);
 
+        gameOverView.setResultLabel(HealthMessage.getInstance().getResults());
 
         cam.setToOrtho(false);
 
@@ -48,21 +56,23 @@ public class GameOverState extends State implements PlayServices.NetworkListener
     @Override
     protected void handleInput() {
         if (gameOverView.btn_playAgain.isPressed()){
-            if(GameSettings.getInstance().isMultiplayerGame){
+            Maps.getINSTANCE().increment();
+            if(GameSettings.getInstance().isMultplayerGame){
                 ByteBuffer buffer = ByteBuffer.allocate(1);
                 buffer.put(MessageCodes.PLAY_AGAIN);
                 gsm.playServices.sendReliableMessageToOthers(buffer.array());
-                gsm.push(new MultiPlayState(batch));
+                gsm.set(new MultiPlayState(batch));
             }else {
-                gsm.push(new SinglePlayState(batch));
+                gsm.set(new SinglePlayState(batch));
             }
 
         }
         if (gameOverView.btn_toMainMenu.isPressed()){
+            Maps.getINSTANCE().zeroMaps();
             if(gsm.playServices.isSignedIn()){
-                gsm.push(new OnlineMenuState());
+                gsm.set(new OnlineMenuState());
             }else {
-                gsm.push(new OfflineMenuState());
+                gsm.set(new OfflineMenuState());
             }
         }
         if (gameOverView.btn_quitGame.isPressed()){
@@ -92,7 +102,7 @@ public class GameOverState extends State implements PlayServices.NetworkListener
 
     @Override
     public void dispose() {
-
+        gameOverView.dispose();
     }
 
     @Override
@@ -104,10 +114,11 @@ public class GameOverState extends State implements PlayServices.NetworkListener
 
         switch (messageType){
             case MessageCodes.PLAY_AGAIN:
+                Maps.getINSTANCE().increment();
                 System.out.println("PLAY AGAIN MESSAGE RECEIVED");
                 Gdx.app.postRunnable(new Runnable() {
                     @Override
-                    public void run() {gsm.push(new MultiPlayState(batch));
+                    public void run() {gsm.set(new MultiPlayState(batch));
                     }
                 });
 

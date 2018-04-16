@@ -1,11 +1,16 @@
 package com.tdt4240.jankenmaze.states;
 
+import com.badlogic.ashley.core.ComponentMapper;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.tdt4240.jankenmaze.gameMessages.HealthMessage;
 import com.tdt4240.jankenmaze.gameMessages.MessageCodes;
 import com.tdt4240.jankenmaze.gameMessages.PositionMessage;
 import com.tdt4240.jankenmaze.gameecs.components.Health;
+import com.tdt4240.jankenmaze.gameecs.components.PlayerInfo;
 import com.tdt4240.jankenmaze.gameecs.components.Position;
 import com.tdt4240.jankenmaze.gameecs.events.GameEvent;
 import com.tdt4240.jankenmaze.gamesettings.GameSettings;
@@ -62,7 +67,8 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
             ByteBuffer buffer = ByteBuffer.allocate(1);
             buffer.put(MessageCodes.GAME_OVER);
             gsm.playServices.sendReliableMessageToOthers(buffer.array());
-            gsm.push(new GameOverState());
+            HealthMessage.getInstance().gameOver(engine);
+            gsm.set(new GameOverState());
         }
 
         handleInput();
@@ -91,10 +97,11 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
 
             case MessageCodes.GAME_OVER:
                 System.out.println("GAME OVER MESSAGE RECEIVED");
+                HealthMessage.getInstance().gameOver(engine);
                 Gdx.app.postRunnable(new Runnable() {
                     @Override
                     public void run() {
-                        gsm.push(new GameOverState());
+                        gsm.set(new GameOverState());
                     }
                 });
 
@@ -103,7 +110,7 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
                 System.out.println("HEALTH MESSAGE RECEIVED");
                 int hp = buffer.getInt();
                 if (! (GameSettings.getInstance().getPlayers() == null)){
-                    HealthMessage.getInstance().updateRemotePlayerHealth(senderParticipantId, new Health(hp));
+                    HealthMessage.getInstance().updatePlayerHealth(senderParticipantId, new Health(hp));
                     HealthMessage.getInstance().hasChanged = true;
                 }
 
@@ -133,7 +140,7 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
                 Gdx.app.postRunnable(new Runnable() {
                     @Override
                     public void run() {
-                        gsm.push(new GameOverState());
+                        gsm.set(new GameOverState());
                     }
                 });
 

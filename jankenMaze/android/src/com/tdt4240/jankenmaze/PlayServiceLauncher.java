@@ -169,7 +169,7 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
         }
 
         Games.RealTimeMultiplayer.sendUnreliableMessageToOthers(gameHelper.getApiClient(), messageData, currentRoomId);
-        Log.d(TAG, "sendUnreliableMessageToOthers: ");
+       // Log.d(TAG, "sendUnreliableMessageToOthers: ");
 
     }
 

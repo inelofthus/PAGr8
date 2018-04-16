@@ -2,6 +2,7 @@ package com.tdt4240.jankenmaze.gameecs.systems;
 
 import com.badlogic.ashley.signals.Signal;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Rectangle;
 import com.tdt4240.jankenmaze.gameecs.components.*;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Engine;
@@ -51,17 +52,11 @@ public class InputSystem extends EntitySystem{
         if (!GameSettings.getInstance().isMultiplayerGame) {
             vel = 100;
         }
-
     }
 
     public void addedToEngine(Engine engine){
         entities = engine.getEntitiesFor(Family.all(LocalPlayer.class).get());
         bots = engine.getEntitiesFor(Family.all(Bot.class).get());
-    }
-
-    public boolean canPerformMove(Entity player, int xMove, int yMove) {
-
-        return true; //TODO Check whether a collision occures with a given move.
     }
 
     public void update(float dt){
@@ -206,32 +201,46 @@ public class InputSystem extends EntitySystem{
 
         if(Gdx.input.isTouched()) {
             Velocity velocity = velocityMapper.get(entities.get(0));
-            if (pointInTriangle(touchX, touchY, maxX, 0, centerX, centerY, 0, 0)) {
+
+            if (pointInRectangle(touchX, touchY, upRectangle)) {
                 //player moves up,
-                if (velocity.currentY != vel) {
+                if (velocity.currentY != SPEED) {
                     velocity.futureX = 0;
-                    velocity.futureY = vel;
+                    velocity.futureY = SPEED;
                 }
-            } else if (pointInTriangle(touchX, touchY, maxX, maxY, centerX, centerY, maxX, 0)) {
+            } else if (pointInRectangle(touchX, touchY, rightRectangle)) {
                 //player moves right
-                if (velocity.currentX != vel) {
-                    velocity.futureX = vel;
+                if (velocity.currentX != SPEED) {
+                    velocity.futureX = SPEED;
                     velocity.futureY = 0;
                 }
-            } else if (pointInTriangle(touchX, touchY, 0, maxY, centerX, centerY, maxX, maxY)) {
+            } else if (pointInRectangle(touchX, touchY, downRectangle)) {
                 //player moves down
-                if (velocity.currentY != -vel) {
+                if (velocity.currentY != -SPEED) {
                     velocity.futureX = 0;
-                    velocity.futureY = -vel;
+                    velocity.futureY = -SPEED;
                 }
-            } else if (pointInTriangle(touchX, touchY, 0, 0, centerX, centerY, 0, maxY)) {
+            } else if (pointInRectangle(touchX, touchY, leftRectangle)) {
                 //player moves to the left
-                if (velocity.currentX != -vel) {
-                    velocity.futureX = -vel;
+                if (velocity.currentX != -SPEED) {
+                    velocity.futureX = -SPEED;
                     velocity.futureY = 0;
                 }
             }
         }
+    }
+
+    private boolean pointInRectangle(float pointX, float pointY, Rectangle rectangle){
+        return rectangle.contains(pointX, pointY);
+    }
+
+    private void initializeInputGrid(float gameWidth, float gameHeight){
+        float rectangleHeight = gameHeight / 3; //Grid is divided into 3 rectangles vertically
+        float leftRightRectangleWidth = gameWidth / 3;
+        this.upRectangle = new Rectangle(0, 0, gameWidth, rectangleHeight);
+        this.downRectangle = new Rectangle(0, rectangleHeight * 2, gameWidth, rectangleHeight);
+        this.leftRectangle = new Rectangle(0, rectangleHeight, leftRightRectangleWidth, rectangleHeight);
+        this.rightRectangle = new Rectangle(gameWidth - leftRightRectangleWidth, rectangleHeight, leftRightRectangleWidth, rectangleHeight);
     }
 
     /*
@@ -239,14 +248,12 @@ public class InputSystem extends EntitySystem{
     * Input-coords for triangle must be given counter-clockwise.
     * See https://stackoverflow.com/questions/2049582/how-to-determine-if-a-point-is-in-a-2d-triangle (andreasdr)
     */
-    private boolean pointInTriangle(
-            float pointX, float pointY, float t0x, float t0y, float t1x, float t1y, float t2x, float t2y){
-
+    @Deprecated
+    private boolean pointInTriangle(float pointX, float pointY, float t0x, float t0y, float t1x, float t1y, float t2x, float t2y){
         float area = (float) (0.5 *(-t1y*t2x + t0y*(-t1x + t2x) + t0x*(t1y - t2y) + t1x*t2y));
         area = area > 0 ? area : area*-1; //Formula above may sometimes make the area (correct absolute value). This ensures a positive area.
         float s = 1/(2*area)*(t0y*t2x - t0x*t2y + (t2y - t0y)*pointX + (t0x - t2x)*pointY);
         float t = 1/(2*area)*(t0x*t1y - t0y*t1x + (t0y - t1y)*pointX + (t1x - t0x)*pointY);
-
 
         return (s>0 && t>0 && 1-s-t>0);
     }

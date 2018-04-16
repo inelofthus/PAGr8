@@ -29,7 +29,7 @@ public class SinglePlayState extends PlayState {
     public void update(float dt) {
         super.update(dt);
         for(GameEvent gameOver: gameOverQueue.getEvents()){
-            gsm.push(new GameOverState());
+            gsm.set(new GameOverState());
         }
     }
 
