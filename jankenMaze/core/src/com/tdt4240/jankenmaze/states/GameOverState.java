@@ -121,7 +121,11 @@ public class GameOverState extends State implements PlayServices.NetworkListener
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Maps.getINSTANCE().zeroMaps();
-                if(gsm.playServices.isSignedIn()){
+                if(GameSettings.getInstance().isMultplayerGame){
+                    ByteBuffer buffer = ByteBuffer.allocate(1);
+                    buffer.put(MessageCodes.QUIT);
+                    gsm.playServices.sendReliableMessageToOthers(buffer.array());
+                    gsm.playServices.leaveRoom();
                     gsm.set(new OnlineMenuState());
                 }else {
                     gsm.set(new OfflineMenuState());
@@ -132,6 +136,12 @@ public class GameOverState extends State implements PlayServices.NetworkListener
         gameOverView.btn_quitGame.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                if(GameSettings.getInstance().isMultplayerGame){
+                    ByteBuffer buffer = ByteBuffer.allocate(1);
+                    buffer.put(MessageCodes.QUIT);
+                    gsm.playServices.sendReliableMessageToOthers(buffer.array());
+                    gsm.playServices.leaveRoom();
+                }
                 Gdx.app.exit();
             }
         });
