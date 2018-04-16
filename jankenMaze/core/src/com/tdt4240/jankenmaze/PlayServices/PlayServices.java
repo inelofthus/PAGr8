@@ -9,25 +9,25 @@ import java.util.List;
  */
 
 public interface PlayServices {
-    public void signIn();
-    public void signOut();
-    public boolean isSignedIn();
+    void signIn();
+    void signOut();
+    boolean isSignedIn();
 
-    public void startSelectOpponents(boolean autoMatch);
+    void startSelectOpponents(boolean autoMatch);
     void setGameListener(GameListener gameListener);
-    public void setNetworkListener(NetworkListener networkListener);
+    void setNetworkListener(NetworkListener networkListener);
     void sendUnreliableMessageToOthers(byte[] messageData);
     void sendReliableMessageToOthers(byte[] messageData);
     void sendReliableMessageTo(String participantId, byte[] messageData);
     void leaveRoom();
 
-    public interface NetworkListener{
+    interface NetworkListener{
         void onReliableMessageReceived(String senderParticipantId, int describeContents, byte[] messageData);
         void onUnreliableMessageReceived(String senderParticipantId, int describeContents, byte[] messageData);
         void onRoomReady(List<PlayerNetworkData> players);
     }
 
-    public interface GameListener{
+    interface GameListener{
         void onMultiplayerGameStarting();
         void onDisconnectedFromRoom();
         void resetGameVariables();

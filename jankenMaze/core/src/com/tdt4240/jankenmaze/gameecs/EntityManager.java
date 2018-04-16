@@ -6,17 +6,10 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.signals.Signal;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.tdt4240.jankenmaze.PlayServices.PlayServices;
-import com.tdt4240.jankenmaze.gameecs.components.LocalPlayer;
 import com.tdt4240.jankenmaze.gameecs.components.PlayerNetworkData;
-import com.tdt4240.jankenmaze.gameecs.components.Position;
-import com.tdt4240.jankenmaze.gameecs.components.PowerUpInfo;
-import com.tdt4240.jankenmaze.gameecs.components.Renderable;
-import com.tdt4240.jankenmaze.gameecs.components.SpriteComponent;
-import com.tdt4240.jankenmaze.gameecs.components.Velocity;
 import com.tdt4240.jankenmaze.gameecs.components.Unoccupied;
 import com.tdt4240.jankenmaze.gameecs.events.GameVariable;
 
@@ -28,15 +21,11 @@ import com.tdt4240.jankenmaze.gameecs.systems.HealthBroadcastSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.HealthSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.InputSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.MovementSystem;
-import com.tdt4240.jankenmaze.gameecs.systems.EntityFactory;
 import com.tdt4240.jankenmaze.gameecs.systems.PositionBroadcastSystem;
-import com.tdt4240.jankenmaze.gameecs.systems.ReceiveSignalSystemExample;
-import com.tdt4240.jankenmaze.gameecs.systems.SendSignalSystemExample;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.tdt4240.jankenmaze.gamesettings.PlayerType;
 import com.tdt4240.jankenmaze.gamesettings.PlayerTypes;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -63,7 +52,6 @@ import java.util.Random;
 public class EntityManager {
     private Engine engine;
     SpriteBatch batch;
-    OrthographicCamera cam;
     InputSystem inputSystem;
     public EntityFactory entityFactory;
     private Signal<GameEvent> gameEventSignal;
@@ -108,17 +96,6 @@ public class EntityManager {
         engine.addEntity(
                 entityFactory.createLocalPlayer(type, playerPosition.x, playerPosition.y, 3, playerTextureMap.get(type), networkData)
         );
-    }
-
-    public void createHUDItem() {
-       // engine.addEntity(
-        //        entityFactory.createHUDItem(100, 100, new Texture("button.png"), "playerHealth")
-        //);
-        //engine.addEntity(
-        //        entityFactory.createWall(200, 200, new Texture("testWall.png")
-        //        ));
-
-
     }
 
     //Returns a random spawnposition Entity.
@@ -170,11 +147,6 @@ public class EntityManager {
 
         HealthSystem hs=new HealthSystem(playerCollisionSignal, gameOverSignal, decreaseHealthSignal);
         engine.addSystem(hs);
-
-        SendSignalSystemExample sendEx = new SendSignalSystemExample(gameEventSignal);
-        engine.addSystem(sendEx);
-        ReceiveSignalSystemExample recEx = new ReceiveSignalSystemExample(gameEventSignal);
-        engine.addSystem(recEx);
     }
 
     public void addMPSystemsToEngine(PlayServices playServices){
