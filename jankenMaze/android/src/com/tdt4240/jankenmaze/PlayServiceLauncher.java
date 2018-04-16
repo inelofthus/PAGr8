@@ -42,8 +42,8 @@ import static com.google.android.gms.games.GamesActivityResultCodes.RESULT_LEFT_
 public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, RoomStatusUpdateListener, RealTimeMessageReceivedListener, OnInvitationReceivedListener {
 
     private final static int requestCode = 1;
-    private static final int MIN_PLAYERS = 1;
-    private static final int MAX_PLAYERS = 7;
+    private static final int MIN_INVITED_PLAYERS = 2;
+    private static final int MAX_INVITED_PLAYERS = 7;
     private static final int RC_SELECT_PLAYERS = 10000;
     private final static int RC_WAITING_ROOM = 10002;
     private static final String TAG = "PlayServiceLauncher";
@@ -55,6 +55,7 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
     private NetworkListener networkListener;
     private String incomingInvitationId;
     private RealTimeMultiplayer.ReliableMessageSentCallback reliableMessageSentCallback = null;
+    private RoomConfig currentRoomConfig;
 
     public PlayServiceLauncher(AndroidLauncher activity) {
         this.activity = activity;
@@ -86,7 +87,8 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
                 .setMessageReceivedListener(this)
                 .setRoomStatusUpdateListener(this);
         keepScreenOn();
-        Games.RealTimeMultiplayer.join(gameHelper.getApiClient(), roomConfigBuilder.build());
+        this.currentRoomConfig = roomConfigBuilder.build();
+        Games.RealTimeMultiplayer.join(gameHelper.getApiClient(), currentRoomConfig);
     }
 
 
@@ -138,7 +140,8 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
 
     @Override
     public void startSelectOpponents(boolean autoMatch) {
-        Intent intent = Games.RealTimeMultiplayer.getSelectOpponentsIntent(gameHelper.getApiClient(), MIN_PLAYERS, MAX_PLAYERS, autoMatch);
+        Intent intent = Games.RealTimeMultiplayer.getSelectOpponentsIntent(gameHelper.getApiClient(), MIN_INVITED_PLAYERS, MAX_INVITED_PLAYERS, autoMatch);
+        gameListener.resetGameVariables();
         activity.startActivityForResult(intent, RC_SELECT_PLAYERS);
     }
 
@@ -158,10 +161,7 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
     public void sendUnreliableMessageToOthers(byte[] messageData) {
         if (currentRoomId == null){
             System.out.println("RoomID is null!");
-            if (! (GameSettings.getInstance().roomID == null)){
-                System.out.println("Setting RoomId:" + GameSettings.getInstance().roomID);
-                currentRoomId = GameSettings.getInstance().roomID;
-            }
+            return;
         }
         if (!gameHelper.isSignedIn()){
             System.out.println("not signed in");
@@ -169,8 +169,6 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
         }
 
         Games.RealTimeMultiplayer.sendUnreliableMessageToOthers(gameHelper.getApiClient(), messageData, currentRoomId);
-       // Log.d(TAG, "sendUnreliableMessageToOthers: ");
-
     }
 
     @Override
@@ -232,12 +230,32 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
         Log.d(TAG, "sendReliableMessageTo: ");
         }
 
+    @Override
+    public void leaveRoom() {
+        Log.d(TAG, "leaveRoom:  ");
+        if (currentRoomConfig == null){
+            Log.d(TAG, "leaveRoom: roomConfig is null ");
+            return;
+        }
+        if (currentRoomId == null){
+            Log.d(TAG, "leaveRoom: roomID is null ");
+            return;
+        }
+
+        int numPlayers = MIN_INVITED_PLAYERS + 1;
+        Games.RealTimeMultiplayer.leave(gameHelper.getApiClient(), this, String.valueOf(numPlayers));
+        currentRoomId = null;
+        currentRoomConfig = null;
+    }
+
 
     public void onStart() {
+        Log.d(TAG, "onStart: ");
         gameHelper.onStart(activity);
     }
 
     public void onStop() {
+        Log.d(TAG, "onStop: ");
         gameHelper.onStop();
     }
 
@@ -327,6 +345,7 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
         keepScreenOn();
         Games.RealTimeMultiplayer.create(gameHelper.getApiClient(), rtmConfigBuilder.build());
         Log.d(TAG, "Room created, waiting for it to be ready...");
+        this.currentRoomConfig = rtmConfigBuilder.build();
     }
 
     //Sets flag to keep screen on. Important during game setup so game is not cancelled
@@ -371,6 +390,13 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
 
     @Override
     public void onLeftRoom(int i, String s) {
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                gameListener.onDisconnectedFromRoom();
+            }
+        });
+
         Log.d(TAG, "onLeftRoom: ");
     }
 
@@ -449,6 +475,7 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
 
     @Override
     public void onPeerLeft(Room room, List<String> list) {
+        leaveRoom();
         Log.d(TAG, "onPeerLeft");
     }
 
@@ -461,8 +488,15 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
 
     @Override
     public void onDisconnectedFromRoom(Room room) {
-        Log.d(TAG, "onDisconnectedFromRoom: ");
         stopKeepingScreenOn();
+        Log.d(TAG, "onDisconnectedFromRoom: ");
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                gameListener.onDisconnectedFromRoom();
+            }
+        });
+
         currentRoomId = null;
     }
 
@@ -473,6 +507,7 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
 
     @Override
     public void onPeersDisconnected(Room room, List<String> list) {
+        leaveRoom();
         Log.d(TAG, "onPeersDisconnected");
     }
 
@@ -497,18 +532,24 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
     ////////////////RealTimeMessageReceivedListener/////////////////////////
     @Override
     public void onRealTimeMessageReceived(RealTimeMessage realTimeMessage) {
-        if (networkListener == null) {
-            Gdx.app.debug(TAG, "onRealTimeMessageReceived: NetworkListener is null");
-            return;
+        try {
+            if (networkListener == null) {
+                Gdx.app.debug(TAG, "onRealTimeMessageReceived: NetworkListener is null");
+                return;
+            }
+            byte[] messageData = realTimeMessage.getMessageData();
+            String senderParticipantId = realTimeMessage.getSenderParticipantId();
+            int describeContents = realTimeMessage.describeContents();
+            if (realTimeMessage.isReliable()) {
+                networkListener.onReliableMessageReceived(senderParticipantId, describeContents, messageData);
+            } else {
+                networkListener.onUnreliableMessageReceived(senderParticipantId, describeContents, messageData);
+            }
+        }catch (Exception e){
+            System.out.println("PlayServiceLauncher: ErrorOnRealTimeMessage");
         }
-        byte[] messageData = realTimeMessage.getMessageData();
-        String senderParticipantId = realTimeMessage.getSenderParticipantId();
-        int describeContents = realTimeMessage.describeContents();
-        if (realTimeMessage.isReliable()) {
-            networkListener.onReliableMessageReceived(senderParticipantId, describeContents, messageData);
-        } else {
-            networkListener.onUnreliableMessageReceived(senderParticipantId, describeContents, messageData);
-        }
+
+
     }
 
     ////////////////END RealTimeMessageReceivedListener/////////////////////////

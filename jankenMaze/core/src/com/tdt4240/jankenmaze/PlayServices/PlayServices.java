@@ -19,6 +19,7 @@ public interface PlayServices {
     void sendUnreliableMessageToOthers(byte[] messageData);
     void sendReliableMessageToOthers(byte[] messageData);
     void sendReliableMessageTo(String participantId, byte[] messageData);
+    void leaveRoom();
 
     public interface NetworkListener{
         void onReliableMessageReceived(String senderParticipantId, int describeContents, byte[] messageData);
@@ -28,6 +29,8 @@ public interface PlayServices {
 
     public interface GameListener{
         void onMultiplayerGameStarting();
+        void onDisconnectedFromRoom();
+        void resetGameVariables();
     }
 
 }
