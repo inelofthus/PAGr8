@@ -55,7 +55,7 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
     private NetworkListener networkListener;
     private String incomingInvitationId;
     private RealTimeMultiplayer.ReliableMessageSentCallback reliableMessageSentCallback = null;
-    private RoomConfig currentRoomConfig = null;
+    private RoomConfig currentRoomConfig;
 
     public PlayServiceLauncher(AndroidLauncher activity) {
         this.activity = activity;
@@ -242,8 +242,8 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
             return;
         }
 
-        Games.RealTimeMultiplayer.leave(gameHelper.getApiClient(), this, "3");
-        //Games.getRealTimeMultiplayerClient(activity, GoogleSignIn.getLastSignedInAccount(activity.getApplicationContext())).leave(currentRoomConfig, currentRoomId);
+        int numPlayers = MIN_INVITED_PLAYERS + 1;
+        Games.RealTimeMultiplayer.leave(gameHelper.getApiClient(), this, String.valueOf(numPlayers));
         currentRoomId = null;
         currentRoomConfig = null;
     }
@@ -269,10 +269,6 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
                 break;
             case RC_WAITING_ROOM:
                 Log.d(TAG, "onActivityResult: RC_WAITING_ROOM");
-
-
-
-
                 handleWaitingRoomResult(resultCode, data);
                 break;
             default:

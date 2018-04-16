@@ -134,7 +134,6 @@ public class GameOverState extends State implements PlayServices.NetworkListener
 
                 break;
             case MessageCodes.QUIT:
-                Maps.getINSTANCE().increment();
                 System.out.println("QUIT MESSAGE RECEIVED");
                 gsm.playServices.leaveRoom();
 

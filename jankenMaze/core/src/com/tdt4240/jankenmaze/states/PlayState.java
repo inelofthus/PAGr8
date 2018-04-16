@@ -42,15 +42,6 @@ public class PlayState extends State {
         entityManager.createHUDItem();
     }
 
-    public void reset(){
-        ImmutableArray<Entity> playersEntities = engine.getEntitiesFor(Family.all(PlayerInfo.class).get());
-
-        for (Entity entity: playersEntities){
-            engine.removeEntity(entity);
-        }
-
-    }
-
     @Override
     protected void handleInput() {
 
