@@ -69,13 +69,23 @@ public class GameOverState extends State implements PlayServices.NetworkListener
         }
         if (gameOverView.btn_toMainMenu.isPressed()){
             Maps.getINSTANCE().zeroMaps();
-            if(gsm.playServices.isSignedIn()){
+            if(GameSettings.getInstance().isMultplayerGame){
+                ByteBuffer buffer = ByteBuffer.allocate(1);
+                buffer.put(MessageCodes.QUIT);
+                gsm.playServices.sendReliableMessageToOthers(buffer.array());
+                gsm.playServices.leaveRoom();
                 gsm.set(new OnlineMenuState());
             }else {
                 gsm.set(new OfflineMenuState());
             }
         }
         if (gameOverView.btn_quitGame.isPressed()){
+            if(GameSettings.getInstance().isMultplayerGame){
+                ByteBuffer buffer = ByteBuffer.allocate(1);
+                buffer.put(MessageCodes.QUIT);
+                gsm.playServices.sendReliableMessageToOthers(buffer.array());
+                gsm.playServices.leaveRoom();
+            }
             Gdx.app.exit();
          }
 
@@ -121,6 +131,12 @@ public class GameOverState extends State implements PlayServices.NetworkListener
                     public void run() {gsm.set(new MultiPlayState(batch));
                     }
                 });
+
+                break;
+            case MessageCodes.QUIT:
+                Maps.getINSTANCE().increment();
+                System.out.println("QUIT MESSAGE RECEIVED");
+                gsm.playServices.leaveRoom();
 
                 break;
         }

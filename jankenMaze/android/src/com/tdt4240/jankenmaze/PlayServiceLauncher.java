@@ -8,7 +8,6 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.badlogic.gdx.Gdx;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.RealTimeMultiplayerClient;
 import com.google.android.gms.games.multiplayer.Invitation;
@@ -43,8 +42,8 @@ import static com.google.android.gms.games.GamesActivityResultCodes.RESULT_LEFT_
 public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, RoomStatusUpdateListener, RealTimeMessageReceivedListener, OnInvitationReceivedListener {
 
     private final static int requestCode = 1;
-    private static final int MIN_PLAYERS = 1;
-    private static final int MAX_PLAYERS = 7;
+    private static final int MIN_INVITED_PLAYERS = 2;
+    private static final int MAX_INVITED_PLAYERS = 7;
     private static final int RC_SELECT_PLAYERS = 10000;
     private final static int RC_WAITING_ROOM = 10002;
     private static final String TAG = "PlayServiceLauncher";
@@ -141,7 +140,7 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
 
     @Override
     public void startSelectOpponents(boolean autoMatch) {
-        Intent intent = Games.RealTimeMultiplayer.getSelectOpponentsIntent(gameHelper.getApiClient(), MIN_PLAYERS, MAX_PLAYERS, autoMatch);
+        Intent intent = Games.RealTimeMultiplayer.getSelectOpponentsIntent(gameHelper.getApiClient(), MIN_INVITED_PLAYERS, MAX_INVITED_PLAYERS, autoMatch);
         gameListener.resetGameVariables();
         activity.startActivityForResult(intent, RC_SELECT_PLAYERS);
     }
@@ -480,6 +479,7 @@ public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, Ro
 
     @Override
     public void onPeerLeft(Room room, List<String> list) {
+        leaveRoom();
         Log.d(TAG, "onPeerLeft");
     }
 
