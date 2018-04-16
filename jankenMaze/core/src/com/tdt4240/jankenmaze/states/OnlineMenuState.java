@@ -62,7 +62,7 @@ public class OnlineMenuState extends State {
     public OnlineMenuState(String message) {
         super();
         initializeMenuState();
-        onlineMenuView.heading.setText(message);
+        onlineMenuView.message.setText(message);
     }
 
     @Override

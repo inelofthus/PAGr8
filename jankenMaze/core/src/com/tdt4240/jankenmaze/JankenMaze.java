@@ -91,7 +91,7 @@ public class JankenMaze extends ApplicationAdapter implements PlayServices.GameL
 		GameSettings.getInstance().reset();
 		//multiPlayState.reset();
 		this.multiPlayState = new MultiPlayState(batch);
-		gsm.push(new OnlineMenuState("onDisconnectedFromRoom"));
+		gsm.push(new OnlineMenuState("you got disconnected from the room"));
 	}
 
 	@Override
