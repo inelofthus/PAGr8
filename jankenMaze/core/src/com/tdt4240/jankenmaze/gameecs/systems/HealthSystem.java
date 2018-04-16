@@ -80,7 +80,7 @@ public class HealthSystem extends EntitySystem {
       if (health.health<=0){
             // GAME OVER
           try {
-              Thread.sleep(20);
+              Thread.sleep(40);
           }catch (Exception e){
 
           }

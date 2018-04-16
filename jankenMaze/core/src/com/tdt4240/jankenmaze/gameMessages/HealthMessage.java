@@ -39,6 +39,14 @@ public class HealthMessage {
         }
     }
 
+    public void reset(){
+        List<PlayerNetworkData> players = GameSettings.getInstance().getPlayers();
+        this.playerHealth= new HashMap<String, Health>();
+        for (PlayerNetworkData player : players){
+            playerHealth.put(player.participantId, new Health(3));
+        }
+    }
+
     public static HealthMessage getInstance(){
         return INSTANCE;
     }

@@ -10,9 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
  */
 
 public class OnlineMenuView extends MenuView {
-
     public TextButton btn_invite, btn_signout, btn_PlaySingle, btn_tutorial;
-    private Label heading;
+    public Label heading, message;
 
     public OnlineMenuView() {
         super();
@@ -36,6 +35,9 @@ public class OnlineMenuView extends MenuView {
         heading = new Label("Multiplayer Janken Maze! \n", headingStyle);
         heading.setFontScale(2);
 
+        Label.LabelStyle messageStyle = new Label.LabelStyle(font, Color.GREEN);
+        message = new Label("", messageStyle);
+
         // putting stuff together
         table.add(heading);
         table.row();
@@ -46,6 +48,8 @@ public class OnlineMenuView extends MenuView {
         table.add(btn_signout);
         table.row();
         table.add(btn_tutorial);
+        table.row();
+        table.add(message);
 
         stage.addActor(table);
     }

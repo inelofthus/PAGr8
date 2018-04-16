@@ -36,8 +36,6 @@ public class GameOverState extends State implements PlayServices.NetworkListener
         gameOverView.setResultLabel(HealthMessage.getInstance().getResults());
 
         cam.setToOrtho(false);
-
-
     }
 
     @Override
@@ -81,6 +79,11 @@ public class GameOverState extends State implements PlayServices.NetworkListener
                     public void run() {gsm.set(new MultiPlayState(batch));
                     }
                 });
+
+                break;
+            case MessageCodes.QUIT:
+                System.out.println("QUIT MESSAGE RECEIVED");
+                gsm.playServices.leaveRoom();
 
                 break;
         }

@@ -149,6 +149,8 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
             }
         }
 
+        HealthMessage.getInstance().reset();
+        PositionMessage.getInstance().reset();
         entityManager.addMPSystemsToEngine(gsm.playServices);
     }
 

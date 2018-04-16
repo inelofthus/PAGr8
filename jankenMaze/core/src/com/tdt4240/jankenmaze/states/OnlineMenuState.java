@@ -12,11 +12,20 @@ import com.tdt4240.jankenmaze.view.OnlineMenuView;
 public class OnlineMenuState extends State {
     OnlineMenuView onlineMenuView;
     private SpriteBatch batch;
-    private ClickListener listenerBtn_invite, listenerBtn_signOut, listenerBtn_playSingle, listenerBtn_tutorial;
-
 
     public OnlineMenuState() {
         super();
+        initializeMenuState();
+    }
+  
+    public OnlineMenuState(String message) {
+        super();
+        initializeMenuState();
+        onlineMenuView.message.setText(message);
+    }
+
+    private void initializeMenuState(){
+
         gsm = GameStateManager.getGsm();
         this.onlineMenuView = new OnlineMenuView();
 
@@ -80,5 +89,6 @@ public class OnlineMenuState extends State {
                 gsm.set(new TutorialState());
             };
         });
+        cam.setToOrtho(false);
     }
 }

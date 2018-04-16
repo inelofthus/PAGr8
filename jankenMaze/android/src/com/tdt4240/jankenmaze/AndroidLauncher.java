@@ -34,7 +34,7 @@ public class AndroidLauncher extends AndroidApplication {
 	protected void onStop()
 	{
 		super.onStop();
-		playServiceLauncher.onStop();
+		//playServiceLauncher.onStop();
 	}
 
 	@Override
