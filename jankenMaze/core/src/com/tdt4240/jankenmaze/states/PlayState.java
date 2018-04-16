@@ -1,9 +1,13 @@
 package com.tdt4240.jankenmaze.states;
 
 import com.badlogic.ashley.core.Engine;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.ashley.signals.Signal;
+import com.tdt4240.jankenmaze.gameecs.components.PlayerInfo;
 import com.tdt4240.jankenmaze.gameecs.events.EventQueue;
 import com.tdt4240.jankenmaze.gameecs.events.GameEvent;
 import com.tdt4240.jankenmaze.gamesettings.GameSettings;
@@ -37,6 +41,7 @@ public class PlayState extends State {
         //entityManager.createPlayer(PlayerType.SCISSORS);
         entityManager.createHUDItem();
     }
+
     @Override
     protected void handleInput() {
 
