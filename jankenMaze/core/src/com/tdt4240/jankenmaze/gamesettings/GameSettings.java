@@ -1,5 +1,7 @@
 package com.tdt4240.jankenmaze.gamesettings;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.tdt4240.jankenmaze.gameecs.components.PlayerNetworkData;
 
 import java.util.List;
@@ -17,6 +19,7 @@ public class GameSettings {
     private List<PlayerNetworkData> players = null;
     public int viewPortWidth;
     public int viewPortHeight;
+    public String chosenMap = "red_white";
 
     public GameSettings() {
         viewPortHeight = 480;

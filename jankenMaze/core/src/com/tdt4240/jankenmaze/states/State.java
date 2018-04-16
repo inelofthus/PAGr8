@@ -1,11 +1,9 @@
 package com.tdt4240.jankenmaze.states;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
+import com.tdt4240.jankenmaze.gamesettings.GameSettings;
 
 /**
  * Created by jonas on 25/01/2018.
@@ -16,18 +14,13 @@ public abstract class State {
         protected OrthographicCamera cam;
         protected Vector3 mouse;
         protected GameStateManager gsm;
-        Viewport viewport;
 
         protected State(){
             gsm = GameStateManager.getGsm();
             cam = new OrthographicCamera();
             mouse = new Vector3();
 
-            cam.setToOrtho(false, 800, 480);
-            viewport = new FitViewport(800, 480, cam);
-            viewport.setScreenBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-            viewport.apply();
-
+            cam.setToOrtho(false, GameSettings.getInstance().viewPortWidth, GameSettings.getInstance().viewPortHeight);
         }
 
         protected abstract void handleInput();

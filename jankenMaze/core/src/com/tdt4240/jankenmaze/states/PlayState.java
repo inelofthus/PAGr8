@@ -34,12 +34,12 @@ public class PlayState extends State {
         this.batch = batch;
         engine = new Engine();
         gameOverSignal= new Signal<GameEvent>();
-        gameOverQueue= new EventQueue();
+        gameOverQueue = new EventQueue();
         this.gameOverSignal.add(gameOverQueue);
         entityManager = new com.tdt4240.jankenmaze.gameecs.EntityManager(engine, batch, gameOverSignal);
-        entityManager.createMap(Maps.getINSTANCE().getMap(), new Texture("redAndWhiteWall.png"));
-        //entityManager.createPlayer(PlayerType.SCISSORS);
-        entityManager.createHUDItem();
+
+        String chosenMap = GameSettings.getInstance().chosenMap;
+        entityManager.createMap(Maps.getINSTANCE().getMap(), new Texture(Maps.getINSTANCE().getTexture(chosenMap)));
     }
 
     @Override
@@ -58,7 +58,7 @@ public class PlayState extends State {
 
     @Override
     public void render(SpriteBatch sb) {
-        //Rendering is handled by Entity Systems for now
+        //Rendering is handled by Entity Systems
     }
 
     @Override

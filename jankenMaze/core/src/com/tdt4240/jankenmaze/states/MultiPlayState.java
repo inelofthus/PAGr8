@@ -29,12 +29,10 @@ import java.util.List;
 
 public class MultiPlayState extends PlayState implements PlayServices.NetworkListener {
 
-
     public MultiPlayState(SpriteBatch batch) {
         super(batch);
         gsm.playServices.setNetworkListener(this);
         GameSettings.getInstance().isMultplayerGame = true;
-
 
         if (!(GameSettings.getInstance().getPlayers() == null)){
             onRoomReady(GameSettings.getInstance().getPlayers());
@@ -44,17 +42,6 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
     @Override
     protected void handleInput() {
         super.handleInput();
-        if (Gdx.input.isTouched()){
-
-           /* // will send a byte code for touched
-            ByteBuffer buffer = ByteBuffer.allocate(2 * 4 + 1);
-            int x = 1;
-            int y = 2;
-            buffer.put(POSITION);
-            buffer.putInt(x);
-            buffer.putInt(y);
-            gsm.playServices.sendUnreliableMessageToOthers(buffer.array());*/
-        }
     }
 
     @Override
@@ -62,7 +49,6 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
         super.update(dt);
 
         for(GameEvent gameOver: gameOverQueue.getEvents()){
-            System.out.println("GameOverEvent");
             ByteBuffer buffer = ByteBuffer.allocate(1);
             buffer.put(MessageCodes.GAME_OVER);
             gsm.playServices.sendReliableMessageToOthers(buffer.array());
@@ -92,8 +78,6 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
         byte messageType = buffer.get();
 
         switch (messageType){
-
-
             case MessageCodes.GAME_OVER:
                 System.out.println("GAME OVER MESSAGE RECEIVED");
                 HealthMessage.getInstance().gameOver(engine);
@@ -112,7 +96,6 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
                     HealthMessage.getInstance().updatePlayerHealth(senderParticipantId, new Health(hp));
                     HealthMessage.getInstance().hasChanged = true;
                 }
-
                 break;
         }
     }
@@ -127,8 +110,8 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
 
         switch (messageType){
             case MessageCodes.POSITION:
-                float x=buffer.getFloat();
-                float y=buffer.getFloat();
+                float x = buffer.getFloat();
+                float y = buffer.getFloat();
                 System.out.println("MultiPlayState: x:" + x + "y: " + y );
                 if (! (GameSettings.getInstance().getPlayers() == null)){
                     PositionMessage.getInstance().updateRemotePlayerPostion(senderParticipantId, new Position(x,y));
@@ -142,7 +125,6 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
                         gsm.set(new GameOverState());
                     }
                 });
-
                 break;
         }
 
@@ -151,18 +133,16 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
 
     @Override
     public void onRoomReady(List<PlayerNetworkData> players) {
-        System.out.println("Player1 " + players.get(0).displayName);
         if (GameSettings.getInstance().getPlayers()== null){
             GameSettings.getInstance().setPlayers(players);
         }
         //TODO: Initialize the world with all systems and components. Among other things create a player entity for each PlayerNetworkData
 
+        //Creating player entities
         ArrayList<PlayerType> playerTypes = PlayerTypes.getPlayerTypes();
-
-
         for(int i = 0; i < players.size(); i++){
             if (players.get(i).isLocalPlayer) {
-                entityManager.createLocalPlayer(playerTypes.get(i % playerTypes.size()), players.get(i)); //Players have to be created after map.
+                entityManager.createLocalPlayer(playerTypes.get(i % playerTypes.size()), players.get(i));
             }
             else{
                 entityManager.createPlayer(playerTypes.get(i % playerTypes.size()), players.get(i));

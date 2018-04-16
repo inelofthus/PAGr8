@@ -12,12 +12,16 @@ import com.tdt4240.jankenmaze.view.OnlineMenuView;
 public class OnlineMenuState extends State {
     OnlineMenuView onlineMenuView;
     private SpriteBatch batch;
-    private ClickListener listenerBtn_invite, listenerBtn_signOut, listenerBtn_playSingle, listenerBtn_tutorial;
-
 
     public OnlineMenuState() {
         super();
         initializeMenuState();
+    }
+  
+    public OnlineMenuState(String message) {
+        super();
+        initializeMenuState();
+        onlineMenuView.message.setText(message);
     }
 
     private void initializeMenuState(){
@@ -25,6 +29,34 @@ public class OnlineMenuState extends State {
         gsm = GameStateManager.getGsm();
         this.onlineMenuView = new OnlineMenuView();
 
+        addButtonListener();
+    }
+
+    @Override
+    protected void handleInput() {
+
+    }
+
+    @Override
+    public void update(float dt) {
+        handleInput();
+        if (!gsm.playServices.isSignedIn()){
+            gsm.set(new OfflineMenuState());
+        }
+    }
+
+    @Override
+    public void render(SpriteBatch sb) {
+        this.batch = sb;
+        onlineMenuView.render(sb);
+    }
+
+    @Override
+    public void dispose() {
+        onlineMenuView.dispose();
+    }
+
+    private void addButtonListener(){
         onlineMenuView.btn_invite.addListener( new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -55,37 +87,5 @@ public class OnlineMenuState extends State {
                 gsm.set(new TutorialState());
             };
         });
-
-        cam.setToOrtho(false);
-    }
-
-    public OnlineMenuState(String message) {
-        super();
-        initializeMenuState();
-        onlineMenuView.message.setText(message);
-    }
-
-    @Override
-    protected void handleInput() {
-
-    }
-
-    @Override
-    public void update(float dt) {
-        handleInput();
-        if (!gsm.playServices.isSignedIn()){
-            gsm.set(new OfflineMenuState());
-        }
-    }
-
-    @Override
-    public void render(SpriteBatch sb) {
-        this.batch = sb;
-        onlineMenuView.render(sb);
-    }
-
-    @Override
-    public void dispose() {
-        onlineMenuView.dispose();
     }
 }
