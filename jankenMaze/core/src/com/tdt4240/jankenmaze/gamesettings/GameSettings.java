@@ -19,6 +19,7 @@ public class GameSettings {
     private List<PlayerNetworkData> players = null;
     public int viewPortWidth;
     public int viewPortHeight;
+    public String chosenMap = "red_white";
 
     public GameSettings() {
         viewPortHeight = 480;

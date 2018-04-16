@@ -46,7 +46,7 @@ public class JankenMaze extends ApplicationAdapter implements PlayServices.GameL
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(1, 0, 0, 1);
+		Gdx.gl.glClearColor(1.0f, 0.0f, 0.0f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		gsm.update(Gdx.graphics.getDeltaTime());
 		gsm.render(batch);

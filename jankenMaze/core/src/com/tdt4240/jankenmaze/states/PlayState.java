@@ -37,7 +37,9 @@ public class PlayState extends State {
         gameOverQueue = new EventQueue();
         this.gameOverSignal.add(gameOverQueue);
         entityManager = new com.tdt4240.jankenmaze.gameecs.EntityManager(engine, batch, gameOverSignal);
-        entityManager.createMap(Maps.getINSTANCE().getMap(), new Texture("redAndWhiteWall.png"));
+
+        String chosenMap = GameSettings.getInstance().chosenMap;
+        entityManager.createMap(Maps.getINSTANCE().getMap(), new Texture(Maps.getINSTANCE().getTexture(chosenMap)));
     }
 
     @Override
