@@ -103,16 +103,7 @@ public class EntityFactory {
         //spawnPosition.add(new Occupied()); I don't see why spawnPosition should have an occupied component.
         return spawnPosition;
     }
-
-    public Entity createHUDItem(int xPosition, int yPosition, Texture texture, String itemType) {
-        Entity HUDItem = new Entity();
-        HUDItem.add(new Position(xPosition, yPosition));
-        HUDItem.add(new Renderable());
-        HUDItem.add(new SpriteComponent(texture));
-        HUDItem.add(new HUDItemInfo(itemType));
-        return HUDItem;
-    }
-
+    
     public Entity createBackground(int xPosition, int yPosition, Texture texture) {
         Entity background = new Entity();
         background.add(new Position(xPosition, yPosition));
