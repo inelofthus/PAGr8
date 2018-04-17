@@ -60,7 +60,7 @@ public class EntityManager {
     private Signal<GameEvent> decreaseHealthSignal;
     private Signal<GameVariable> playerPositionSignal;
 
-    Random rand = new Random();
+    private Random rand = new Random();
     private ImmutableArray<Entity> spawnPositions;
     private HashMap<PlayerType, Texture> playerTextureMap;
 
@@ -85,7 +85,7 @@ public class EntityManager {
         com.tdt4240.jankenmaze.gameecs.components.Position playerPosition
                 = ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.Position.class).get(randomSpawnPosition());
         engine.addEntity(
-                entityFactory.createPlayer(type, playerPosition.x, playerPosition.y, 3, playerTextureMap.get(type), networkData)
+                entityFactory.createRemotePlayer(type, playerPosition.x, playerPosition.y, 3, playerTextureMap.get(type), networkData)
         );
     }
 
@@ -109,25 +109,14 @@ public class EntityManager {
         engine.update(Gdx.graphics.getDeltaTime());
     }
 
-    public void draw(SpriteBatch batch){
-
-    }
-    public void setBatch(SpriteBatch batch){
-
-    }
-
-    public boolean hasNoSpriteBatch(){
-        return (this.batch == null);
-    }
-
     public void createMap(int[][] binaryMap, Texture texture) {
         for (int i = 0; i < binaryMap.length; i++) { //Iterates over rows
             for (int j = 0; j < binaryMap[i].length; j++) { //Iterates over columns
                 if (binaryMap[i][j] == 1) {
-                    engine.addEntity(entityFactory.createWall(i * 32, j * 32, texture)); //200 here represents the width of a block
+                    engine.addEntity(entityFactory.createWall(j * 32, (binaryMap.length - i - 1) * 32, texture)); //200 here represents the width of a block
                 }
                 else {
-                    engine.addEntity(entityFactory.createSpawnPosition(i*32, j*32));
+                    engine.addEntity(entityFactory.createSpawnPosition(j*32, (binaryMap.length - i - 1)*32));
                 }
             }
         }

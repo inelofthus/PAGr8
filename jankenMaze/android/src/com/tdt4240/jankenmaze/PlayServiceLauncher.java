@@ -42,7 +42,7 @@ import static com.google.android.gms.games.GamesActivityResultCodes.RESULT_LEFT_
 public class PlayServiceLauncher implements PlayServices, RoomUpdateListener, RoomStatusUpdateListener, RealTimeMessageReceivedListener, OnInvitationReceivedListener {
 
     private final static int requestCode = 1;
-    private static final int MIN_INVITED_PLAYERS = 2;
+    private static final int MIN_INVITED_PLAYERS = 1;
     private static final int MAX_INVITED_PLAYERS = 7;
     private static final int RC_SELECT_PLAYERS = 10000;
     private final static int RC_WAITING_ROOM = 10002;

@@ -35,7 +35,7 @@ public class EntityFactory {
         this.spriteBatch = spriteBatch;
     }
 
-    public Entity createPlayer(PlayerType type, float xPosition, float yPosition, int health, Texture texture, PlayerNetworkData networkData) {
+    public Entity createRemotePlayer(PlayerType type, float xPosition, float yPosition, int health, Texture texture, PlayerNetworkData networkData) {
  
         //creates a remote player
         Entity player = new Entity();
