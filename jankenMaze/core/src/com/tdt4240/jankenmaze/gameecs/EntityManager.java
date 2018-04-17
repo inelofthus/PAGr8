@@ -15,7 +15,6 @@ import com.tdt4240.jankenmaze.gameecs.events.GameVariable;
 
 import com.tdt4240.jankenmaze.gameecs.systems.CollisionSystem;
 import com.tdt4240.jankenmaze.gameecs.events.GameEvent;
-import com.tdt4240.jankenmaze.gameecs.systems.EntityFactory;
 import com.tdt4240.jankenmaze.gameecs.systems.HUDSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.HealthBroadcastSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.HealthSystem;
@@ -23,10 +22,14 @@ import com.tdt4240.jankenmaze.gameecs.systems.InputSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.MovementSystem;
 import com.tdt4240.jankenmaze.gameecs.systems.PositionBroadcastSystem;
 import com.badlogic.ashley.utils.ImmutableArray;
+import com.tdt4240.jankenmaze.gamesettings.GameSettings;
+import com.tdt4240.jankenmaze.gamesettings.Maps;
 import com.tdt4240.jankenmaze.gamesettings.PlayerType;
 import com.tdt4240.jankenmaze.gamesettings.PlayerTypes;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -80,7 +83,7 @@ public class EntityManager {
     }
 
     //TODO: Should entityfactory add entities directly? It's currently done in playstate
-    public void createPlayer(PlayerType type, PlayerNetworkData networkData) {
+    public void createRemotePlayer(PlayerType type, PlayerNetworkData networkData) {
         System.out.println("Create player " + PlayerTypes.getPlayerTextures().get(type));
         com.tdt4240.jankenmaze.gameecs.components.Position playerPosition
                 = ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.Position.class).get(randomSpawnPosition());
@@ -143,5 +146,30 @@ public class EntityManager {
         engine.addSystem(positionBroadcastSystem);
         HealthBroadcastSystem healthBroadcastSystem= new HealthBroadcastSystem(playServices,decreaseHealthSignal);
         engine.addSystem(healthBroadcastSystem);
+    }
+
+
+    public void createMPEntities (){
+        createMPPlayers();
+    }
+
+    private void createMPPlayers() {
+        List<PlayerNetworkData> players = GameSettings.getInstance().getPlayers();
+
+        //Creating player entities
+        ArrayList<PlayerType> playerTypes = PlayerTypes.getPlayerTypes();
+        for(int i = 0; i < players.size(); i++){
+            if (players.get(i).isLocalPlayer) {
+                createLocalPlayer(playerTypes.get(i % playerTypes.size()), players.get(i));
+            }
+            else{
+                createRemotePlayer(playerTypes.get(i % playerTypes.size()), players.get(i));
+            }
+        }
+    }
+
+    public void createEntities(){
+        String chosenMap = GameSettings.getInstance().chosenMap;
+        createMap(Maps.getINSTANCE().getMap(), new Texture(Maps.getINSTANCE().getTexture(chosenMap)));
     }
 }

@@ -128,9 +128,7 @@ public class HealthSystem extends EntitySystem {
         }
 
         if (HealthMessage.getInstance().hasChanged){
-            if (GameSettings.getInstance().isMultplayerGame){
                 updateRemotePlayerHealth();
-            }
         }
 
 

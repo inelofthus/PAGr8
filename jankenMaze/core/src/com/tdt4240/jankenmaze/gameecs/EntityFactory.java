@@ -1,4 +1,4 @@
-package com.tdt4240.jankenmaze.gameecs.systems;
+package com.tdt4240.jankenmaze.gameecs;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
