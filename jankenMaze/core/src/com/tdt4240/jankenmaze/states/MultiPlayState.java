@@ -52,7 +52,6 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
             gsm.set(new GameOverState());
         }
 
-        handleInput();
     }
 
     @Override
