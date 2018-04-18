@@ -8,20 +8,24 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 /**
- * Created by jonas on 13/04/18.
+ * Created by karim on 18/04/2018.
  */
 
-public class TutorialView extends View {
+public class SeeInvitationsView extends View{
     private Stage stage;
 
-    public TutorialView() {
+    public SeeInvitationsView() {
         this.stage = new Stage(viewport);
 
         Gdx.input.setInputProcessor(stage);
 
-        Image tutorialImage = new Image(new Texture("tutorial.png"));
-        stage.addActor(tutorialImage);
+        Image seeInvitationImage = new Image(new Texture("SeeInvitations.png"));
+        seeInvitationImage.setWidth(viewport.getScreenWidth());
+        seeInvitationImage.setHeight(viewport.getScreenHeight());
+        stage.addActor(seeInvitationImage);
+
     }
+
 
     @Override
     public void update(float dt) {

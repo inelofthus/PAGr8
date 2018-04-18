@@ -12,7 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 public class OfflineMenuView extends MenuView {
 
     public TextButton btn_PlaySingle, btn_signin, btn_tutorial;
-    private Label heading;
+    private Label heading, message;
 
     public OfflineMenuView() {
         super();
@@ -31,14 +31,20 @@ public class OfflineMenuView extends MenuView {
         heading = new Label("Single Player Janken Maze! \n", headingStyle);
         heading.setFontScale(2);
 
+        Label.LabelStyle messageStyle = new Label.LabelStyle(font, Color.GREEN);
+        message = new Label("Sign in with Google Play for multiplayer Janken Maze!", messageStyle);
+
         // putting stuff together
         table.add(heading);
         table.row();
-        table.add(btn_PlaySingle);
-        table.row();
+        // The playSingle is not actually shown on the screen because Single play state does not work
+        /*table.add(btn_PlaySingle);
+        table.row();*/
         table.add(btn_signin);
         table.row();
         table.add(btn_tutorial);
+        table.row();
+        table.add(message);
 
         stage.addActor(table);
     }
