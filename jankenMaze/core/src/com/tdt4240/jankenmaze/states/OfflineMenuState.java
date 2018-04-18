@@ -49,6 +49,7 @@ public class OfflineMenuState extends State {
 
     private void addButtonListeners(){
 
+        // This button is not actually shown on the screen because Single play state does not work
         offlineMenuView.btn_PlaySingle.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
