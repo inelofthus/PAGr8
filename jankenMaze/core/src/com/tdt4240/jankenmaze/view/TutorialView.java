@@ -20,6 +20,8 @@ public class TutorialView extends View {
         Gdx.input.setInputProcessor(stage);
 
         Image tutorialImage = new Image(new Texture("tutorial.png"));
+        tutorialImage.setWidth(stage.getWidth());
+        tutorialImage.setHeight(stage.getHeight());
         stage.addActor(tutorialImage);
     }
 

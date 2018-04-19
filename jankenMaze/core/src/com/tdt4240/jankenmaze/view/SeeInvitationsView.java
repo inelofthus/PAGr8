@@ -20,8 +20,8 @@ public class SeeInvitationsView extends View{
         Gdx.input.setInputProcessor(stage);
 
         Image seeInvitationImage = new Image(new Texture("SeeInvitations.png"));
-        seeInvitationImage.setWidth(viewport.getScreenWidth());
-        seeInvitationImage.setHeight(viewport.getScreenHeight());
+        seeInvitationImage.setWidth(stage.getWidth());
+        seeInvitationImage.setHeight(stage.getHeight());
         stage.addActor(seeInvitationImage);
 
     }
