@@ -11,6 +11,7 @@ import com.tdt4240.jankenmaze.gameecs.events.EventQueue;
 import com.tdt4240.jankenmaze.gameecs.events.GameEvent;
 import com.tdt4240.jankenmaze.gameecs.events.GameVariable;
 import com.tdt4240.jankenmaze.gameecs.events.VariableQueue;
+import com.tdt4240.jankenmaze.gamesettings.PlayerType;
 
 /**
  * Created by bartosz on 3/15/18.
@@ -127,10 +128,13 @@ public class CollisionSystem extends EntitySystem {
                     //checks if player1 collides with player2
                     if(bb.get(player1).boundsBox.overlaps(bb.get(player2).boundsBox)){
 
-                        if (pi.get(player1).targetetBy.equals(pi.get(player2).type)) {
-                            //sends a playerCollisionSignal
-                            playerCollisionSignal.dispatch(GameEvent.PLAYER_COLLISION);
+                        for (PlayerType targetedBy: pi.get(player1).targetetBy){
+                            if (targetedBy.equals(pi.get(player2).type)) {
+                                //sends a playerCollisionSignal
+                                playerCollisionSignal.dispatch(GameEvent.PLAYER_COLLISION);
+                            }
                         }
+
                     }
                 }
 

@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Component;
 import com.tdt4240.jankenmaze.gamesettings.PlayerType;
 import com.tdt4240.jankenmaze.gamesettings.PlayerTypes;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -13,7 +14,7 @@ import java.util.HashMap;
  */
 
 public class PlayerInfo implements Component {
-    public PlayerType targetetBy;
+    public ArrayList<PlayerType> targetetBy;
     public PlayerType type;
 
     public PlayerInfo(PlayerType type){
