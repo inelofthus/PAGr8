@@ -27,14 +27,16 @@ public class PlayerTypes {
         result.add(PlayerType.ROCK);
         result.add(PlayerType.PAPER);
         result.add(PlayerType.SCISSORS);
+        result.add(PlayerType.LIZARD);
         return result;
     }
 
     private static HashMap<PlayerType, ArrayList<PlayerType>> initializeTargetedByMap() {
         HashMap<PlayerType, ArrayList<PlayerType>> result = new HashMap<PlayerType, ArrayList<PlayerType>>();
-        result.put(PlayerType.ROCK, new ArrayList<PlayerType>(Arrays.asList(PlayerType.PAPER)));
-        result.put(PlayerType.PAPER,new ArrayList<PlayerType>(Arrays.asList(PlayerType.SCISSORS)));
+        result.put(PlayerType.ROCK, new ArrayList<PlayerType>(Arrays.asList(PlayerType.PAPER, PlayerType.LIZARD)));
+        result.put(PlayerType.PAPER,new ArrayList<PlayerType>(Arrays.asList(PlayerType.SCISSORS, PlayerType.LIZARD)));
         result.put(PlayerType.SCISSORS, new ArrayList<PlayerType>(Arrays.asList(PlayerType.ROCK)));
+        result.put(PlayerType.LIZARD, new ArrayList<PlayerType>(Arrays.asList(PlayerType.SCISSORS)));
         return result;
     }
 
@@ -52,6 +54,7 @@ public class PlayerTypes {
         result.put(PlayerType.ROCK, new Texture("singleRock.png"));
         result.put(PlayerType.PAPER,new Texture("singlePaper.png"));
         result.put(PlayerType.SCISSORS,new Texture("singleScissors.png"));
+        result.put(PlayerType.LIZARD, new Texture("singleLizard.png"));
         return result;
     }
 

@@ -7,5 +7,6 @@ package com.tdt4240.jankenmaze.gamesettings;
 public enum PlayerType {
     ROCK,
     PAPER,
-    SCISSORS
+    SCISSORS,
+    LIZARD
 }
