@@ -74,10 +74,10 @@ public class OnlineMenuState extends State {
             }
         });
 
-        onlineMenuView.btn_PlaySingle.addListener(new ClickListener() {
+        onlineMenuView.btn_SeeInvitations.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                gsm.set(new SinglePlayState(batch));
+                gsm.set(new SeeInvitesState());
             }
         });
 

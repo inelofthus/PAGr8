@@ -106,17 +106,16 @@ public class MovementSystem extends EntitySystem {
             }
         }
 
-        if (GameSettings.getInstance().isMultplayerGame){
-            //Update the positions of the remote players
-            for (Entity remotePlayer: remotePlayers){
-                PlayerNetworkData netData = playerDataCompMapper.get(remotePlayer);
-                Position newPos = PositionMessage.getInstance().getRemotePlayerPositions().get(netData.participantId);
-                Position posComp = positionMapper.get(remotePlayer);
+        //Update the positions of the remote players
+        for (Entity remotePlayer: remotePlayers){
+            PlayerNetworkData netData = playerDataCompMapper.get(remotePlayer);
+            Position newPos = PositionMessage.getInstance().getRemotePlayerPositions().get(netData.participantId);
+            Position posComp = positionMapper.get(remotePlayer);
 
-                posComp.x = newPos.x;
-                posComp.y = newPos.y;
-            }
+            posComp.x = newPos.x;
+            posComp.y = newPos.y;
         }
+
 
 
 

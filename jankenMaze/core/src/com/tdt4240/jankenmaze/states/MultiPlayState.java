@@ -1,21 +1,17 @@
 package com.tdt4240.jankenmaze.states;
 
-import com.badlogic.ashley.core.ComponentMapper;
-import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.Family;
-import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.tdt4240.jankenmaze.gameMessages.HealthMessage;
 import com.tdt4240.jankenmaze.gameMessages.MessageCodes;
 import com.tdt4240.jankenmaze.gameMessages.PositionMessage;
 import com.tdt4240.jankenmaze.gameecs.components.Health;
-import com.tdt4240.jankenmaze.gameecs.components.PlayerInfo;
 import com.tdt4240.jankenmaze.gameecs.components.Position;
 import com.tdt4240.jankenmaze.gameecs.events.GameEvent;
 import com.tdt4240.jankenmaze.gamesettings.GameSettings;
 import com.tdt4240.jankenmaze.PlayServices.PlayServices;
 import com.tdt4240.jankenmaze.gameecs.components.PlayerNetworkData;
+import com.tdt4240.jankenmaze.gamesettings.Maps;
 import com.tdt4240.jankenmaze.gamesettings.PlayerType;
 import com.tdt4240.jankenmaze.gamesettings.PlayerTypes;
 
@@ -56,7 +52,6 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
             gsm.set(new GameOverState());
         }
 
-        handleInput();
     }
 
     @Override
@@ -136,22 +131,13 @@ public class MultiPlayState extends PlayState implements PlayServices.NetworkLis
         if (GameSettings.getInstance().getPlayers()== null){
             GameSettings.getInstance().setPlayers(players);
         }
-        //TODO: Initialize the world with all systems and components. Among other things create a player entity for each PlayerNetworkData
-
-        //Creating player entities
-        ArrayList<PlayerType> playerTypes = PlayerTypes.getPlayerTypes();
-        for(int i = 0; i < players.size(); i++){
-            if (players.get(i).isLocalPlayer) {
-                entityManager.createLocalPlayer(playerTypes.get(i % playerTypes.size()), players.get(i));
-            }
-            else{
-                entityManager.createPlayer(playerTypes.get(i % playerTypes.size()), players.get(i));
-            }
-        }
 
         HealthMessage.getInstance().reset();
         PositionMessage.getInstance().reset();
+        Maps.getINSTANCE().zeroMaps();
+        entityManager.createMPEntities();
         entityManager.addMPSystemsToEngine(gsm.playServices);
+
     }
 
     ////////////// END NETWORK LISTENER METHODS //////////////

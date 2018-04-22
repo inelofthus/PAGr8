@@ -37,9 +37,7 @@ public class PlayState extends State {
         gameOverQueue = new EventQueue();
         this.gameOverSignal.add(gameOverQueue);
         entityManager = new com.tdt4240.jankenmaze.gameecs.EntityManager(engine, batch, gameOverSignal);
-
-        String chosenMap = GameSettings.getInstance().chosenMap;
-        entityManager.createMap(Maps.getINSTANCE().getMap(), new Texture(Maps.getINSTANCE().getTexture(chosenMap)));
+        entityManager.createEntities();
     }
 
     @Override
@@ -49,7 +47,6 @@ public class PlayState extends State {
 
     @Override
     public void update(float dt) {
-        handleInput();
         entityManager.update();
 
 

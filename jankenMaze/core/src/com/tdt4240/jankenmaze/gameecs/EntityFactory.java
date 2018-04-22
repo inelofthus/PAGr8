@@ -1,4 +1,4 @@
-package com.tdt4240.jankenmaze.gameecs.systems;
+package com.tdt4240.jankenmaze.gameecs;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
@@ -35,7 +35,7 @@ public class EntityFactory {
         this.spriteBatch = spriteBatch;
     }
 
-    public Entity createPlayer(PlayerType type, float xPosition, float yPosition, int health, Texture texture, PlayerNetworkData networkData) {
+    public Entity createRemotePlayer(PlayerType type, float xPosition, float yPosition, int health, Texture texture, PlayerNetworkData networkData) {
  
         //creates a remote player
         Entity player = new Entity();
