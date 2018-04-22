@@ -28,6 +28,8 @@ import com.tdt4240.jankenmaze.gamesettings.GameSettings;
  * 3: In update(float dt), apply logic to the hudEntities (like movement).
  * 4: The ComponentMappers makes it easier to select the right entity-components (and gives good performance)
  * -- See line 30 and 42 for example.
+ *
+ * This system is updating the player positions.
  */
 
 public class MovementSystem extends EntitySystem {
@@ -46,23 +48,30 @@ public class MovementSystem extends EntitySystem {
     private EventQueue eventQueue;
 
     public MovementSystem (Signal<GameEvent> gameEventSignal){
+        //creates an gameEventSignal
         this.gameEventSignal = gameEventSignal;
         eventQueue = new EventQueue();
         gameEventSignal.add(eventQueue);}
 
     public void addedToEngine(Engine engine){
+        //get entities with velocity and position
         entities = engine.getEntitiesFor(Family.all(Position.class, Velocity.class).get());
+        //get localPLayer
         localPlayers = engine.getEntitiesFor(Family.all(LocalPlayer.class).get());
+        //get remotePLayers
         remotePlayers = engine.getEntitiesFor(Family.all(Remote.class).get());
+        //get walls
         walls = engine.getEntitiesFor(Family.all(com.tdt4240.jankenmaze.gameecs.components.BoundsBox.class).exclude(com.tdt4240.jankenmaze.gameecs.components.PlayerInfo.class, com.tdt4240.jankenmaze.gameecs.components.PowerUpInfo.class).get());
 
     }
 
     public void update(float dt){
+        //checks if there are some entities with both a positionComponent and a velocityComponent
         if(entities != null){
+            //for each entity
             for (int i = 0; i < entities.size(); i++){
                 Entity entity = entities.get(i);
-
+                //get the position&velocity&boundingbox
                 Position position = positionMapper.get(entity);
                 Velocity velocity = velocityMapper.get(entity);
                 BoundsBox bounds = boundsBoxMapper.get(entity);

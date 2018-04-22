@@ -14,21 +14,21 @@ import com.tdt4240.jankenmaze.gameecs.events.GameVariable;
 import com.tdt4240.jankenmaze.gameecs.events.VariableQueue;
 import java.nio.ByteBuffer;
 
+    /**
+     * This system broadcasters the position of local player to other devices.
+     */
     public class PositionBroadcastSystem extends EntitySystem {
         private PlayServices playServices;
-        private Signal<GameVariable> positionSignal;
-        private VariableQueue variableQueue;
+
         private ImmutableArray<Entity> localPlayer;
         private com.tdt4240.jankenmaze.gameecs.components.Position playerPosition;
         private float timeSincePositionSent = 0.0f;
 
 
 
-        public PositionBroadcastSystem(Signal<GameVariable> positionSignal, PlayServices playServices){
+        public PositionBroadcastSystem( PlayServices playServices){
             this.playServices = playServices;
-            this.positionSignal = positionSignal;
-            variableQueue = new VariableQueue();
-            positionSignal.add(variableQueue);
+
         }
 
 

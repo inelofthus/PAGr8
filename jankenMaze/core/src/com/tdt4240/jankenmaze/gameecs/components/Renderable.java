@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Component;
 
 /**
  * Created by jonas on 07/03/2018.
+ * This component is empty and is attached only to those entities that will be rendered.
  */
 
 public class Renderable implements Component {

@@ -13,6 +13,10 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.tdt4240.jankenmaze.gameecs.events.EventQueue;
 import com.tdt4240.jankenmaze.gameecs.events.GameEvent;
 
+
+/**
+ * This system listens to the input from user and reacts accordingly.
+ */
 public class InputSystem extends EntitySystem{
     private ImmutableArray<Entity> entities;
     private Entity player;
@@ -28,13 +32,15 @@ public class InputSystem extends EntitySystem{
     }
 
     public void addedToEngine(Engine engine){
+        //get the local player
         entities = engine.getEntitiesFor(Family.all(LocalPlayer.class).get());
     }
 
     public void update(float dt){
+        //get the x and y coordiantes of the touch
         float touchX = Gdx.input.getX();
         float touchY = Gdx.input.getY();
-
+        // if the screen is touched
         if(Gdx.input.isTouched()) {
             Velocity velocity = velocityMapper.get(entities.get(0));
 
@@ -66,6 +72,7 @@ public class InputSystem extends EntitySystem{
         }
     }
 
+    //checks if the point is in the rectangle
     private boolean pointInRectangle(float pointX, float pointY, Rectangle rectangle){
         return rectangle.contains(pointX, pointY);
     }

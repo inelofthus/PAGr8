@@ -32,15 +32,13 @@ import com.tdt4240.jankenmaze.gamesettings.PlayerType;
  and wall have BoundingBox but not other "infoComponent". So, you have to have three arrays, one for each entityType,
  then you have to check if a player entity collides with any other player, powerUp or wall and apply the right method.
  Remember, who eats who is in PlayerInfo and PowerUpType is in PowerUpInfo. The wall just sets the position outside the wall.
+
+ ADDITIONAL NOTE: The powerUps are not implemented as in the latest release due too short deadlines.
  */
 
 public class CollisionSystem extends EntitySystem {
-    //not sure it an immutable array is 100% suited for the purpose of this system.
-    //TODO check it in later stage of developement.
     private Signal<GameEvent> playerCollisionSignal;
-    private Signal<GameVariable> playerPositionSignal;
     private EventQueue eventQueue;
-    private VariableQueue positionQueue;
     private ImmutableArray<Entity> powerUps;
     private ImmutableArray<Entity> players;
     private ImmutableArray<Entity> localPlayer;
@@ -48,15 +46,11 @@ public class CollisionSystem extends EntitySystem {
     private ComponentMapper<com.tdt4240.jankenmaze.gameecs.components.BoundsBox> bb= ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.BoundsBox.class);
     private ComponentMapper<com.tdt4240.jankenmaze.gameecs.components.PlayerInfo> pi = ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.PlayerInfo.class);
 
-    public CollisionSystem(Signal<GameEvent> playerCollisionSignal, Signal<GameVariable> playerPositionSignal){
+    public CollisionSystem(Signal<GameEvent> playerCollisionSignal){
         //creates playerCollisionSignal
         this.playerCollisionSignal = playerCollisionSignal;
         eventQueue = new EventQueue();
         playerCollisionSignal.add(eventQueue);
-        //assignes playerPositionSignal
-        this.playerPositionSignal=playerPositionSignal;
-        positionQueue = new VariableQueue();
-        playerPositionSignal.add(positionQueue);
     }
 
 
@@ -68,8 +62,6 @@ public class CollisionSystem extends EntitySystem {
         players = engine.getEntitiesFor(Family.all(com.tdt4240.jankenmaze.gameecs.components.Remote.class).get());
         //get localPLayer
         localPlayer = engine.getEntitiesFor(Family.all(com.tdt4240.jankenmaze.gameecs.components.LocalPlayer.class).get());
-
-
         //get all walls
         walls = engine.getEntitiesFor(Family.all(com.tdt4240.jankenmaze.gameecs.components.BoundsBox.class).exclude(com.tdt4240.jankenmaze.gameecs.components.PlayerInfo.class, com.tdt4240.jankenmaze.gameecs.components.PowerUpInfo.class).get());
 
@@ -88,10 +80,12 @@ public class CollisionSystem extends EntitySystem {
             if(playerVelocity.currentX > 0){
                 // gets the difference between the position of wal and position of player and moves player outside the wall.
                 playerPosition.x = playerPosition.x + (wall.getX() - playerPosition.x) - bb.get(player).boundsBox.getWidth();
+                //zeroes the playerVelocity
                 playerVelocity.currentX = 0;
             }else{
                 // gets the difference between the position of wal and position of player and moves player outside the wall.
                 playerPosition.x = playerPosition.x +(wall.getX() - playerPosition.x) + wall.getWidth();
+                //zeroes the playerVelocity
                 playerVelocity.currentX = 0;
 
             }
@@ -99,10 +93,12 @@ public class CollisionSystem extends EntitySystem {
             if(playerVelocity.currentY > 0){
                 // gets the difference between the position of wal and position of player and moves player outside the wall.
                 playerPosition.y = playerPosition.y + (wall.getY() - playerPosition.y) - bb.get(player).boundsBox.getHeight();
+                //zeros the playerVelocity
                 playerVelocity.currentY = 0;
             }else if (playerVelocity.currentY < 0){
                 // gets the difference between the position of wal and position of player and moves player outside the wall.
                 playerPosition.y = playerPosition.y + (wall.getY() - playerPosition.y) + wall.getHeight();
+                //zeros the playerVelocity
                 playerVelocity.currentY = 0;
             }
 
@@ -116,7 +112,9 @@ public class CollisionSystem extends EntitySystem {
         /**
          * This is unnecessarily time consuming as you will be ok with checking just 50% of the entities.
          * Or maybe not as it has to collide with powerUp && wall
+         * There has to be a smarter way to implement it, sadly it was not found.
          */
+        //checks if a localplayer exists and in there are walls in the game.
         if (walls != null && players != null && localPlayer!=null){
             //check if there is any collision
             for (int i=0; i < localPlayer.size(); i++){
@@ -137,25 +135,27 @@ public class CollisionSystem extends EntitySystem {
 
                     }
                 }
-
+                // if there are powerUps in the game
                 if (powerUps != null){
+                    //for every powerUp
                     for (int k=0; k < powerUps.size(); k++){
                         Entity powerUp = powerUps.get(k);
                         //checks if player1 collides with powerUp
                         if(bb.get(player1).boundsBox.contains(bb.get(powerUp).boundsBox)){
-                            //call powerUp system
+                            //call powerUp system it it collides.
+                            //TODO Implement in later releases.
                         }
                     }
                 }
+                //for every wall in the game
                 for(int k=0; k < walls.size(); k++){
+                    //get the boundary box
                     Rectangle wallBox = bb.get(walls.get(k)).boundsBox;
-
+                    //check if the player collides with the wall
                     if(bb.get(player1).boundsBox.overlaps(wallBox)){
-
                         //we want player to be outside wall
                         collisionWithWall(player1,wallBox);
                     }
-                    playerPositionSignal.dispatch(GameVariable.PLAYER_POSITION);
                 }
             }
         }

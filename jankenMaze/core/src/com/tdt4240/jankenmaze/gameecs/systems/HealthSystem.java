@@ -24,6 +24,7 @@ import java.util.Random;
 
 /**
  * Created by jonas on 18/03/2018.
+ * This system's purpose is to decrease/increase or set the health of players.
  */
 
 public class HealthSystem extends EntitySystem {
@@ -54,6 +55,7 @@ public class HealthSystem extends EntitySystem {
         this.gameOverSignal=gameOverSignal;
         gameOverQueue= new EventQueue();
         this.gameOverSignal.add(gameOverQueue);
+        //creates the decreaseHealthSignal
         this.decreaseHealthSignal=decreaseHealthSignal;
         healthQueue=new EventQueue();
         this.decreaseHealthSignal.add(healthQueue);
@@ -61,12 +63,17 @@ public class HealthSystem extends EntitySystem {
 
     public void increaseHealth(Entity entity, int delta){
         //TODO: Logic
+        //this method is not implemented in the latest release
 
     }
+
+    //this method decreases the health of a player
+    //it is currently optimized for decreasing the health of localplayer
   public void decreaseHealth(Entity player, int delta){
 
         //get the healthComponent for player
         Health health=healthComponentMapper.get(player);
+        //get the velocityComponent for player
         Velocity velocity = velocityComponentMapper.get(player);
         velocity.currentX = 0;
         velocity.currentY = 0;
@@ -74,27 +81,37 @@ public class HealthSystem extends EntitySystem {
         velocity.futureY = 0;
         //decrease health
         health.health=health.health-Math.abs(delta);
+        //dispatch a DECREASE_HEALTH signal
         decreaseHealthSignal.dispatch(GameEvent.DECREASE_HEALTH);
+        //update the health of player in HealthMessage
         HealthMessage.getInstance().updatePlayerHealth(ComponentMapper.getFor(PlayerNetworkData.class).get(localPlayer.first()).participantId, new Health(health.health));
 
+        //check if players health is zero or less
       if (health.health<=0){
             // GAME OVER
           try {
+              //give other devices some time to calculate the messages they receive.
               Thread.sleep(40);
           }catch (Exception e){
 
           }
-
+            //dispatch a GAME_OVER signal
             gameOverSignal.dispatch(GameEvent.GAME_OVER);
-        }else{
-            //Go to fucking spawn.
-            //workaround the problem with static context
+      //
+      }else{
+            //The player has to go a random place on the map
+            //get a random int smaller or equal to the amount of spawnPosition on the map
             int randomNumber = rand.nextInt(spawnPositions.size());
+            //get the random spawnPosition
             Entity spawn= spawnPositions.get(randomNumber);
+            //get player's positionComponent
             com.tdt4240.jankenmaze.gameecs.components.Position playerPosition
                     = ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.Position.class).get(player);
+            //get spawnPosition's positionComponent
             com.tdt4240.jankenmaze.gameecs.components.Position spawnPos
                     = ComponentMapper.getFor(com.tdt4240.jankenmaze.gameecs.components.Position.class).get(spawn);
+
+            //set playerPosition equal spawnPosition
             playerPosition.x=spawnPos.x;
             playerPosition.y=spawnPos.y;
 
@@ -126,8 +143,9 @@ public class HealthSystem extends EntitySystem {
         for (GameEvent event: collisionQueue.getEvents()){
            decreaseHealth(localPlayer.get(0),1);
         }
-
+        // if the healthHashMap in HealthMessage has been altered
         if (HealthMessage.getInstance().hasChanged){
+            //call the updateRemotePlayerHealth
                 updateRemotePlayerHealth();
         }
 
@@ -137,11 +155,17 @@ public class HealthSystem extends EntitySystem {
     }
 
     private void updateRemotePlayerHealth() {
+        //change the hasChange variable from true to false
       HealthMessage.getInstance().hasChanged = false;
+      //for every remotePlayer
       for (Entity remotePlayer : remotePlayers){
+          //get networkData
           PlayerNetworkData netData = playerDataCompMapper.get(remotePlayer);
+          //get player's health from HealtMessage
           Health newHealth=HealthMessage.getInstance().getPlayerHealth().get(netData.participantId);
+          //get player's healthComponent
           Health healthComp = healthComponentMapper.get(remotePlayer);
+          //update health
           healthComp.health=newHealth.health;
 
       }

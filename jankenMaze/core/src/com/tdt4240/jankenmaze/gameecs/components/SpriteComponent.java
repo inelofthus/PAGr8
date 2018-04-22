@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 /**
  * Created by jonas on 07/03/2018.
+ * This component consists of a Sprite and two integers. Sprite stores a sprite and the two
+ * integers stores the height and width of sprite.
  */
 
 public class SpriteComponent implements Component {

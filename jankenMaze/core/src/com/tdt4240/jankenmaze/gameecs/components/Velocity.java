@@ -4,6 +4,8 @@ import com.badlogic.ashley.core.Component;
 
 /**
  * Created by jonas on 07/03/2018.
+ * This component consists of 4 float values. Two of those stores the current velocity of entity
+ * in x and y direction, and the other two stores the future velocity of entity in x and y direction.
  */
 
 public class Velocity implements Component {
