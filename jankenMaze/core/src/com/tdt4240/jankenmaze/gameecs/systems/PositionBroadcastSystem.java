@@ -16,19 +16,16 @@ import java.nio.ByteBuffer;
 
     public class PositionBroadcastSystem extends EntitySystem {
         private PlayServices playServices;
-        private Signal<GameVariable> positionSignal;
-        private VariableQueue variableQueue;
+
         private ImmutableArray<Entity> localPlayer;
         private com.tdt4240.jankenmaze.gameecs.components.Position playerPosition;
         private float timeSincePositionSent = 0.0f;
 
 
 
-        public PositionBroadcastSystem(Signal<GameVariable> positionSignal, PlayServices playServices){
+        public PositionBroadcastSystem( PlayServices playServices){
             this.playServices = playServices;
-            this.positionSignal = positionSignal;
-            variableQueue = new VariableQueue();
-            positionSignal.add(variableQueue);
+
         }
 
 

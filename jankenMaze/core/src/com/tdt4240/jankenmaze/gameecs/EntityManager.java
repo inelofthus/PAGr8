@@ -61,7 +61,6 @@ public class EntityManager {
     private Signal<GameEvent> gameOverSignal;
     private Signal<GameEvent> playerCollisionSignal;
     private Signal<GameEvent> decreaseHealthSignal;
-    private Signal<GameVariable> playerPositionSignal;
 
     private Random rand = new Random();
     private ImmutableArray<Entity> spawnPositions;
@@ -74,7 +73,6 @@ public class EntityManager {
         gameEventSignal = new Signal<GameEvent>();
         playerCollisionSignal = new Signal<GameEvent>();
         decreaseHealthSignal = new Signal<GameEvent>();
-        playerPositionSignal = new Signal<GameVariable>();
         playerTextureMap = PlayerTypes.getPlayerTextures();
 
         this.gameOverSignal = gameOverSignal;
@@ -134,7 +132,7 @@ public class EntityManager {
         engine.addSystem(inputSystem);
         HUDSystem hudSystem = new HUDSystem();
         engine.addSystem(hudSystem);
-        CollisionSystem cs = new CollisionSystem(playerCollisionSignal, playerPositionSignal);
+        CollisionSystem cs = new CollisionSystem(playerCollisionSignal);
         engine.addSystem(cs);
 
         HealthSystem hs=new HealthSystem(playerCollisionSignal, gameOverSignal, decreaseHealthSignal);
@@ -142,7 +140,7 @@ public class EntityManager {
     }
 
     public void addMPSystemsToEngine(PlayServices playServices){
-       PositionBroadcastSystem positionBroadcastSystem = new PositionBroadcastSystem(playerPositionSignal,playServices);
+       PositionBroadcastSystem positionBroadcastSystem = new PositionBroadcastSystem(playServices);
         engine.addSystem(positionBroadcastSystem);
         HealthBroadcastSystem healthBroadcastSystem= new HealthBroadcastSystem(playServices,decreaseHealthSignal);
         engine.addSystem(healthBroadcastSystem);
